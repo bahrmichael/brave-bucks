@@ -10,9 +10,7 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-                <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
                 <th jhiSortBy="login"><span>Login</span> <span class="fa fa-sort"></span></th>
-                <th jhiSortBy="email"><span>Email</span> <span class="fa fa-sort"></span></th>
                 <th></th>
                 <th><span>Profiles</span></th>
                 <th jhiSortBy="createdDate"><span>Created Date</span> <span class="fa fa-sort"></span></th>
@@ -23,16 +21,14 @@
             </thead>
             <tbody *ngIf ="users">
             <tr *ngFor="let user of users; trackBy: trackIdentity">
-                <td><a [routerLink]="['../user-management', user.login]">{{user.id}}</a></td>
-                <td>{{user.login}}</td>
-                <td>{{user.email}}</td>
+                <td><a [routerLink]="['../user-management', user.login]">{{user.login}}</a></td>
                 <td>
                     <button class="btn btn-danger btn-sm" (click)="setActive(user, true)" *ngIf="!user.activated"
                            >Deactivated</button>
                     <button class="btn btn-success btn-sm" (click)="setActive(user, false)" *ngIf="user.activated"
                             [disabled]="currentAccount.login === user.login">Activated</button>
                 </td>
-                
+
                 <td>
                     <div *ngFor="let authority of user.authorities">
                         <span class="badge badge-info">{{ authority }}</span>

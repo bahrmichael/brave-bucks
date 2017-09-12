@@ -14,7 +14,6 @@ import {  User, UserService } from '../../shared';
 export class UserMgmtDialogComponent implements OnInit {
 
     user: User;
-    languages: any[];
     authorities: any[];
     isSaving: Boolean;
 
@@ -41,7 +40,6 @@ export class UserMgmtDialogComponent implements OnInit {
         if (this.user.id !== null) {
             this.userService.update(this.user).subscribe((response) => this.onSaveSuccess(response), () => this.onSaveError());
         } else {
-            this.user.langKey = 'en';
             this.userService.create(this.user).subscribe((response) => this.onSaveSuccess(response), () => this.onSaveError());
         }
     }
