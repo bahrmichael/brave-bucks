@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { ProfileService } from '../profiles/profile.service';
-import { Principal, LoginModalService, LoginService } from '../../shared';
+import { Principal, LoginService } from '../../shared';
 
-import { VERSION, DEBUG_INFO_ENABLED } from '../../app.constants';
+import { VERSION } from '../../app.constants';
 
 @Component({
     selector: 'jhi-navbar',
@@ -18,15 +17,12 @@ export class NavbarComponent implements OnInit {
 
     inProduction: boolean;
     isNavbarCollapsed: boolean;
-    languages: any[];
     swaggerEnabled: boolean;
-    modalRef: NgbModalRef;
     version: string;
 
     constructor(
         private loginService: LoginService,
         private principal: Principal,
-        private loginModalService: LoginModalService,
         private profileService: ProfileService,
         private router: Router
     ) {
@@ -57,7 +53,6 @@ export class NavbarComponent implements OnInit {
               + '&client_id=cd26e57f99cf4cc5b7311164cc64edd2'
               + '&scope='
               + '&state=uniquestate123';
-        // this.modalRef = this.loginModalService.open();
     }
 
     logout() {

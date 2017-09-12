@@ -17,7 +17,6 @@ export class SsoComponent implements OnInit {
                 private eventManager: JhiEventManager, private router: Router,
                 private $localStorage: LocalStorageService,
                 private $sessionStorage: SessionStorageService) {
-
     }
 
     ngOnInit() {
@@ -41,6 +40,8 @@ export class SsoComponent implements OnInit {
                                if (redirect) {
                                    this.stateStorageService.storeUrl(null);
                                    this.router.navigate([redirect]);
+                               } else {
+                                   this.router.navigate(["/"]);
                                }
                            }, () => {
                                this.authenticationError = true;

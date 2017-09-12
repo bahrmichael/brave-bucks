@@ -10,7 +10,6 @@ export class SettingsComponent implements OnInit {
     error: string;
     success: string;
     settingsAccount: any;
-    languages: any[];
 
     constructor(
         private account: AccountService,
@@ -39,13 +38,7 @@ export class SettingsComponent implements OnInit {
 
     copyAccount(account) {
         return {
-            activated: account.activated,
-            email: account.email,
-            firstName: account.firstName,
-            langKey: account.langKey,
-            lastName: account.lastName,
             login: account.login,
-            imageUrl: account.imageUrl
         };
     }
 }
