@@ -12,49 +12,6 @@ public class KillmailParserTest {
 
     // todo: error handling for broken json
 
-    final String jsonString1 = "{\n"
-                              + "        \"killID\"       : 63894774,\n"
-                              + "        \"solarSystemID\": 30001178,\n"
-                              + "        \"killTime\"     : \"2017-08-05 21:23:25\",\n"
-                              + "        \"attackers\"    : [\n"
-                              + "            {\n"
-                              + "            },\n"
-                              + "            {\n"
-                              + "            },\n"
-                              + "            {\n"
-                              + "            },\n"
-                              + "            {\n"
-                              + "            },\n"
-                              + "            {\n"
-                              + "            }\n"
-                              + "        ],\n"
-                              + "        \"zkb\"          : {\n"
-                              + "            \"totalValue\" : 2721466267.32,\n"
-                              + "            \"points\"     : 40,\n"
-                              + "            \"npc\"        : false\n"
-                              + "        }\n"
-                              + "    }";
-
-
-    final String jsonString2 = "{\n"
-                              + "        \"killID\"       : 63894773,\n"
-                              + "        \"solarSystemID\": 30001173,\n"
-                              + "        \"killTime\"     : \"2017-03-05 21:23:23\",\n"
-                              + "        \"attackers\"    : [\n"
-                              + "            {\n"
-                              + "            },\n"
-                              + "            {\n"
-                              + "            },\n"
-                              + "            {\n"
-                              + "            }\n"
-                              + "        ],\n"
-                              + "        \"zkb\"          : {\n"
-                              + "            \"totalValue\" : 3.32,\n"
-                              + "            \"points\"     : 3,\n"
-                              + "            \"npc\"        : true\n"
-                              + "        }\n"
-                              + "    }";
-
     @Test
     public void mapJsonToKillmail() throws Exception {
         Optional<Killmail> optional = KillmailParser.parseKillmail(jsonString1);
@@ -96,4 +53,47 @@ public class KillmailParserTest {
         assertNotNull(killmails);
         assertEquals(2, killmails.size());
     }
+
+    private final String jsonString1 = "{\n"
+                                       + "        \"killID\"       : 63894774,\n"
+                                       + "        \"solarSystemID\": 30001178,\n"
+                                       + "        \"killTime\"     : \"2017-08-05 21:23:25\",\n"
+                                       + "        \"attackers\"    : [\n"
+                                       + "            {\n"
+                                       + "            },\n"
+                                       + "            {\n"
+                                       + "            },\n"
+                                       + "            {\n"
+                                       + "            },\n"
+                                       + "            {\n"
+                                       + "            },\n"
+                                       + "            {\n"
+                                       + "            }\n"
+                                       + "        ],\n"
+                                       + "        \"zkb\"          : {\n"
+                                       + "            \"totalValue\" : 2721466267.32,\n"
+                                       + "            \"points\"     : 40,\n"
+                                       + "            \"npc\"        : false\n"
+                                       + "        }\n"
+                                       + "    }";
+
+
+    private final String jsonString2 = "{\n"
+                                       + "        \"killID\"       : 63894773,\n"
+                                       + "        \"solarSystemID\": 30001173,\n"
+                                       + "        \"killTime\"     : \"2017-03-05 21:23:23\",\n"
+                                       + "        \"attackers\"    : [\n"
+                                       + "            {\n"
+                                       + "            },\n"
+                                       + "            {\n"
+                                       + "            },\n"
+                                       + "            {\n"
+                                       + "            }\n"
+                                       + "        ],\n"
+                                       + "        \"zkb\"          : {\n"
+                                       + "            \"totalValue\" : 3.32,\n"
+                                       + "            \"points\"     : 3,\n"
+                                       + "            \"npc\"        : true\n"
+                                       + "        }\n"
+                                       + "    }";
 }

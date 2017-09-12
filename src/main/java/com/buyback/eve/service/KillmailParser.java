@@ -9,8 +9,6 @@ import com.buyback.eve.domain.Killmail;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import springfox.documentation.spring.web.json.Json;
-
 class KillmailParser {
 
     private KillmailParser() {
