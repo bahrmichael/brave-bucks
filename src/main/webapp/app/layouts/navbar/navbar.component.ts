@@ -50,7 +50,13 @@ export class NavbarComponent implements OnInit {
     }
 
     login() {
-        window.location.href = 'https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fcallback&client_id=cd26e57f99cf4cc5b7311164cc64edd2&scope=&state=uniquestate123'
+        window.location.href
+            = 'https://login.eveonline.com/oauth/authorize/'
+              + '?response_type=code'
+              + '&redirect_uri=http%3A%2F%2Flocalhost%3A9000%2F%23%2Fcallback'
+              + '&client_id=cd26e57f99cf4cc5b7311164cc64edd2'
+              + '&scope='
+              + '&state=uniquestate123';
         // this.modalRef = this.loginModalService.open();
     }
 

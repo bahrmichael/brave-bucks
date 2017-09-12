@@ -1,7 +1,6 @@
 package com.buyback.eve.web.rest.vm;
 
 import com.buyback.eve.service.dto.UserDTO;
-import javax.validation.constraints.Size;
 
 import java.time.Instant;
 import java.util.Set;

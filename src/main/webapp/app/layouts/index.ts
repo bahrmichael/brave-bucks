@@ -1,5 +1,7 @@
 export * from './error/error.component';
 export * from './error/error.route';
+export * from './callback/sso.component';
+export * from './callback/sso.route';
 export * from './main/main.component';
 export * from './footer/footer.component';
 export * from './navbar/navbar.component';

@@ -33,15 +33,15 @@ public class DatabaseConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);
 
-    @Bean
-    public ValidatingMongoEventListener validatingMongoEventListener() {
-        return new ValidatingMongoEventListener(validator());
-    }
-
-    @Bean
-    public LocalValidatorFactoryBean validator() {
-        return new LocalValidatorFactoryBean();
-    }
+//    @Bean
+//    public ValidatingMongoEventListener validatingMongoEventListener() {
+//        return new ValidatingMongoEventListener(validator());
+//    }
+//
+//    @Bean
+//    public LocalValidatorFactoryBean validator() {
+//        return new LocalValidatorFactoryBean();
+//    }
 
     @Bean
     public CustomConversions customConversions() {
