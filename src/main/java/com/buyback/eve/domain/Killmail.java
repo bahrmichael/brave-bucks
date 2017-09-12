@@ -12,6 +12,8 @@ public class Killmail {
     private long totalValue;
     private long points;
     private boolean npc;
+    private long victimId;
+    private String victimAlliance;
 
     public long getCharacterId() {
         return characterId;
@@ -75,5 +77,21 @@ public class Killmail {
 
     public void setNpc(final boolean npc) {
         this.npc = npc;
+    }
+
+    public long getVictimId() {
+        return victimId;
+    }
+
+    public void setVictimId(final long victimId) {
+        this.victimId = victimId;
+    }
+
+    public void setVictimAlliance(final String victimAlliance) {
+        this.victimAlliance = victimAlliance;
+    }
+
+    public String getVictimAlliance() {
+        return victimAlliance;
     }
 }

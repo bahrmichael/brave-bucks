@@ -24,6 +24,8 @@ class KillmailParser {
         result.setNpc(object.getJSONObject("zkb").getBoolean("npc"));
         result.setTotalValue(object.getJSONObject("zkb").getLong("totalValue"));
         result.setPoints(object.getJSONObject("zkb").getLong("points"));
+        result.setVictimId(object.getJSONObject("victim").getLong("characterID"));
+        result.setVictimAlliance(object.getJSONObject("victim").getString("allianceName"));
         return Optional.of(result);
     }
 

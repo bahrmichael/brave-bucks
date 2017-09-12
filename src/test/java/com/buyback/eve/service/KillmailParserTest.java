@@ -32,6 +32,8 @@ public class KillmailParserTest {
         assertEquals(2721466267L, killmail.getTotalValue());
         assertEquals(40, killmail.getPoints());
         assertEquals(false, killmail.isNpc());
+        assertEquals(123L, killmail.getVictimId());
+        assertEquals("Goons", killmail.getVictimAlliance());
     }
 
     @Test
@@ -49,6 +51,8 @@ public class KillmailParserTest {
         assertEquals(3L, killmail.getTotalValue());
         assertEquals(3, killmail.getPoints());
         assertEquals(true, killmail.isNpc());
+        assertEquals(456L, killmail.getVictimId());
+        assertEquals("Goons", killmail.getVictimAlliance());
     }
 
     @Test
@@ -66,6 +70,7 @@ public class KillmailParserTest {
                                                       + "        \"killID\"       : 63894774,\n"
                                                       + "        \"solarSystemID\": 30001178,\n"
                                                       + "        \"killTime\"     : \"2017-08-05 21:23:25\",\n"
+                                                      + "        \"victim\"     : {\"characterID\":123, \"allianceName\":\"Goons\"},\n"
                                                       + "        \"attackers\"    : [\n"
                                                       + "            {\n"
                                                       + "            },\n"
@@ -90,6 +95,7 @@ public class KillmailParserTest {
                                                       + "        \"killID\"       : 63894773,\n"
                                                       + "        \"solarSystemID\": 30001173,\n"
                                                       + "        \"killTime\"     : \"2017-03-05 21:23:23\",\n"
+                                                      + "        \"victim\"     : {\"characterID\":456, \"allianceName\":\"Goons\"},\n"
                                                       + "        \"attackers\"    : [\n"
                                                       + "            {\n"
                                                       + "            },\n"
