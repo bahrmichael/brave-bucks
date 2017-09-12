@@ -17,7 +17,6 @@ export class SsoComponent implements OnInit {
                 private eventManager: JhiEventManager, private router: Router,
                 private $localStorage: LocalStorageService,
                 private $sessionStorage: SessionStorageService) {
-
     }
 
     ngOnInit() {
