@@ -40,6 +40,8 @@ export class SsoComponent implements OnInit {
                                if (redirect) {
                                    this.stateStorageService.storeUrl(null);
                                    this.router.navigate([redirect]);
+                               } else {
+                                   this.router.navigate(["/"]);
                                }
                            }, () => {
                                this.authenticationError = true;
