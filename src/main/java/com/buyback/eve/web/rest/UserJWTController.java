@@ -77,6 +77,7 @@ public class UserJWTController {
                                   .field("grant_type", "authorization_code")
                                   .field("code", code).asJson();
             int status = tokenResponse.getStatus();
+            // todo: proper handling please
             String access_token = tokenResponse.getBody().getObject().getString("access_token");
 
             HttpResponse<JsonNode> details = Unirest.get("https://login.eveonline.com/oauth/verify")
