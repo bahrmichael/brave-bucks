@@ -40,12 +40,13 @@ public class UserService {
         this.authorityRepository = authorityRepository;
     }
 
-    public User createUser(String login) {
+    public User createUser(String login, final Long characterId) {
 
         User newUser = new User();
         Authority authority = authorityRepository.findOne(AuthoritiesConstants.USER);
         Set<Authority> authorities = new HashSet<>();
         newUser.setLogin(login);
+        newUser.setCharacterId(characterId);
         // new user is not active
         newUser.setActivated(true);
         // new user gets registration key

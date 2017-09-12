@@ -35,6 +35,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Indexed
     private String login;
 
+    @NotNull
+    private Long characterId;
+
     private boolean activated = false;
 
     @JsonIgnore
@@ -52,9 +55,16 @@ public class User extends AbstractAuditingEntity implements Serializable {
         return login;
     }
 
-    //Lowercase the login before saving it in database
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public Long getCharacterId() {
+        return characterId;
+    }
+
+    public void setCharacterId(final Long characterId) {
+        this.characterId = characterId;
     }
 
     public boolean getActivated() {

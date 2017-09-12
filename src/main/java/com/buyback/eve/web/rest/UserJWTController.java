@@ -67,6 +67,7 @@ public class UserJWTController {
     public ResponseEntity authorize(@RequestParam("code") String code, @RequestParam("state") String state, HttpServletResponse response) {
 
         String characterName;
+        Long characterId;
         try {
             String url = "https://login.eveonline.com/oauth/token";
             HttpResponse<JsonNode> tokenResponse = Unirest.post(url)
@@ -82,6 +83,7 @@ public class UserJWTController {
                                                     .header("Authorization", "Bearer " + access_token)
                                                     .asJson();
             characterName = details.getBody().getObject().getString("CharacterName");
+            characterId = details.getBody().getObject().getLong("CharacterID");
         } catch (UnirestException e) {
             log.trace("SSO exception trace: {}", e);
             return new ResponseEntity<>(Collections.singletonMap("AuthenticationException",
@@ -89,7 +91,7 @@ public class UserJWTController {
         }
 
         if (!userRepository.findOneByLogin(characterName).isPresent()) {
-            userService.createUser(characterName);
+            userService.createUser(characterName, characterId);
         }
 
         try {
