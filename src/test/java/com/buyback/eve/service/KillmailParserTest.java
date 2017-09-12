@@ -14,11 +14,12 @@ public class KillmailParserTest {
 
     @Test
     public void mapJsonToKillmail() throws Exception {
-        Optional<Killmail> optional = KillmailParser.parseKillmail(jsonString1);
+        Optional<Killmail> optional = KillmailParser.parseKillmail(jsonString1, 1L);
 
         assertNotNull(optional);
         assertTrue(optional.isPresent());
         Killmail killmail = optional.get();
+        assertEquals(1L, killmail.getCharacterId());
         assertEquals(63894774L, killmail.getKillId());
         assertEquals(30001178L, killmail.getSolarSystemId());
         assertEquals("2017-08-05 21:23:25", killmail.getKillTime());
@@ -30,11 +31,12 @@ public class KillmailParserTest {
 
     @Test
     public void mapJsonToKillmail_b() throws Exception {
-        Optional<Killmail> optional = KillmailParser.parseKillmail(jsonString2);
+        Optional<Killmail> optional = KillmailParser.parseKillmail(jsonString2, 2L);
 
         assertNotNull(optional);
         assertTrue(optional.isPresent());
         Killmail killmail = optional.get();
+        assertEquals(2L, killmail.getCharacterId());
         assertEquals(63894773L, killmail.getKillId());
         assertEquals(30001173L, killmail.getSolarSystemId());
         assertEquals("2017-03-05 21:23:23", killmail.getKillTime());
@@ -48,7 +50,7 @@ public class KillmailParserTest {
     public void mapJsonArrayToKillmails() throws Exception {
         String data = "[" + jsonString1 + "," + jsonString2 + "]";
 
-        List<Killmail> killmails = KillmailParser.parseKillmails(data);
+        List<Killmail> killmails = KillmailParser.parseKillmails(data, 1L);
 
         assertNotNull(killmails);
         assertEquals(2, killmails.size());

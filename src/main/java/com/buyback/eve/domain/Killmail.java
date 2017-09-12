@@ -1,8 +1,11 @@
 package com.buyback.eve.domain;
 
+import org.springframework.data.annotation.Id;
+
 public class Killmail {
-    private Long characterId;
+    @Id
     private long killId;
+    private long characterId;
     private long solarSystemId;
     private String killTime;
     private long attackerCount;
@@ -10,11 +13,11 @@ public class Killmail {
     private long points;
     private boolean npc;
 
-    public Long getCharacterId() {
+    public long getCharacterId() {
         return characterId;
     }
 
-    public void setCharacterId(final Long characterId) {
+    public void setCharacterId(final long characterId) {
         this.characterId = characterId;
     }
 
