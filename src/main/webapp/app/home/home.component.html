@@ -4,13 +4,21 @@
     </div>
     <div class="col-md-9">
         <h1 class="display-4">Welcome, Braveling!</h1>
-        <p class="lead">This is your homepage</p>
+        <!--<p class="lead">This is your homepage</p>-->
 
         <div [ngSwitch]="isAuthenticated()">
-            <div class="alert alert-success" *ngSwitchCase="true">
-                <span *ngIf="account"> You are logged in as user "{{account.login}}". </span>
-            </div>
+            <br/>
+            <!--<div class="alert alert-success" *ngSwitchCase="true">-->
+            <!--<span *ngIf="account"> You are logged in as user "{{account.login}}". </span>-->
+            <!--</div>-->
 
+            <div class="progress">
+                <div class="progress-bar bg-info" role="progressbar" style="width: 50%; height: 40px">
+                    <span style="height: 40px;">Your payout: 104,123,735 ISK</span>
+                </div>
+            </div>
+            <p style="text-align: center">50/100 Coins until Payout</p>
+            <p>Current exchange rate: 1 Coin =  2,334,846 ISK</p>
         </div>
     </div>
 </div>
