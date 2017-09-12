@@ -14,11 +14,7 @@ class KillmailParser {
     private KillmailParser() {
     }
 
-    static Optional<Killmail> parseKillmail(final String singleKillmail, final Long characterId) {
-        return parseKillmail(new JSONObject(singleKillmail), characterId);
-    }
-
-    private static Optional<Killmail> parseKillmail(final JSONObject object, final Long characterId) {
+    static Optional<Killmail> parseKillmail(final JSONObject object, final Long characterId) {
         Killmail result = new Killmail();
         result.setCharacterId(characterId);
         result.setKillId(object.getLong("killID"));
@@ -31,11 +27,10 @@ class KillmailParser {
         return Optional.of(result);
     }
 
-    static List<Killmail> parseKillmails(final String killmailArray, final Long characterId) {
+    static List<Killmail> parseKillmails(final JSONArray killmailArray, final Long characterId) {
         List<Killmail> killmails = new ArrayList<>();
-        JSONArray array = new JSONArray(killmailArray);
-        for (int i = 0; i < array.length(); i++) {
-            parseKillmail(array.getJSONObject(i), characterId).ifPresent(killmails::add);
+        for (int i = 0; i < killmailArray.length(); i++) {
+            parseKillmail(killmailArray.getJSONObject(i), characterId).ifPresent(killmails::add);
         }
         return killmails;
     }
