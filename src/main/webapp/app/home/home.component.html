@@ -8,17 +8,103 @@
 
         <div [ngSwitch]="isAuthenticated()">
             <br/>
-            <!--<div class="alert alert-success" *ngSwitchCase="true">-->
-            <!--<span *ngIf="account"> You are logged in as user "{{account.login}}". </span>-->
-            <!--</div>-->
+            <div class="row">
+                <div class="col-md-6">
+                    <p><b>The Buyback</b> wants you to make our space safer. Help the industry grow and the ratters raise the war chest by doing what you do best: <b>Shooting enemies!</b></p>
+                    <p>Once you logged in, this website will track your PvP activity from <a href="https://zkillboard.com">zkillboard</a>. Based on this data we give you coins for brave defenses,
+                       last hits and all the things that boost fast local responses. Once you reach a certain number of coins, we give you ISK. No bamboozles.</p>
+                </div>
+                <div class="col-md-6">
+                    <p>We believe encouraging fast local PvP responses can protect our space by protecting ratters and miners which again raise our ADMs. This again makes our space easier
+                       to defend with the current sovereignty system.</p>
+                    <p>The Buyback will buy everything in any Brave citadel. We donate 1% of every contract we receive to the hunter pool. Click <a href="home.component.html">here</a> for more details on The Buyback.</p>
+                </div>
+            </div>
 
+            <div class="row">
+                <div class="col-md-12">
+                    <small style="float: right">Current exchange rate: 1 Coin =  2,334,846 ISK</small>
+                </div>
+            </div>
             <div class="progress">
                 <div class="progress-bar bg-info" role="progressbar" style="width: 50%; height: 40px">
-                    <span style="height: 40px;">Your payout: 104,123,735 ISK</span>
+                    <span style="height: 40px; line-height: 2.5rem; font-size: 1.5rem">Your payout: 104,123,735 ISK</span>
                 </div>
             </div>
             <p style="text-align: center">50/100 Coins until Payout</p>
-            <p>Current exchange rate: 1 Coin =  2,334,846 ISK</p>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Hunter Pool</h4>
+                    <table class="table table-condensed table-striped table-bordered">
+                        <tr>
+                            <td width="50%">Next Month (WIP)</td>
+                            <td>1,425,123,957 ISK</td>
+                        </tr>
+                        <tr>
+                            <td><b>This Month</b></td>
+                            <td><b>1,205,523,634 ISK</b></td>
+                        </tr>
+                        <tr>
+                            <td>Last Month</td>
+                            <td>1,582,521,185 ISK</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <h4>Your Stats for Last Month</h4>
+                    <table class="table table-condensed table-striped table-bordered">
+                        <tr>
+                            <td width="50%">Coins</td>
+                            <td>123</td>
+                        </tr>
+                        <tr>
+                            <td>Defense Kills</td>
+                            <td>35</td>
+                        </tr>
+                        <tr>
+                            <td>Final Blows</td>
+                            <td>5</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Top Donations</h4>
+                    <table class="table table-condensed table-striped table-bordered">
+                        <tr>
+                            <td width="50%">John Johnson</td>
+                            <td>1,425,123,957 ISK</td>
+                        </tr>
+                        <tr>
+                            <td>Wicki Strong</td>
+                            <td>1,205,523,634 ISK</td>
+                        </tr>
+                        <tr>
+                            <td>Alfred Boron</td>
+                            <td>1,582,521,185 ISK</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <h4>Recent Payouts</h4>
+                    <table class="table table-condensed table-striped table-bordered">
+                        <tr>
+                            <td width="50%">11.05.2017</td>
+                            <td>127,148,217 ISK</td>
+                        </tr>
+                        <tr>
+                            <td>28.04.2017</td>
+                            <td>12,845,184 ISK</td>
+                        </tr>
+                        <tr>
+                            <td>10.04.2017</td>
+                            <td>8,283,453 ISK</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
