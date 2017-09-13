@@ -18,6 +18,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,20 +47,20 @@ public class UserJWTController {
 
     private final Logger log = LoggerFactory.getLogger(UserJWTController.class);
 
+    @Value("${CLIENT_ID}")
+    private String clientId;
+
+    @Value("${CLIENT_SECRET}")
+    private String clientSecret;
+
     private final TokenProvider tokenProvider;
-    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final UserService userService;
-    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserJWTController(TokenProvider tokenProvider, AuthenticationManager authenticationManager,
-                             UserRepository userRepository, UserService userService,
-                             final BCryptPasswordEncoder passwordEncoder) {
+    public UserJWTController(TokenProvider tokenProvider, UserRepository userRepository, UserService userService) {
         this.tokenProvider = tokenProvider;
-        this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/authenticate/sso")
@@ -71,9 +72,9 @@ public class UserJWTController {
         try {
             String url = "https://login.eveonline.com/oauth/token";
             HttpResponse<JsonNode> tokenResponse = Unirest.post(url)
-                                  .basicAuth("cd26e57f99cf4cc5b7311164cc64edd2",
-                                                                    "DgR7MhUAa3l0VNhgaABHE4LsF9WGSnXRZEepOtjh")
+                                  .basicAuth(clientId, clientSecret)
                                   .header("Content-Type", "application/x-www-form-urlencoded")
+                                  .header("User-Agent", "EvE/Tweetfleet: Rihan Shazih")
                                   .field("grant_type", "authorization_code")
                                   .field("code", code).asJson();
             int status = tokenResponse.getStatus();
@@ -82,6 +83,7 @@ public class UserJWTController {
 
             HttpResponse<JsonNode> details = Unirest.get("https://login.eveonline.com/oauth/verify")
                                                     .header("Authorization", "Bearer " + access_token)
+                                                    .header("User-Agent", "EvE/Tweetfleet: Rihan Shazih")
                                                     .asJson();
             characterName = details.getBody().getObject().getString("CharacterName");
             characterId = details.getBody().getObject().getLong("CharacterID");

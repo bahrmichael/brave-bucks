@@ -7,5 +7,7 @@ public class EnvironmentTestConfiguration implements ApplicationContextInitializ
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
         System.setProperty("SSO_URL", "nothingForTest");
+        System.setProperty("CLIENT_ID", "nothingForTest");
+        System.setProperty("CLIENT_SECRET", "nothingForTest");
     }
 }
