@@ -4,6 +4,8 @@ import com.buyback.eve.ThebuybackApp;
 import com.buyback.eve.config.Constants;
 import com.buyback.eve.config.audit.AuditEventConverter;
 import com.buyback.eve.domain.PersistentAuditEvent;
+import com.buyback.eve.web.rest.EnvironmentTestConfiguration;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.servlet.http.HttpSession;
@@ -31,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ThebuybackApp.class)
+@ContextConfiguration(initializers = EnvironmentTestConfiguration.class)
 public class CustomAuditEventRepositoryIntTest {
 
     @Autowired

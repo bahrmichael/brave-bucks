@@ -6,10 +6,13 @@ import com.buyback.eve.config.Constants;
 import com.buyback.eve.repository.UserRepository;
 import com.buyback.eve.service.dto.UserDTO;
 import com.buyback.eve.service.util.RandomUtil;
+import com.buyback.eve.web.rest.EnvironmentTestConfiguration;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import org.springframework.data.domain.Page;
@@ -29,6 +32,7 @@ import static org.assertj.core.api.Assertions.*;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ThebuybackApp.class)
+@ContextConfiguration(initializers = EnvironmentTestConfiguration.class)
 public class UserServiceIntTest {
 
     @Autowired
