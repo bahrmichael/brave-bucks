@@ -34,6 +34,7 @@ public class KillmailParserTest {
         assertEquals(false, killmail.isNpc());
         assertEquals(123L, killmail.getVictimId());
         assertEquals("Goons", killmail.getVictimAlliance());
+        assertTrue(killmail.isFinalBlow());
     }
 
     @Test
@@ -53,6 +54,7 @@ public class KillmailParserTest {
         assertEquals(true, killmail.isNpc());
         assertEquals(456L, killmail.getVictimId());
         assertEquals("Goons", killmail.getVictimAlliance());
+        assertFalse(killmail.isFinalBlow());
     }
 
     @Test
@@ -72,16 +74,11 @@ public class KillmailParserTest {
                                                       + "        \"killTime\"     : \"2017-08-05 21:23:25\",\n"
                                                       + "        \"victim\"     : {\"characterID\":123, \"allianceName\":\"Goons\"},\n"
                                                       + "        \"attackers\"    : [\n"
-                                                      + "            {\n"
-                                                      + "            },\n"
-                                                      + "            {\n"
-                                                      + "            },\n"
-                                                      + "            {\n"
-                                                      + "            },\n"
-                                                      + "            {\n"
-                                                      + "            },\n"
-                                                      + "            {\n"
-                                                      + "            }\n"
+                                                      + "            {\"characterID\":1, \"finalBlow\": 1},"
+                                                      + "            {\"characterID\":2, \"finalBlow\": 0},"
+                                                      + "            {\"characterID\":3, \"finalBlow\": 0},"
+                                                      + "            {\"characterID\":4, \"finalBlow\": 0},"
+                                                      + "            {\"characterID\":5, \"finalBlow\": 0}"
                                                       + "        ],\n"
                                                       + "        \"zkb\"          : {\n"
                                                       + "            \"totalValue\" : 2721466267.32,\n"
@@ -97,12 +94,9 @@ public class KillmailParserTest {
                                                       + "        \"killTime\"     : \"2017-03-05 21:23:23\",\n"
                                                       + "        \"victim\"     : {\"characterID\":456, \"allianceName\":\"Goons\"},\n"
                                                       + "        \"attackers\"    : [\n"
-                                                      + "            {\n"
-                                                      + "            },\n"
-                                                      + "            {\n"
-                                                      + "            },\n"
-                                                      + "            {\n"
-                                                      + "            }\n"
+                                                      + "            {\"characterID\":1, \"finalBlow\": 1},"
+                                                      + "            {\"characterID\":2, \"finalBlow\": 0},"
+                                                      + "            {\"characterID\":3, \"finalBlow\": 0}"
                                                       + "        ],\n"
                                                       + "        \"zkb\"          : {\n"
                                                       + "            \"totalValue\" : 3.32,\n"

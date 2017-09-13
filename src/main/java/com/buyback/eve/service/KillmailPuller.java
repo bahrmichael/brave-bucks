@@ -73,7 +73,7 @@ public class KillmailPuller {
     }
 
     private Optional<JSONArray> getRawData(final Long characterId) {
-        String url = "https://zkillboard.com/api/kills/characterID/" + characterId + "/pastSeconds/8000/no-items/";
+        String url = "https://zkillboard.com/api/kills/characterID/" + characterId + "/pastSeconds/14400/no-items/";
         try {
             HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.get(url)
                                                                  .header("Accept-Encoding", "gzip")

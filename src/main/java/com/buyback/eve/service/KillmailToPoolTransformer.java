@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class KillmailToPoolTransformer {
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final KillmailRepository killmailRepository;
     private final PoolRepository poolRepository;
@@ -44,17 +44,17 @@ public class KillmailToPoolTransformer {
             pool.setYearMonth(getYearMonth(LocalDate.now()));
             pool.setBalance(0L);
         }
-        killmailRepository.findAll().stream().filter(this::isCurrentMonth).forEach(pool::addKillmailIfNotExists);
+        killmailRepository.findAll().stream().filter(KillmailToPoolTransformer::isCurrentMonth).forEach(pool::addKillmailIfNotExists);
         poolRepository.save(pool);
     }
 
-    boolean isCurrentMonth(final Killmail killmail) {
-        LocalDateTime killTime = LocalDateTime.parse(killmail.getKillTime(), formatter);
+    public static boolean isCurrentMonth(final Killmail killmail) {
+        LocalDateTime killTime = LocalDateTime.parse(killmail.getKillTime(), FORMATTER);
         LocalDate now = LocalDate.now();
         return killTime.getYear() == now.getYear() && killTime.getMonthValue() == now.getMonthValue();
     }
 
-    String getYearMonth(final LocalDate localDate) {
+    public static String getYearMonth(final LocalDate localDate) {
         return String.format("%d-%02d", localDate.getYear(), localDate.getMonthValue());
     }
 }

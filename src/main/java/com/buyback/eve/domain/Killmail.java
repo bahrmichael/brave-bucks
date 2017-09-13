@@ -14,6 +14,23 @@ public class Killmail {
     private boolean npc;
     private long victimId;
     private String victimAlliance;
+    private boolean isFinalBlow;
+
+    public Killmail() {
+    }
+
+    public Killmail(final long characterId, final String killTime, final long points) {
+        this.characterId = characterId;
+        this.killTime = killTime;
+        this.points = points;
+    }
+
+    public Killmail(final long characterId, final String killTime, final long points, final boolean isFinalBlow) {
+        this.characterId = characterId;
+        this.killTime = killTime;
+        this.points = points;
+        this.isFinalBlow = isFinalBlow;
+    }
 
     public long getCharacterId() {
         return characterId;
@@ -93,5 +110,13 @@ public class Killmail {
 
     public String getVictimAlliance() {
         return victimAlliance;
+    }
+
+    public boolean isFinalBlow() {
+        return isFinalBlow;
+    }
+
+    public void setFinalBlow(final boolean finalBlow) {
+        isFinalBlow = finalBlow;
     }
 }

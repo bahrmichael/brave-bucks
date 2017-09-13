@@ -20,7 +20,16 @@ class KillmailParser {
         result.setKillId(object.getLong("killID"));
         result.setSolarSystemId(object.getLong("solarSystemID"));
         result.setKillTime(object.getString("killTime"));
-        result.setAttackerCount(object.getJSONArray("attackers").length());
+        JSONArray attackers = object.getJSONArray("attackers");
+        result.setAttackerCount(attackers.length());
+        for (int i = 0; i < attackers.length(); i++) {
+            int finalBlow = attackers.getJSONObject(i).getInt("finalBlow");
+            long attackerId = attackers.getJSONObject(i).getLong("characterID");
+            if (attackerId == characterId && finalBlow == 1) {
+                result.setFinalBlow(true);
+                break;
+            }
+        }
         result.setNpc(object.getJSONObject("zkb").getBoolean("npc"));
         result.setTotalValue(object.getJSONObject("zkb").getLong("totalValue"));
         result.setPoints(object.getJSONObject("zkb").getLong("points"));
