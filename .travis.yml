@@ -12,8 +12,9 @@ deploy:
 - provider: script
   skip_cleanup: true
 #  added ssh-agent -k to release the agent so the build can succeed, see https://github.com/travis-ci/travis-ci/issues/8082
-  script: rsync --quiet $TRAVIS_BUILD_DIR/target/thebuyback*.war $USER@$HOST:~/thebuyback_$(date +%m-%d-%y-%H-%M).war && ssh-agent -k
+  script: rsync --quiet $TRAVIS_BUILD_DIR/target/thebuyback*.war $USER@$HOST:~/thebuyback_$(date
+    +%m-%d-%y-%H-%M).war && ssh-agent -k
   on:
     branch: master
 env:
-  secure: C88D/g3gTT6hFkETM9q81gcsFg+4Bup9LyrhLiDAcPdJzlIIvLtLGeEybqfyOEuXH7ED6GHP5PmLHtDtwlPcfdrWqy3qn9N3fXwtMcVmaNV83Wxwj3mmAlhas0EsU3RNkmlXJ2MsyEPHi7BbSYkrKOE+ZvL8lI0nbFCdVvdWHoFlsIJJdIpnWjQ+YHAn/KosRp6waC3drDe0zg0ryl28ytm6N0YMbtEfHhOGQL47SKnDtoCQfofkmygGe+jrdWFecspQVYCxFW/Hn6CKAR+iFj7ZkTMZ35EgP7gVVCv4QGe64NrWXhbn9rtZSV5cnR90tAKU7+wVfFugH7EQZ9LBaPJBSP8gBjmB2EYIM2jqii5SwCLIgwROvpTfK+FiWkYBtvrDlqSTLWeOQ0a4LADJcQcsWCYujQHBvtiMUlhW4wbvpTILKk7iOuLcTgt0Fj+GSDOwS5oGte6mBhb7hNB1O+nkaHKj0dfE9fakNaM3mpB56HTeDKvH6kml5s/Q2IEg+/+3EUSup/K3Q6ZEN2WvMQ7Omb6AsxgNXzBD6/hY339a4e91oRe+wyp8/6qK4JlEnNO1ahsyePIbxFA3VPKykAPHzOwYwP9hLJugwuO15kmCRUI1YuFuC4TwMep2D6NdYqEQTCso5Dkuujo7bDlEBh1k0Nihed2tMSuWFMWwvSc=
+  secure: OS95TgreueGCPfpOyYnpyj7BbDqJrTmtZVPuAKLU9gQ4h1ha3d8RNi6vPG8qpD3OmpD9LsFomGD22MP3wpxj4Al/8WsW8hIOdbjztx6viKNI2zhx0uY48jiL8U3ihsM+wBwZdV0O4gOOoRK4jV/NuGz5WXze5UVR0BXt+V+LFQpJmfgoJU/1sJ9oD7v3sHU8RQhAiUAQWYZWa2qpVI2A4UF+wWwmrekrGtRA9MxNG1uDK+tPvZD7YVZdJpmpq1UpB4AzhVau+fBMSUDvKTfsl/jRL1i4aa3WiUKGk2vZbcQnai9jQhHYptrTJDXAZ5WDwJ2ISRxjCnaECA8MMEywJdyV2oTLg8HR3IzEwqzFgkotaLsmnpL2cMBu+PxrS6UpEwtPzQFvsuRJCoDKDJBBKBN/Tip7nOijqI+aPHXj87yjIOi/1EMOeEbb6L+6tgerlRVZEbJhozHCWtVQSSaHpZVBRxU0UiSilSXWJTUxLLZD3+P9DbzI8XPFzm55Z17mwIymXoGJefx3CU0z2ULDKiR+wUzAL7JpWF9x7f/ZysUGCX3ak8w1uD/L7LhhDGBcKWEZGbs7vUpHOVGbyD59YkTzJ+IKtrS2B4zYHhQ9IO/0B32w5Dw7Q4IU5nMFYlCipKQIObMtUeRZcgGXDm9GdZwqAHKlxciYMspzlmjr7lY=
