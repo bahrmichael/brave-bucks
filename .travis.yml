@@ -1,9 +1,23 @@
 language: java
 script: mvn clean package -Pprod
 
+addons:
+  ssh_known_hosts: $HOST
+
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_4a21bc166b29_key -iv $encrypted_4a21bc166b29_iv
+  -in deploy_rsa.enc -out /tmp/deploy_rsa -d
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/deploy_rsa
+- ssh-add /tmp/deploy_rsa
+
 deploy:
-  - provider: script
-    skip_cleanup: true
-    script: scripts/deploy_to_production.sh
-    on:
-      branch: master
+- provider: script
+  skip_cleanup: true
+  script: rsync --delete-after --quiet $TRAVIS_BUILD_DIR/the-buyback.*.war $USER@$HOST:~/thebuyback_${date
+    +"%m-%d-%y"}.war
+  on:
+    branch: master
+
+env:
+  secure: D6k1khpKz1xJZH+WSNcDUvtiOHx6hM2bw+g6/SB2HpcyHkH6yUNtClMtQpLg7zvcoiuov0PNSvGpxi1LXXhkOhM6tZGjRBVA+aXgaO+j2bj4YVFK1tAhl+6pm1KFQRZRLPQZ5D1Ekg807rkOCWVCWkKqHvrbfQSlNaiuI6Ls4slTMq+K0sdiazso3wCENh9efSGOs998Ei62qrlxhyz8wRE3LNFnzaqNfpf4qwcAUQlD7GYwD8l+Mba7zTA1j4ZtL4dsYyyEtLNfwRsIhlKRX5zy+bGZ0I5qc8NuEmBkYeEAObKgU+rcSTAf8fxo/xIzVwJbWfMrdQNJ1GjaUaLy7dp7amokycTGMDrr3YVHjE5TVGyIU3ZaDIgh/yS2w8riGKC9vZTHT10BDibAWmMPB/ZkINVL5Yx+MQ+CzC/YFGf9NjYWlja8SKVRTTepg0pWJsEDGl77iYhnphEhjJ5su1NZP3eMcNhn3KkHLl5m8JyvDfb6Iwl3sWwUVwQxn7NR8qDu3fOHrwZNVVc1U+vw3PeLDKvewKvaKtUiug+wEQgGw9VCgHiKAjiHxlTWUS+V66nNm58gzJjHXFoWqCbwKRdfhISPXVrvYUEvrrCGFUElWeqB3amJowT9mOnt1TQWUVWoUYgTk52eIrsTschQOSWg5Xqg42ZBBiaEGb7k+4E=
