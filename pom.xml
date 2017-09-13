@@ -11,9 +11,9 @@
 
     <groupId>com.buyback.eve</groupId>
     <artifactId>thebuyback</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>war</packaging>
-    <name>Thebuyback</name>
+    <name>TheBuyback</name>
 
     <properties>
         <argLine>-Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
