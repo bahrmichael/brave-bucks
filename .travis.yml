@@ -1,16 +1,13 @@
 language: java
 script: mvn clean package -Pprod
-
 addons:
   ssh_known_hosts: $HOST
-
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_4a21bc166b29_key -iv $encrypted_4a21bc166b29_iv
   -in deploy_rsa.enc -out /tmp/deploy_rsa -d
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/deploy_rsa
 - ssh-add /tmp/deploy_rsa
-
 deploy:
 - provider: script
   skip_cleanup: true
@@ -18,6 +15,5 @@ deploy:
     +"%m-%d-%y"}.war
   on:
     branch: master
-
 env:
-  secure: D6k1khpKz1xJZH+WSNcDUvtiOHx6hM2bw+g6/SB2HpcyHkH6yUNtClMtQpLg7zvcoiuov0PNSvGpxi1LXXhkOhM6tZGjRBVA+aXgaO+j2bj4YVFK1tAhl+6pm1KFQRZRLPQZ5D1Ekg807rkOCWVCWkKqHvrbfQSlNaiuI6Ls4slTMq+K0sdiazso3wCENh9efSGOs998Ei62qrlxhyz8wRE3LNFnzaqNfpf4qwcAUQlD7GYwD8l+Mba7zTA1j4ZtL4dsYyyEtLNfwRsIhlKRX5zy+bGZ0I5qc8NuEmBkYeEAObKgU+rcSTAf8fxo/xIzVwJbWfMrdQNJ1GjaUaLy7dp7amokycTGMDrr3YVHjE5TVGyIU3ZaDIgh/yS2w8riGKC9vZTHT10BDibAWmMPB/ZkINVL5Yx+MQ+CzC/YFGf9NjYWlja8SKVRTTepg0pWJsEDGl77iYhnphEhjJ5su1NZP3eMcNhn3KkHLl5m8JyvDfb6Iwl3sWwUVwQxn7NR8qDu3fOHrwZNVVc1U+vw3PeLDKvewKvaKtUiug+wEQgGw9VCgHiKAjiHxlTWUS+V66nNm58gzJjHXFoWqCbwKRdfhISPXVrvYUEvrrCGFUElWeqB3amJowT9mOnt1TQWUVWoUYgTk52eIrsTschQOSWg5Xqg42ZBBiaEGb7k+4E=
+  secure: mKEWb8eR9Tsn/ELa8k+PYhj38LKwPZM8hTyJSZEE5d4hD1fAxptuBpBu8dX0bh38kmLwFy9FP2sqL7aSti7Oo0Uq/S3gCB+yZeR5q+OkjYGWGrhcQhLmCq+sySWOtJE+4BEw3Nw3wY5G5tn4Lsf6Hpprr6xCfemimY/sgYWfNw5buTB9noD6kvGqKZ5FWXQl3Ej4JTl5u4ReyW+HFoIIYEe5ZuDIJkC6S92kjvwQDbjaGHZlwNM51YGbQro/KTl3vDWfCxOI6vYKjdUAzNf4l5/dMldSpJBVvCVjuaP4fvne36lwik7+jR2yWDHK0IuBIqLJoEA5/nxzAubrGBk1/cfT/zwjKD1qchIwGPfyjZZN3Ff16mvnN9erbJwg6gZhQW4rDolKpoAX+wwFvxHGQRmpaWezKZcIbh+05gsHzkjxO7ADQtLOJlXJoda1iR53laUoJ2MxXfMytJczY+Yr3XL82LZxGIX4v3XRhxzUTt2kCuzwrRiwO1666LWv3MBqJ+LfsqZdjC72ihZAdqIHI/2X/o4zD/0ywdhAKJRLfBnwXtFUNJxhRKgOswf+pbSQ+M8AXNEi0uTm4BtZolQS5U2OpJQJoAprS1TlkXCHBT9ILV7B+SrpCsAbQKENKce1rua9Fznn/BrN9LyR7CE4Lto/OMJiWtMOHUT+cLcBQtU=
