@@ -23,12 +23,9 @@ export class SsoComponent implements OnInit {
         this.route.queryParams.subscribe((params) => {
             const code = params['code'];
             const state = params['state'];
-            console.log(code, state);
             return this.http.get('api/authenticate/sso?code=' + code + '&state=' + state).map(authenticateSuccess.bind(this))
                        .subscribe((jwt) => {
-                           console.log('subscribe', jwt);
                            this.principal.identity(true).then((account) => {
-                               console.log('this should appear');
                                this.eventManager.broadcast({
                                                                name: 'authenticationSuccess', content: 'Sending Authentication Success'
                                                            });
@@ -50,11 +47,9 @@ export class SsoComponent implements OnInit {
 
             function authenticateSuccess(resp) {
                 const bearerToken = resp.headers.get('Authorization');
-                console.log(bearerToken);
                 if (bearerToken && bearerToken.slice(0, 7) === 'Bearer ') {
                     const jwt = bearerToken.slice(7, bearerToken.length);
                     this.storeAuthenticationToken(jwt, true);
-                    console.log('authenticationSuccess', jwt);
                     return jwt;
                 }
             }
