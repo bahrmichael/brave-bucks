@@ -1,18 +1,19 @@
 package com.buyback.eve.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PoolPlayer {
-    private String player;
+    private Long characterId;
     private Long coins;
-    private List<Long> killmailIds;
+    private List<Long> killmailIds = new ArrayList<>();
 
-    public String getPlayer() {
-        return player;
+    public Long getCharacterId() {
+        return characterId;
     }
 
-    public void setPlayer(final String player) {
-        this.player = player;
+    public void setCharacterId(final Long characterId) {
+        this.characterId = characterId;
     }
 
     public Long getCoins() {
@@ -29,5 +30,9 @@ public class PoolPlayer {
 
     public void setKillmailIds(final List<Long> killmailIds) {
         this.killmailIds = killmailIds;
+    }
+
+    void addKillmailId(final long killId) {
+        killmailIds.add(killId);
     }
 }
