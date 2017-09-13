@@ -11,7 +11,8 @@ before_deploy:
 deploy:
 - provider: script
   skip_cleanup: true
-  script: rsync --quiet $TRAVIS_BUILD_DIR/target/thebuyback*.war $USER@$HOST:~/thebuyback_$(date +%m-%d-%y-%H-%M).war
+#  added ssh-agent -k to release the agent so the build can succeed, see https://github.com/travis-ci/travis-ci/issues/8082
+  script: rsync --quiet $TRAVIS_BUILD_DIR/target/thebuyback*.war $USER@$HOST:~/thebuyback_$(date +%m-%d-%y-%H-%M).war && ssh-agent -k
   on:
     branch: master
 env:
