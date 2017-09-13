@@ -9,6 +9,7 @@ export * from './auth/principal.service';
 export * from './auth/has-any-authority.directive';
 export * from './auth/user-route-access-service';
 export * from './login/login.service';
+export * from './config/config.service';
 export * from './user/account.model';
 export * from './user/user.model';
 export * from './user/user.service';

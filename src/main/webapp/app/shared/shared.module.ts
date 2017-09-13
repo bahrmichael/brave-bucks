@@ -11,7 +11,8 @@ import {
     StateStorageService,
     LoginService,
     Principal,
-    HasAnyAuthorityDirective
+    HasAnyAuthorityDirective,
+    ConfigService
 } from './';
 
 @NgModule({
@@ -30,7 +31,8 @@ import {
         CSRFService,
         AuthServerProvider,
         UserService,
-        DatePipe
+        DatePipe,
+        ConfigService
     ],
     entryComponents: [],
     exports: [
