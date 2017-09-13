@@ -11,8 +11,7 @@ before_deploy:
 deploy:
 - provider: script
   skip_cleanup: true
-  script: rsync --delete-after --quiet $TRAVIS_BUILD_DIR/the-buyback.*.war $USER@$HOST:~/thebuyback_${date
-    +"%m-%d-%y"}.war
+  script: rsync --delete-after --quiet $TRAVIS_BUILD_DIR/the-buyback.*.war $USER@$HOST:~/thebuyback_$(date+%m-%d-%y).war
   on:
     branch: master
 env:
