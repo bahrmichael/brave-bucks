@@ -1,7 +1,8 @@
-matrix:
-  include:
-    - language: java
-    - language: node_js
-      node_js:
-        - "6"
-        - "7"
+language: java
+script: mvn clean package -Pprod
+
+deploy:
+  - provider: script
+    script: scripts/deploy_to_production.sh
+    on:
+      branch: master
