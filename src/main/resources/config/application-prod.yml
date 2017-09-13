@@ -21,8 +21,11 @@ spring:
             enabled: false
     data:
         mongodb:
-            uri: mongodb://localhost:27017
-            database: thebuyback
+            host: ${MONGO_HOST}
+            port: ${MONGO_PORT}
+            database: ${MONGO_DB}
+            username: ${MONGO_USER}
+            password: ${MONGO_PASS}
     thymeleaf:
         cache: true
 
@@ -44,7 +47,7 @@ spring:
 #        keyAlias: thebuyback
 # ===================================================================
 server:
-    port: 8080
+    port: 8081
     compression:
         enabled: true
         mime-types: text/html,text/xml,text/plain,text/css, application/javascript, application/json
@@ -73,7 +76,7 @@ jhipster:
         graphite:
             enabled: false
             host: localhost
-            port: 2003
+            port: 2004
             prefix: thebuyback
         prometheus:
             enabled: false
@@ -85,7 +88,7 @@ jhipster:
         logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
             enabled: false
             host: localhost
-            port: 5000
+            port: 5001
             queue-size: 512
 
 # ===================================================================

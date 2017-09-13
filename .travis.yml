@@ -11,8 +11,8 @@ before_deploy:
 deploy:
 - provider: script
   skip_cleanup: true
-  script: rsync --delete-after --quiet $TRAVIS_BUILD_DIR/the-buyback.*.war $USER@$HOST:~/thebuyback_$(date+%m-%d-%y).war
+  script: rsync --quiet $TRAVIS_BUILD_DIR/the-buyback.*.war $USER@$HOST:~/thebuyback_$(date+%m-%d-%y).war
   on:
     branch: master
 env:
-  secure: mKEWb8eR9Tsn/ELa8k+PYhj38LKwPZM8hTyJSZEE5d4hD1fAxptuBpBu8dX0bh38kmLwFy9FP2sqL7aSti7Oo0Uq/S3gCB+yZeR5q+OkjYGWGrhcQhLmCq+sySWOtJE+4BEw3Nw3wY5G5tn4Lsf6Hpprr6xCfemimY/sgYWfNw5buTB9noD6kvGqKZ5FWXQl3Ej4JTl5u4ReyW+HFoIIYEe5ZuDIJkC6S92kjvwQDbjaGHZlwNM51YGbQro/KTl3vDWfCxOI6vYKjdUAzNf4l5/dMldSpJBVvCVjuaP4fvne36lwik7+jR2yWDHK0IuBIqLJoEA5/nxzAubrGBk1/cfT/zwjKD1qchIwGPfyjZZN3Ff16mvnN9erbJwg6gZhQW4rDolKpoAX+wwFvxHGQRmpaWezKZcIbh+05gsHzkjxO7ADQtLOJlXJoda1iR53laUoJ2MxXfMytJczY+Yr3XL82LZxGIX4v3XRhxzUTt2kCuzwrRiwO1666LWv3MBqJ+LfsqZdjC72ihZAdqIHI/2X/o4zD/0ywdhAKJRLfBnwXtFUNJxhRKgOswf+pbSQ+M8AXNEi0uTm4BtZolQS5U2OpJQJoAprS1TlkXCHBT9ILV7B+SrpCsAbQKENKce1rua9Fznn/BrN9LyR7CE4Lto/OMJiWtMOHUT+cLcBQtU=
+  secure: C88D/g3gTT6hFkETM9q81gcsFg+4Bup9LyrhLiDAcPdJzlIIvLtLGeEybqfyOEuXH7ED6GHP5PmLHtDtwlPcfdrWqy3qn9N3fXwtMcVmaNV83Wxwj3mmAlhas0EsU3RNkmlXJ2MsyEPHi7BbSYkrKOE+ZvL8lI0nbFCdVvdWHoFlsIJJdIpnWjQ+YHAn/KosRp6waC3drDe0zg0ryl28ytm6N0YMbtEfHhOGQL47SKnDtoCQfofkmygGe+jrdWFecspQVYCxFW/Hn6CKAR+iFj7ZkTMZ35EgP7gVVCv4QGe64NrWXhbn9rtZSV5cnR90tAKU7+wVfFugH7EQZ9LBaPJBSP8gBjmB2EYIM2jqii5SwCLIgwROvpTfK+FiWkYBtvrDlqSTLWeOQ0a4LADJcQcsWCYujQHBvtiMUlhW4wbvpTILKk7iOuLcTgt0Fj+GSDOwS5oGte6mBhb7hNB1O+nkaHKj0dfE9fakNaM3mpB56HTeDKvH6kml5s/Q2IEg+/+3EUSup/K3Q6ZEN2WvMQ7Omb6AsxgNXzBD6/hY339a4e91oRe+wyp8/6qK4JlEnNO1ahsyePIbxFA3VPKykAPHzOwYwP9hLJugwuO15kmCRUI1YuFuC4TwMep2D6NdYqEQTCso5Dkuujo7bDlEBh1k0Nihed2tMSuWFMWwvSc=
