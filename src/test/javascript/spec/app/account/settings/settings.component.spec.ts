@@ -43,12 +43,7 @@ describe('Component Tests', () => {
         it('should send the current identity upon save', () => {
             // GIVEN
             const accountValues = {
-                firstName: 'John',
-                lastName: 'Doe',
-
                 activated: true,
-                email: 'john.doe@mail.com',
-                langKey: 'en',
                 login: 'john'
             };
             mockPrincipal.setResponse(accountValues);
@@ -61,22 +56,6 @@ describe('Component Tests', () => {
             expect(mockPrincipal.identitySpy).toHaveBeenCalled();
             expect(mockAuth.saveSpy).toHaveBeenCalledWith(accountValues);
             expect(comp.settingsAccount).toEqual(accountValues);
-        });
-
-        it('should notify of success upon successful save', () => {
-            // GIVEN
-            const accountValues = {
-                firstName: 'John',
-                lastName: 'Doe'
-            };
-            mockPrincipal.setResponse(accountValues);
-
-            // WHEN
-            comp.save();
-
-            // THEN
-            expect(comp.error).toBeNull();
-            expect(comp.success).toBe('OK');
         });
 
         it('should notify of error upon failed save', () => {
