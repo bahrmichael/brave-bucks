@@ -1,36 +1,46 @@
 package com.buyback.eve.service;
 
+import java.time.LocalDate;
+
 import com.buyback.eve.domain.Killmail;
-import com.buyback.eve.domain.Pool;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import net.sf.cglib.core.Local;
 
 public class KillmailToPoolTransformerTest {
 
-    private KillmailToPoolTransformer sut = new KillmailToPoolTransformer();
+    private KillmailToPoolTransformer sut = new KillmailToPoolTransformer(null, null);
 
     @Test
-    public void addToPool() {
-        final Pool pool = new Pool();
-        Killmail killmail1 = new Killmail();
-        killmail1.setKillId(1L);
-
-        int before = pool.getPoolPlayers().size();
-        sut.addKill(pool, killmail1);
-        int after = pool.getPoolPlayers().size();
-
-        assertEquals(before + 1, after);
-
-        Killmail killmail2 = new Killmail();
-        killmail2.setKillId(2);
-
-        int before2 = pool.getPoolPlayers().size();
-        sut.addKill(pool, killmail2);
-        int after2 = pool.getPoolPlayers().size();
-
-        assertEquals(before2, after2);
-        assertEquals(2, pool.getPoolPlayers().get(0).getKillmailIds().size());
+    public void getYearMonth() {
+        String result = sut.getYearMonth(LocalDate.of(2017, 10, 11));
+        assertEquals("2017-10", result);
     }
 
+    @Test
+    public void getYearMonth2() {
+        String result = sut.getYearMonth(LocalDate.of(2017, 1, 11));
+        assertEquals("2017-01", result);
+    }
+
+    @Test
+    public void isCurrentMonth_false() throws Exception {
+        Killmail killmail = new Killmail();
+        killmail.setKillTime("2017-01-10 17:53:39");
+
+        assertFalse(sut.isCurrentMonth(killmail));
+    }
+
+    @Test
+    public void isCurrentMonth_true() throws Exception {
+        Killmail killmail = new Killmail();
+        LocalDate now = LocalDate.now();
+        killmail.setKillTime(String.format("%d-%02d-10 17:53:39", now.getYear(), now.getMonthValue()));
+
+        assertTrue(sut.isCurrentMonth(killmail));
+    }
 }

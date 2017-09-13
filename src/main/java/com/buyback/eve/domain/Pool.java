@@ -55,20 +55,22 @@ public class Pool {
         return false;
     }
 
-    public void addPlayerWithKillmail(final Killmail killmail) {
-        final PoolPlayer poolPlayer = new PoolPlayer();
-        poolPlayer.setCharacterId(killmail.getCharacterId());
-        poolPlayer.setCoins(killmail.getPoints());
-        poolPlayer.addKillmailId(killmail.getKillId());
-        poolPlayers.add(poolPlayer);
-    }
-
-    public void addKillmailWithExistingPlayer(final Killmail killmail) {
-        for (PoolPlayer poolPlayer : poolPlayers) {
-            if (killmail.getCharacterId() == poolPlayer.getCharacterId()) {
-                poolPlayer.setCoins(poolPlayer.getCoins() + killmail.getPoints());
-                poolPlayer.addKillmailId(killmail.getKillId());
+    public void addKillmailIfNotExists(final Killmail killmail) {
+        if (hasPlayer(killmail.getCharacterId())) {
+            for (PoolPlayer poolPlayer : poolPlayers) {
+                if (killmail.getCharacterId() == poolPlayer.getCharacterId()
+                    && !poolPlayer.getKillmailIds().contains(killmail.getKillId())) {
+                        poolPlayer.setCoins(poolPlayer.getCoins() + killmail.getPoints());
+                        poolPlayer.addKillmailId(killmail.getKillId());
+                }
             }
+        } else {
+            final PoolPlayer poolPlayer = new PoolPlayer();
+            poolPlayer.setCharacterId(killmail.getCharacterId());
+            poolPlayer.setCoins(killmail.getPoints());
+            poolPlayer.addKillmailId(killmail.getKillId());
+            poolPlayers.add(poolPlayer);
         }
+
     }
 }
