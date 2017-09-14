@@ -8,13 +8,21 @@ import com.buyback.eve.domain.Killmail;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class KillmailParser {
+
+    private static final Logger log = LoggerFactory.getLogger(KillmailParser.class);
 
     private KillmailParser() {
     }
 
     static Optional<Killmail> parseKillmail(final JSONObject object, final Long characterId) {
+        if (null == object) {
+            log.warn("JSONObject for characterID {} was null. Skipping.");
+            return Optional.empty();
+        }
         Killmail result = new Killmail();
         result.setCharacterId(characterId);
         result.setKillId(object.getLong("killID"));

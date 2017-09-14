@@ -1,3 +1,7 @@
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_3d146a55ac50_key -iv $encrypted_3d146a55ac50_iv -in application-prod.yml.enc -out src/main/resources/config/application-prod.yml -d
+
 language: java
 script: mvn clean package -Pprod
 addons:
@@ -11,10 +15,9 @@ before_deploy:
 deploy:
 - provider: script
   skip_cleanup: true
-#  added ssh-agent -k to release the agent so the build can succeed, see https://github.com/travis-ci/travis-ci/issues/8082
   script: rsync --quiet $TRAVIS_BUILD_DIR/target/thebuyback*.war $USER@$HOST:~/thebuyback_$(date
-    +%m-%d-%y-%H-%M).war && ssh-agent -k
+    +%y-%m-%d-%H-%M).war && ssh-agent -k
   on:
     branch: master
 env:
-  secure: OS95TgreueGCPfpOyYnpyj7BbDqJrTmtZVPuAKLU9gQ4h1ha3d8RNi6vPG8qpD3OmpD9LsFomGD22MP3wpxj4Al/8WsW8hIOdbjztx6viKNI2zhx0uY48jiL8U3ihsM+wBwZdV0O4gOOoRK4jV/NuGz5WXze5UVR0BXt+V+LFQpJmfgoJU/1sJ9oD7v3sHU8RQhAiUAQWYZWa2qpVI2A4UF+wWwmrekrGtRA9MxNG1uDK+tPvZD7YVZdJpmpq1UpB4AzhVau+fBMSUDvKTfsl/jRL1i4aa3WiUKGk2vZbcQnai9jQhHYptrTJDXAZ5WDwJ2ISRxjCnaECA8MMEywJdyV2oTLg8HR3IzEwqzFgkotaLsmnpL2cMBu+PxrS6UpEwtPzQFvsuRJCoDKDJBBKBN/Tip7nOijqI+aPHXj87yjIOi/1EMOeEbb6L+6tgerlRVZEbJhozHCWtVQSSaHpZVBRxU0UiSilSXWJTUxLLZD3+P9DbzI8XPFzm55Z17mwIymXoGJefx3CU0z2ULDKiR+wUzAL7JpWF9x7f/ZysUGCX3ak8w1uD/L7LhhDGBcKWEZGbs7vUpHOVGbyD59YkTzJ+IKtrS2B4zYHhQ9IO/0B32w5Dw7Q4IU5nMFYlCipKQIObMtUeRZcgGXDm9GdZwqAHKlxciYMspzlmjr7lY=
+  secure: cVYPgrxi13/aEj97ZR+7XZyzeT1HmSusaGOWaCejp2RdBr+h06jS4KUbXb9/FuAajHHlydoOa2SzOBToeLDuQkWl5GxVWD03p/E/0rihp49gYIV7sGJ/Oy+uGsLhYn+a/UZXEfmoQXtWD3sMDCkMlvtYr6AWlFb/lTUyW09W76hYxGdW+00UWebB+MwkdQKNd3BCB+9chisW8YyLBjjO9kp3Sty+Xnyr0/gQKFzqFdbdnmpyH/laGEvlqvVNUQUPlMEpq2715wCzSPpGH6rZM6d5/vYFYT80NefxMwKAWWhgIvqF7IaBYJZ+8eAW7W/vhvfXvxyDEO8/U0nCSbhcuV8MtH0ofp8RtzPfM5/PO4obZporzi8jm/ON+BxBjMJUNoe7KFtbU6TIrPcJs1vWXJnaTh8hK2UAyIlkNgq7E88q+D8DjhiBJFO7M5R+OkH/8YNbhsAkfqHauOH8Eai5OTm83O7Ysh1N3Inb0mxxppaVrpMLUd5qY1XmFwKabM/pBy3ZCytrzJXQrVxARXDljh7KbAbtOncsOV5zDwbOeudLF/9xF4SmgYrXA+TqbBAkKmDEPBMCs2agvnDT44LUJYKwnfmESkPtePT/Ehvxp1jzdAL01vF0zGdmEit176Dq2xBKCkB+lSTdn4K5/KP0M4mLib4/l52sAz5bvKYYF4o=
