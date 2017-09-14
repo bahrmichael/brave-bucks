@@ -21,11 +21,11 @@ spring:
             enabled: false
     data:
         mongodb:
-            host: ${MONGO_HOST}
-            port: ${MONGO_PORT}
-            database: ${MONGO_DB}
-            username: ${MONGO_USER}
-            password: ${MONGO_PASS}
+            host: ds145178.mlab.com
+            port: 45178
+            database: eve-indy
+            username: eve
+            password: jeIHtIZJhpqP0V3FjtCuYdBpNISLj
     thymeleaf:
         cache: true
 
@@ -51,7 +51,7 @@ server:
     address: 0.0.0.0
     ssl:
         key-store: keystore.p12
-        key-store-password: ${KEYSTORE_PASSWORD}
+        key-store-password: wBkYEFTRQowrE9m>rFiN94CN
         keyStoreType: PKCS12
         keyAlias: rihanspace
     compression:
@@ -73,7 +73,7 @@ jhipster:
     security:
         authentication:
             jwt:
-                secret: ${JWT_SECRET}
+                secret: 29abdd929f2678b360d7b36db2dbcaf0595f86d5
                 # Token is valid 24 hours
                 token-validity-in-seconds: 86400
                 token-validity-in-seconds-for-remember-me: 2592000
