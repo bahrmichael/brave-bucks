@@ -1,5 +1,6 @@
 package com.buyback.eve.web.rest;
 
+import com.buyback.eve.domain.PlayerStats;
 import com.buyback.eve.service.PlayerStatsService;
 
 import org.springframework.http.ResponseEntity;
@@ -11,10 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class PlayerStatsResource {
 
-    private PlayerStatsService playerStatsService;
+    private final PlayerStatsService playerStatsService;
 
-    @GetMapping(path = "/stats")
+    public PlayerStatsResource(final PlayerStatsService playerStatsService) {
+        this.playerStatsService = playerStatsService;
+    }
+
+    @GetMapping(path = "/stats/my")
     public ResponseEntity getPlayerStats() {
-        return ResponseEntity.ok(playerStatsService.getStatsForCurrentUser());
+        PlayerStats statsForCurrentUser = playerStatsService.getStatsForCurrentUser();
+        return ResponseEntity.ok(statsForCurrentUser);
     }
 }

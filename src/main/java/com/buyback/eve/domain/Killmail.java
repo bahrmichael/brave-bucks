@@ -32,24 +32,6 @@ public class Killmail {
         this.isFinalBlow = isFinalBlow;
     }
 
-    public Killmail() {
-    }
-
-    public Killmail(final long killId, final long characterId, final long solarSystemId, final String killTime,
-                    final long attackerCount, final long totalValue,
-                    final long points, final boolean npc, final long victimId, final String victimAlliance) {
-        this.killId = killId;
-        this.characterId = characterId;
-        this.solarSystemId = solarSystemId;
-        this.killTime = killTime;
-        this.attackerCount = attackerCount;
-        this.totalValue = totalValue;
-        this.points = points;
-        this.npc = npc;
-        this.victimId = victimId;
-        this.victimAlliance = victimAlliance;
-    }
-
     public long getCharacterId() {
         return characterId;
     }

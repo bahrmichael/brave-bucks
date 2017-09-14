@@ -27,12 +27,13 @@
                     <small style="float: right">Current exchange rate: 1 Coin =  2,334,846 ISK</small>
                 </div>
             </div>
-            <div class="progress" style="color: lightsalmon">
-                <div class="progress-bar bg-info" role="progressbar" style="width: 50%; height: 40px">
-                    <span style="height: 40px; line-height: 2.5rem; font-size: 1.5rem">Your payout: 104,123,735 ISK</span>
+            <div class="progress">
+                <div class="progress-bar bg-info" role="progressbar" style="height: 40px" [style.width]="myStats['coins']+'%'">
+                    <span *ngIf="myStats['coins'] >= 50" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem">Your payout: 104,123,735 ISK</span>
                 </div>
+                <span *ngIf="myStats['coins'] < 50" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem">Your payout: 104,123,735 ISK</span>
             </div>
-            <p style="text-align: center" style="color: lightsalmon">50/100 Coins until Payout</p>
+            <p style="text-align: center">{{myStats['coins']}}/100 Coins until Payout</p>
 
             <div class="row" style="color: lightsalmon">
                 <div class="col-md-6">
@@ -52,20 +53,20 @@
                         </tr>
                     </table>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" style="color: black;">
                     <h4>Your Stats for This Month</h4>
                     <table class="table table-condensed table-striped table-bordered">
                         <tr>
                             <td width="50%">Coins</td>
-                            <td>123</td>
+                            <td>{{myStats['coins']}}</td>
                         </tr>
                         <tr>
                             <td>Defense Kills</td>
-                            <td>35</td>
+                            <td>{{myStats['defenseKills']}}</td>
                         </tr>
                         <tr>
                             <td>Final Blows</td>
-                            <td>5</td>
+                            <td>{{myStats['finalBlows']}}</td>
                         </tr>
                     </table>
                 </div>
