@@ -23,4 +23,10 @@ public class PlayerStatsResource {
         PlayerStats statsForCurrentUser = playerStatsService.getStatsForCurrentUser();
         return ResponseEntity.ok(statsForCurrentUser);
     }
+
+    @GetMapping(path = "/stats/potentialPayout")
+    public ResponseEntity getPotentialPayout() {
+        long potentialPayout = playerStatsService.getStatsForCurrentUser().getPotentialPayout();
+        return ResponseEntity.ok(potentialPayout);
+    }
 }

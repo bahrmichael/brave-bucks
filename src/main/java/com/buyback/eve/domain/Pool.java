@@ -62,6 +62,7 @@ public class Pool {
                     && !poolPlayer.getKillmailIds().contains(killmail.getKillId())) {
                         poolPlayer.setCoins(poolPlayer.getCoins() + killmail.getPoints());
                         poolPlayer.addKillmailId(killmail.getKillId());
+                        break;
                 }
             }
         } else {
@@ -71,6 +72,6 @@ public class Pool {
             poolPlayer.addKillmailId(killmail.getKillId());
             poolPlayers.add(poolPlayer);
         }
-
+        claimedCoins += killmail.getPoints();
     }
 }
