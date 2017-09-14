@@ -33,11 +33,11 @@ public class KillmailPuller {
                           final UserRepository userRepository) {
         this.killmailRepository = killmailRepository;
         this.userRepository = userRepository;
-        pullKillmails();
+//        pullKillmails();
     }
 
     @Async
-    @Scheduled(cron = "0 18 */2 * * *")
+    @Scheduled(cron = "0 18 * * * *")
     public void pullKillmails() {
         userRepository.findAll().forEach(user -> getRawData(user.getCharacterId()).ifPresent(jsonArray -> {
             List<Killmail> killmails = parseKillmails(jsonArray, user.getCharacterId());
