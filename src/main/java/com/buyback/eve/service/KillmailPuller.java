@@ -69,7 +69,21 @@ public class KillmailPuller {
 
     private static final List<Long> systems = Stream.of(
                                     30001198L, // GE
-                                    30001162L // V-3
+                                    30001162L, // V-3
+                                    30001204L, // YHN
+                                    30001200L, // 3GD
+                                    30001831L, // DSS (stain)
+                                    30001201L, // 4M
+                                    30001199L, // 3-OK
+                                    30001203L, // AX-DOT
+                                    30001213L, // MUXX
+                                    30001214L, // E1
+                                    30001202L, // MY
+                                    30001219L, // 8B
+                                    30001220L, // SNVF
+                                    30001221L, // HP
+                                    30001222L, // V2-V
+                                    30001224L // CS65
                                   ).collect(Collectors.toList());
 
     private boolean isInBraveSystem(final Killmail killmail) {
