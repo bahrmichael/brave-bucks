@@ -12,7 +12,13 @@ public class Pool {
     private String yearMonth;
     private Long balance;
     private Long claimedCoins;
-    private List<PoolPlayer> poolPlayers = new ArrayList<>();
+    private List<PoolPlayer> poolPlayers;
+
+    public Pool() {
+        poolPlayers = new ArrayList<>();
+        balance = 0L;
+        claimedCoins = 0L;
+    }
 
     public String getYearMonth() {
         return yearMonth;
@@ -62,6 +68,7 @@ public class Pool {
                     && !poolPlayer.getKillmailIds().contains(killmail.getKillId())) {
                         poolPlayer.setCoins(poolPlayer.getCoins() + killmail.getPoints());
                         poolPlayer.addKillmailId(killmail.getKillId());
+                        break;
                 }
             }
         } else {
@@ -71,6 +78,6 @@ public class Pool {
             poolPlayer.addKillmailId(killmail.getKillId());
             poolPlayers.add(poolPlayer);
         }
-
+        claimedCoins += killmail.getPoints();
     }
 }
