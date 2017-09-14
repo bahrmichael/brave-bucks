@@ -47,7 +47,7 @@ spring:
 #        keyAlias: thebuyback
 # ===================================================================
 server:
-    port: 8081
+    port: 8880
     address: 0.0.0.0
     compression:
         enabled: true
