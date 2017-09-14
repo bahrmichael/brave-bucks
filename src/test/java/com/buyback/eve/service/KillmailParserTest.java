@@ -18,6 +18,12 @@ public class KillmailParserTest {
     // todo: error handling for broken json
 
     @Test
+    public void withEmptyArray() throws Exception {
+        List<Killmail> killmails = KillmailParser.parseKillmails(new JSONArray("[]"), 123L);
+        assertTrue(killmails.isEmpty());
+    }
+
+    @Test
     public void mapJsonToKillmail() throws Exception {
         Optional<Killmail> optional = KillmailParser.parseKillmail(object1, 1L);
 

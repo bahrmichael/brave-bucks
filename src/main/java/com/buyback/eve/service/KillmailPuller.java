@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.PostConstruct;
+
 import com.buyback.eve.domain.Killmail;
 import com.buyback.eve.repository.KillmailRepository;
 import com.buyback.eve.repository.UserRepository;
@@ -33,7 +35,11 @@ public class KillmailPuller {
                           final UserRepository userRepository) {
         this.killmailRepository = killmailRepository;
         this.userRepository = userRepository;
-//        pullKillmails();
+    }
+
+    @PostConstruct
+    public void init() {
+        pullKillmails();
     }
 
     @Async
@@ -76,11 +82,15 @@ public class KillmailPuller {
     private Optional<JSONArray> getRawData(final Long characterId) {
         String url = "https://zkillboard.com/api/kills/characterID/" + characterId + "/pastSeconds/14400/no-items/";
         try {
-            HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.get(url)
+            HttpResponse<JsonNode> response = Unirest.get(url)
                                                                  .header("Accept-Encoding", "gzip")
                                                                  .header("User-Agent", "EvE: Rihan Shazih")
                                                                  .asJson();
-            return Optional.of(jsonNodeHttpResponse.getBody().getArray());
+            if (response.getStatus() != 200) {
+                log.warn("{} returned status code {}. Data will not be parsed.", url, response.getStatus());
+                return Optional.empty();
+            }
+            return Optional.of(response.getBody().getArray());
         } catch (UnirestException e) {
             log.error("Failed to get data from zKill={}", url, e);
             return Optional.empty();
