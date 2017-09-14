@@ -1,3 +1,7 @@
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_3d146a55ac50_key -iv $encrypted_3d146a55ac50_iv -in application-prod.yml.enc -out src/main/resources/config/application-prod.yml -d
+
 language: java
 script: mvn clean package -Pprod
 addons:
