@@ -47,8 +47,13 @@ spring:
 #        keyAlias: thebuyback
 # ===================================================================
 server:
-    port: 8880
+    port: 8443
     address: 0.0.0.0
+    ssl:
+        key-store: keystore.p12
+        key-store-password: ${KEYSTORE_PASSWORD}
+        keyStoreType: PKCS12
+        keyAlias: rihanspace
     compression:
         enabled: true
         mime-types: text/html,text/xml,text/plain,text/css, application/javascript, application/json
