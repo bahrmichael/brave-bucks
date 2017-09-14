@@ -45,7 +45,8 @@ public class KillmailPuller {
     @Async
     @Scheduled(cron = "0 18 * * * *")
     public void pullKillmails() {
-        userRepository.findAll().forEach(user -> getRawData(user.getCharacterId()).ifPresent(jsonArray -> {
+        userRepository.findAll().stream().filter(user -> user.getCharacterId() != null)
+                      .forEach(user -> getRawData(user.getCharacterId()).ifPresent(jsonArray -> {
             List<Killmail> killmails = parseKillmails(jsonArray, user.getCharacterId());
             List<Killmail> filtered = killmails.stream()
                                                .filter(this::isVictimNotBrave)
