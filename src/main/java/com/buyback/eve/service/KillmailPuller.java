@@ -59,7 +59,7 @@ public class KillmailPuller {
     }
 
     private boolean isNotInFleet(final Killmail killmail) {
-        return killmail.getAttackerCount() < 40;
+        return killmail.getAttackerCount() <= 20;
     }
 
     private boolean isNotAnEmptyPod(final Killmail killmail) {
@@ -70,6 +70,8 @@ public class KillmailPuller {
     private static final List<Long> systems = Stream.of(
                                     30001198L, // GE
                                     30001162L, // V-3
+                                    30001156L, // B-3
+                                    30001159L, // HY-
                                     30001204L, // YHN
                                     30001200L, // 3GD
                                     30001831L, // DSS (stain)
@@ -80,10 +82,10 @@ public class KillmailPuller {
                                     30001214L, // E1
                                     30001202L, // MY
                                     30001219L, // 8B
-                                    30001220L, // SNVF
                                     30001221L, // HP
+                                    30001220L, // SNVF
                                     30001222L, // V2-V
-                                    30001224L // CS65
+                                    30001224L // CX65
                                   ).collect(Collectors.toList());
 
     private boolean isInBraveSystem(final Killmail killmail) {

@@ -7,18 +7,75 @@
     <div class="col-md-9">
         <h1 class="display-4">Welcome, Braveling!</h1>
 
+        <div *ngIf="!isAuthenticated()">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <img class="card-img-top" src="../../content/images/intro1.png" width="50%" alt="Card image cap">
+                        <div class="card-body">
+                            <h4 class="card-title">1. Log In with EvE SSO</h4>
+                            <p class="card-text">Only authenticate, no scopes required. Your tracking starts!</p>
+                            <p class="card-text"><small class="text-muted">Select your main character.</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <img class="card-img-top" src="../../content/images/intro2.png" alt="Card image cap">
+                        <div class="card-body">
+                            <h4 class="card-title">2. Shoot Enemies</h4>
+                            <p class="card-text">Undock and defend our space. You will see which systems are
+                            tracked after you log in.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <img class="card-img-top" src="../../content/images/intro3.png" width="50%" alt="Card image cap">
+                        <div class="card-body">
+                            <h4 class="card-title">3. Get Killmails</h4>
+                            <p class="card-text">Tackle, ewar, deeps or plain whoring. Do what you can do best!</p>
+                            <p class="card-text"><small class="text-muted">Disclaimer: Fleet kills (>20 attackers) don't count.</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <img class="card-img-top" src="../../content/images/intro4.png" alt="Card image cap">
+                        <div class="card-body">
+                            <h4 class="card-title">4. Race for the Payout</h4>
+                            <p class="card-text">Check in to see your potential payout as you can closer and closer to that sweeeet ISK.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div *ngIf="isAuthenticated()">
-            <br/>
+            <div *ngIf="isFirstLogin" class="alert alert-success">
+                <div class="row">
+                    <div class="col-md-10">
+                        You have been added to the tracker that will pull from <a target="_blank" href="https://zkillboard.com">zkillboard</a> every hour.
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-success" (click)="setFirstLogin()">Got it!</button>
+                    </div>
+                </div>
+            </div>
             <h1 style="color: red">Beta Warning<br/><small>Some of this may break or be stubs.</small></h1>
             <div class="row">
                 <div class="col-md-6">
                     <p>We want <b>you</b> to make our space safer. Help the industry grow and the ratters raise the war chest by doing what you do best: <b>Shooting enemies!</b></p>
                     <p>Once you logged in, this website will track your PvP activity from <a target="_blank" href="https://zkillboard.com">zkillboard</a>. Based on this data we give you coins for brave defenses,
                        last hits and all the things that boost fast local responses. Once you reach a certain number of coins, we give you ISK. No bamboozles.</p>
-                </div>
-                <div class="col-md-6">
                     <p>We believe encouraging fast local PvP responses can protect our space by protecting ratters and miners who again raise our ADMs. This again makes our space easier
                        to defend with the current sovereignty system.</p>
+                    <p>To get coins, your killmail must not be from a fleet fight (max. 20 attackers), not an awox and in one of the circled systems on the right. Empty pods are not counted. We may expand to Impass soon ;)</p>
+                </div>
+                <div class="col-md-6">
+                    <img src="../../content/images/map.png" class="pull-right"/>
                 </div>
             </div>
             <div class="row">
@@ -36,7 +93,6 @@
                 </div>
             </div>
             <br/>
-
             <div class="row">
                 <div class="col-md-12">
                     <small style="float: right">Current exchange rate: 1 Coin = {{exchangeRate | number:'1.0-0'}} ISK</small>
@@ -86,25 +142,22 @@
                     </table>
                 </div>
             </div>
-            <div class="row" style="color: lightblue">
+            <div class="row">
                 <div class="col-md-6">
                     <h4>Top Donations</h4>
                     <table class="table table-condensed table-striped">
                         <tr>
-                            <td width="50%">John Johnson</td>
-                            <td>1,425,123,957 ISK</td>
-                        </tr>
-                        <tr>
-                            <td>Wicki Strong</td>
-                            <td>1,205,523,634 ISK</td>
-                        </tr>
-                        <tr>
-                            <td>Alfred Boron</td>
-                            <td>1,582,521,185 ISK</td>
+                            <td width="50%">The Buyback</td>
+                            <td>200,000,000 ISK</td>
                         </tr>
                     </table>
+                    <div class="alert alert-warning">
+                        We need your help! If you like our work and the space we live in, please consider donating
+                        to encourage more local PvP and content. Send any amount of ISK you want to share to the character
+                        "Brave Nukem". Or DM Rihan Shazih on Slack.
+                    </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" style="color: lightgrey">
                     <h4>Recent Payouts</h4>
                     <table class="table table-condensed table-striped">
                         <tr>
@@ -122,10 +175,13 @@
                     </table>
                 </div>
             </div>
-            <div class="row" *ngIf="killmails && killmails.length">
+            <div class="row">
                 <div class="col-md-12">
                     <h3>Your Defense Kills</h3>
-                    <table class="table table-condensed table-striped">
+                    <div class="alert alert-info" *ngIf="!killmails || !killmails.length">
+                        Undock and hunt to get your first kills! Be in standing fleet and mumble to find targets.
+                    </div>
+                    <table class="table table-condensed table-striped" *ngIf="killmails && killmails.length">
                         <tr>
                            <th>Killmail</th>
                            <th>Coins</th>

@@ -20,12 +20,14 @@ export class HomeComponent implements OnInit {
     potentialPayout: number;
     killmails: any[];
     payoutThreshold = 25;
+    isFirstLogin: boolean;
 
     constructor(
         private principal: Principal,
         private eventManager: JhiEventManager,
         private http: Http
     ) {
+        this.isFirstLogin = localStorage.getItem('brave-nukem-first-login') === null;
     }
 
     ngOnInit() {
@@ -72,5 +74,10 @@ export class HomeComponent implements OnInit {
             return 0;
         }
         return coins / this.payoutThreshold * 100;
+    }
+
+    setFirstLogin() {
+        localStorage.setItem('brave-nukem-first-login', 'done');
+        this.isFirstLogin = false;
     }
 }
