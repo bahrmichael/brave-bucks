@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class KillmailParser {
+public class KillmailParser {
 
     private static final Logger log = LoggerFactory.getLogger(KillmailParser.class);
 
@@ -52,5 +52,15 @@ class KillmailParser {
             parseKillmail(killmailArray.getJSONObject(i), characterId).ifPresent(killmails::add);
         }
         return killmails;
+    }
+
+
+    public static long calculateCoins(final Killmail killmail) {
+        long points = killmail.getPoints();
+        if (killmail.isFinalBlow()) {
+            points *= 2;
+        }
+        // todo: adm
+        return points;
     }
 }

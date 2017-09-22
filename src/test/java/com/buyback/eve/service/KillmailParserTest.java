@@ -18,6 +18,28 @@ public class KillmailParserTest {
     // todo: error handling for broken json
 
     @Test
+    public void calculatePoints() throws Exception {
+        final Killmail killmail = new Killmail();
+        killmail.setPoints(1L);
+        killmail.setFinalBlow(false);
+
+        long points = KillmailParser.calculateCoins(killmail);
+
+        assertEquals(1L, points);
+    }
+
+    @Test
+    public void calculatePoints_finalBlow() throws Exception {
+        final Killmail killmail = new Killmail();
+        killmail.setPoints(2L);
+        killmail.setFinalBlow(true);
+
+        long points = KillmailParser.calculateCoins(killmail);
+
+        assertEquals(4L, points);
+    }
+
+    @Test
     public void withEmptyArray() throws Exception {
         List<Killmail> killmails = KillmailParser.parseKillmails(new JSONArray("[]"), 123L);
         assertTrue(killmails.isEmpty());

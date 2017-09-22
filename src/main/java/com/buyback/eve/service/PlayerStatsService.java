@@ -11,6 +11,7 @@ import com.buyback.eve.repository.PoolRepository;
 import com.buyback.eve.repository.UserRepository;
 import com.buyback.eve.security.SecurityUtils;
 
+import static com.buyback.eve.service.KillmailParser.calculateCoins;
 import static com.buyback.eve.service.KillmailToPoolTransformer.getYearMonth;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,8 @@ public class PlayerStatsService {
 
     PlayerStats getStatsForUser(String login) {
         Optional<User> user = userRepository.findOneByLogin(login);
-        Optional<Pool> pool = poolRepository.findByYearMonth(getYearMonth(LocalDate.now()));
-        if (user.isPresent() && pool.isPresent()) {
+        Optional<Pool> poolOptional = poolRepository.findByYearMonth(getYearMonth(LocalDate.now()));
+        if (user.isPresent() && poolOptional.isPresent()) {
             final long[] coins = {0};
             final long[] defenseKills = {0};
             final long[] finalBlows = {0};
@@ -47,12 +48,19 @@ public class PlayerStatsService {
             killmailRepository.findByCharacterId(characterId).stream()
                               .filter(KillmailToPoolTransformer::isCurrentMonth)
                               .forEach(killmail -> {
-                                  coins[0] += killmail.getPoints();
+                                  coins[0] += calculateCoins(killmail);
                                   finalBlows[0] += killmail.isFinalBlow() ? 1 : 0;
                                   defenseKills[0]++;
                               });
-            Long balance = pool.get().getBalance();
-            return new PlayerStats(coins[0], defenseKills[0], finalBlows[0], balance);
+            Pool pool = poolOptional.get();
+            Long potentialPayout;
+            if (pool.getClaimedCoins() != 0) {
+                double factor = coins[0] / (double) pool.getClaimedCoins();
+                potentialPayout = (long) (pool.getBalance() * factor);
+            } else {
+                potentialPayout = 0L;
+            }
+            return new PlayerStats(coins[0], defenseKills[0], finalBlows[0], potentialPayout);
         } else {
             return null;
         }

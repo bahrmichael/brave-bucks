@@ -1,8 +1,9 @@
 package com.buyback.eve.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import static com.buyback.eve.service.KillmailParser.calculateCoins;
 
 import org.springframework.data.annotation.Id;
 
@@ -61,23 +62,37 @@ public class Pool {
         return false;
     }
 
-    public void addKillmailIfNotExists(final Killmail killmail) {
-        if (hasPlayer(killmail.getCharacterId())) {
-            for (PoolPlayer poolPlayer : poolPlayers) {
-                if (killmail.getCharacterId() == poolPlayer.getCharacterId()
-                    && !poolPlayer.getKillmailIds().contains(killmail.getKillId())) {
-                        poolPlayer.setCoins(poolPlayer.getCoins() + killmail.getPoints());
-                        poolPlayer.addKillmailId(killmail.getKillId());
-                        break;
+    public boolean hasKillmail(final long needle) {
+        for (PoolPlayer poolPlayer : poolPlayers) {
+            for (Long killmailId : poolPlayer.getKillmailIds()) {
+                if (killmailId == needle) {
+                    return true;
                 }
             }
-        } else {
-            final PoolPlayer poolPlayer = new PoolPlayer();
-            poolPlayer.setCharacterId(killmail.getCharacterId());
-            poolPlayer.setCoins(killmail.getPoints());
-            poolPlayer.addKillmailId(killmail.getKillId());
-            poolPlayers.add(poolPlayer);
         }
-        claimedCoins += killmail.getPoints();
+        return false;
+    }
+
+    public void addKillmailIfNotExists(final Killmail killmail) {
+        if (!hasKillmail(killmail.getKillId())) {
+            long coins = calculateCoins(killmail);
+            if (hasPlayer(killmail.getCharacterId())) {
+                for (PoolPlayer poolPlayer : poolPlayers) {
+                    if (killmail.getCharacterId() == poolPlayer.getCharacterId()
+                        && !poolPlayer.getKillmailIds().contains(killmail.getKillId())) {
+                            poolPlayer.setCoins(poolPlayer.getCoins() + coins);
+                            poolPlayer.addKillmailId(killmail.getKillId());
+                            break;
+                    }
+                }
+            } else {
+                final PoolPlayer poolPlayer = new PoolPlayer();
+                poolPlayer.setCharacterId(killmail.getCharacterId());
+                poolPlayer.setCoins(coins);
+                poolPlayer.addKillmailId(killmail.getKillId());
+                poolPlayers.add(poolPlayer);
+            }
+            claimedCoins += coins;
+        }
     }
 }

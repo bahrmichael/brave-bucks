@@ -25,6 +25,7 @@ import {
     ErrorComponent
 } from './layouts';
 import {SsoComponent} from "./layouts/callback/sso.component";
+import {ThebuybackTheBuybackModule} from "./the-buyback/the-buyback.module";
 
 @NgModule({
     imports: [
@@ -36,6 +37,7 @@ import {SsoComponent} from "./layouts/callback/sso.component";
         ThebuybackAdminModule,
         ThebuybackAccountModule,
         ThebuybackEntityModule,
+        ThebuybackTheBuybackModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [

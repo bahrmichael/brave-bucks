@@ -1,0 +1,113 @@
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="display-4">The Buyback</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-7">
+        <p>The Buyback will buy loot and everything in any Brave citadel for 90% Jita buy. Follow the simple guide below.</p>
+        <p>Use the simple tool on the right to find out what your loot is worth.</p>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <img class="card-img-top" src="../../content/images/buyback1.png" alt="Card image cap">
+                    <div class="card-body">
+                        <h4 class="card-title">1. Copy To Clipboard</h4>
+                        <p class="card-text">Copy all the items you want to sell to your clipboard.</p>
+                        <p class="card-text"><small class="text-muted">Ctrl+A, Ctrl+C</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <img class="card-img-top" src="../../content/images/buyback2.png" alt="Card image cap">
+                    <div class="card-body">
+                        <h4 class="card-title">2. Evaluate Loot</h4>
+                        <p class="card-text">Open this website and paste your loot on the right side. Then click
+                        on Evaluate Loot.</p>
+                        <p class="card-text"><small class="text-muted">Ctrl+V, Evaluate Loot</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <img class="card-img-top" src="../../content/images/buyback3.png" alt="Card image cap">
+                    <div class="card-body">
+                        <h4 class="card-title">3. Create Contract</h4>
+                        <p class="card-text">Right click any of the previously selected items to create a contract.</p>
+                        <p class="card-text"><small class="text-muted">Right click</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <img class="card-img-top" src="../../content/images/buyback4.png" alt="Card image cap">
+                    <div class="card-body">
+                        <h4 class="card-title">4. Set Name</h4>
+                        <p class="card-text">Write The Buyback into the Name field.</p>
+                        <p class="card-text"><small class="text-muted">The Buyback</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <img class="card-img-top" src="../../content/images/buyback5.png" alt="Card image cap">
+                    <div class="card-body">
+                        <h4 class="card-title">5. Fill in Details</h4>
+                        <p class="card-text">Set the price from the website and add the evepraisal link. The latter is good
+                        to have if the prices change a lot. We usually accept contracts within a day, but 1 Week is a nice buffer.</p>
+                        <p class="card-text"><small class="text-muted">I will receive, 1 Week, Description: Link</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <img class="card-img-top" src="../../content/images/buyback6.png" alt="Card image cap">
+                    <div class="card-body">
+                        <h4 class="card-title">6. Wait and Profit</h4>
+                        <p class="card-text">Once we accept your contract you automatically receive the ISK. Happy ratting!</p>
+                        <p class="card-text"><small class="text-muted">Profit</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-5">
+        <p>Paste your loot in this box:</p>
+        <div class="form-group">
+            <textarea class="form-control"
+                      name="message"
+                      rows="10"
+                      id="field_message"
+                      [(ngModel)]="appraisal.additionalRaw"></textarea>
+        </div>
+        <button class="btn btn-primary" (click)="executeAppraisal()">Evaluate Loot</button>
+        <span *ngIf="isLoadingAppraisal">Loading ...</span>
+        <div *ngIf="appraisal.link">
+            <br/>
+            <table class="table table-striped" *ngIf="appraisal && appraisal.items" style="background-color: #eee">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of appraisal.items">
+                    <td><img src="https://image.eveonline.com/Type/{{item['typeID']}}_32.png" /> {{item['typeName']}}</td>
+                    <td>{{item['quantity'] | number:'1.0-0'}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <br/>
+            <span>Total price: {{appraisal.totalBuy * 0.9 | number:'1.0-0'}} ISK</span>
+            <br />
+            <span>Link: <a href="{{appraisal.link}}" target="_blank">{{appraisal.link}}</a></span>
+        </div>
+    </div>
+</div>

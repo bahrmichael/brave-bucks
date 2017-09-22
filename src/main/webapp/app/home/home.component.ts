@@ -18,6 +18,8 @@ export class HomeComponent implements OnInit {
     pools: any[];
     exchangeRate: number;
     potentialPayout: number;
+    killmails: any[];
+    payoutThreshold = 25;
 
     constructor(
         private principal: Principal,
@@ -60,5 +62,15 @@ export class HomeComponent implements OnInit {
         this.http.get('/api/stats/potentialPayout').subscribe((data) => {
             this.potentialPayout = +data.text();
         });
+        this.http.get('/api/killmails').subscribe((data) => {
+            this.killmails = data.json();
+        })
+    }
+
+    getBarWidth(coins: number) {
+        if (!coins || coins && coins === 0) {
+            return 0;
+        }
+        return coins / this.payoutThreshold * 100;
     }
 }
