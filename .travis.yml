@@ -1,14 +1,11 @@
 before_install:
-- openssl aes-256-cbc -K $encrypted_4a21bc166b29_key -iv $encrypted_4a21bc166b29_iv
-  -in application-prod.yml.enc -out src/main/resources/config/application-prod.yml
-  -d
+- openssl aes-256-cbc -K $encrypted_4a21bc166b29_key -iv $encrypted_4a21bc166b29_iv -in application-prod.yml.enc -out src/main/resources/config/application-prod.yml -d
 language: java
 script: mvn clean package -Pprod
 addons:
   ssh_known_hosts: 107.170.29.174
 before_deploy:
-- openssl aes-256-cbc -K $encrypted_4a21bc166b29_key -iv $encrypted_4a21bc166b29_iv
-  -in deploy_rsa.enc -out /tmp/deploy_rsa -d
+- openssl aes-256-cbc -K $encrypted_4a21bc166b29_key -iv $encrypted_4a21bc166b29_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/deploy_rsa
 - ssh-add /tmp/deploy_rsa
