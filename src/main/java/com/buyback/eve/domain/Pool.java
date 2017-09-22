@@ -78,11 +78,10 @@ public class Pool {
             long coins = calculateCoins(killmail);
             if (hasPlayer(killmail.getCharacterId())) {
                 for (PoolPlayer poolPlayer : poolPlayers) {
-                    if (killmail.getCharacterId() == poolPlayer.getCharacterId()
-                        && !poolPlayer.getKillmailIds().contains(killmail.getKillId())) {
-                            poolPlayer.setCoins(poolPlayer.getCoins() + coins);
-                            poolPlayer.addKillmailId(killmail.getKillId());
-                            break;
+                    if (killmail.getCharacterId() == poolPlayer.getCharacterId()) {
+                        poolPlayer.setCoins(poolPlayer.getCoins() + coins);
+                        poolPlayer.addKillmailId(killmail.getKillId());
+                        break;
                     }
                 }
             } else {

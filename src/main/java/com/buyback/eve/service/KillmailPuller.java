@@ -19,6 +19,7 @@ import static com.buyback.eve.service.KillmailParser.parseKillmails;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -37,24 +38,29 @@ public class KillmailPuller {
         this.userRepository = userRepository;
     }
 
+    @Value("${application.zkill-lookup-duration}")
+    String zkillLookupDuration;
+
     @PostConstruct
     public void init() {
         pullKillmails();
     }
 
     @Async
-    @Scheduled(cron = "0 18 * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     public void pullKillmails() {
         userRepository.findAll().stream().filter(user -> user.getCharacterId() != null)
                       .forEach(user -> getRawData(user.getCharacterId()).ifPresent(jsonArray -> {
-            List<Killmail> killmails = parseKillmails(jsonArray, user.getCharacterId());
-            List<Killmail> filtered = killmails.stream()
-                                               .filter(this::isVictimNotBrave)
-                                               .filter(this::isInBraveSystem)
-                                               .filter(this::isNotAnEmptyPod)
-                                               .filter(this::isNotInFleet)
-                                               .collect(Collectors.toList());
-            killmailRepository.save(filtered);
+                          if (jsonArray.length() > 0) {
+                              List<Killmail> killmails = parseKillmails(jsonArray, user.getCharacterId());
+                              List<Killmail> filtered = killmails.stream()
+                                                                 .filter(this::isVictimNotBrave)
+                                                                 .filter(this::isInBraveSystem)
+                                                                 .filter(this::isNotAnEmptyPod)
+                                                                 .filter(this::isNotInFleet)
+                                                                 .collect(Collectors.toList());
+                              killmailRepository.save(filtered);
+                          }
         }));
     }
 
@@ -97,8 +103,7 @@ public class KillmailPuller {
     }
 
     private Optional<JSONArray> getRawData(final Long characterId) {
-        final long seconds = 3600L * 24 * 7;
-        String url = "https://zkillboard.com/api/kills/characterID/" + characterId + "/pastSeconds/" + seconds + "/no-items/";
+        String url = "https://zkillboard.com/api/kills/characterID/" + characterId + "/pastSeconds/" + zkillLookupDuration + "/no-items/";
         try {
             HttpResponse<JsonNode> response = Unirest.get(url)
                                                                  .header("Accept-Encoding", "gzip")

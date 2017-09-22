@@ -10,7 +10,6 @@ import {Http} from "@angular/http";
     styleUrls: [
         'home.css'
     ]
-
 })
 export class HomeComponent implements OnInit {
     account: Account;
@@ -19,7 +18,7 @@ export class HomeComponent implements OnInit {
     exchangeRate: number;
     potentialPayout: number;
     killmails: any[];
-    payoutThreshold = 25;
+    payoutThreshold = 50;
     isFirstLogin: boolean;
 
     constructor(

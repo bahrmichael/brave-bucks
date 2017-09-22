@@ -12,6 +12,7 @@ import com.buyback.eve.repository.PoolRepository;
 import com.codahale.metrics.annotation.Timed;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -32,7 +33,7 @@ public class KillmailToPoolTransformer {
 
     @Async
     @Timed
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     public void addKillmailsToPool() {
         String yearMonth = getYearMonth(LocalDate.now());
         Optional<Pool> optional = poolRepository.findByYearMonth(yearMonth);

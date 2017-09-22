@@ -36,6 +36,9 @@ public class PoolsResource {
             Pool pool = optional.get();
             Long balance = pool.getBalance() == null ? 0L : pool.getBalance();
             Long claimedCoins = pool.getClaimedCoins() == null ? 1L : pool.getClaimedCoins();
+            if (claimedCoins == 0) {
+                return ResponseEntity.ok(0L);
+            }
             long rate = balance / claimedCoins;
             return ResponseEntity.ok(rate);
         } else {
