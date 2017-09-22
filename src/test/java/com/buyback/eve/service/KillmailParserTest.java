@@ -36,7 +36,7 @@ public class KillmailParserTest {
 
         long points = KillmailParser.calculateCoins(killmail);
 
-        assertEquals(4L, points);
+        assertEquals(3L, points);
     }
 
     @Test

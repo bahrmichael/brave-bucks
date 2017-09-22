@@ -56,9 +56,9 @@ public class KillmailParser {
 
 
     public static long calculateCoins(final Killmail killmail) {
-        long points = killmail.getPoints();
+        long points = (long) Math.sqrt((double)killmail.getPoints());
         if (killmail.isFinalBlow()) {
-            points *= 2;
+            points += 2;
         }
         // todo: adm
         return points;
