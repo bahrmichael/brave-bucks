@@ -19,7 +19,6 @@ import static com.buyback.eve.service.KillmailParser.parseKillmails;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -37,9 +36,6 @@ public class KillmailPuller {
         this.killmailRepository = killmailRepository;
         this.userRepository = userRepository;
     }
-
-    @Value("${application.zkill-lookup-duration}")
-    String zkillLookupDuration;
 
     @PostConstruct
     public void init() {
@@ -103,7 +99,8 @@ public class KillmailPuller {
     }
 
     private Optional<JSONArray> getRawData(final Long characterId) {
-        String url = "https://zkillboard.com/api/kills/characterID/" + characterId + "/pastSeconds/" + zkillLookupDuration + "/no-items/";
+        final long duration = 3600;
+        String url = "https://zkillboard.com/api/kills/characterID/" + characterId + "/pastSeconds/" + duration + "/no-items/";
         try {
             HttpResponse<JsonNode> response = Unirest.get(url)
                                                                  .header("Accept-Encoding", "gzip")

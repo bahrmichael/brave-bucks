@@ -37,9 +37,9 @@ public class PoolTest {
         pool.addKillmailIfNotExists(killmail);
 
         assertTrue(pool.hasPlayer(1L));
-        assertTrue(pool.getPoolPlayers().get(0).getCharacterId().equals(1L));
-        assertTrue(pool.getPoolPlayers().get(0).getKillmailIds().get(0).equals(2L));
-        assertTrue(pool.getPoolPlayers().get(0).getCoins().equals(10L));
+        assertEquals(1L, pool.getPoolPlayers().get(0).getCharacterId().longValue());
+        assertEquals(2L, pool.getPoolPlayers().get(0).getKillmailIds().get(0).longValue());
+        assertEquals(3L, pool.getPoolPlayers().get(0).getCoins().longValue());
     }
 
     @Test

@@ -23,7 +23,7 @@ import de.flapdoodle.embed.process.collections.Collections;
 
 public class PlayerStatsServiceTest {
 
-    private static final long COINS = 12L;
+    private static final long COINS = 7L;
     private static final long POOL = 100_000_000L;
     private UserRepository userRepositoryMock = mock(UserRepository.class);
     private KillmailRepository killmailRepository = mock(KillmailRepository.class);
