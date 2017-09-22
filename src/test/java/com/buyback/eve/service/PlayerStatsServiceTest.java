@@ -23,6 +23,8 @@ import de.flapdoodle.embed.process.collections.Collections;
 
 public class PlayerStatsServiceTest {
 
+    private static final long COINS = 12L;
+    private static final long POOL = 100_000_000L;
     private UserRepository userRepositoryMock = mock(UserRepository.class);
     private KillmailRepository killmailRepository = mock(KillmailRepository.class);
     private PoolRepository poolRepository = mock(PoolRepository.class);
@@ -39,16 +41,17 @@ public class PlayerStatsServiceTest {
 
         PlayerStats playerStats = sut.getStatsForUser(username);
 
-        assertEquals(10L, playerStats.getCoins());
+        assertEquals(COINS, playerStats.getCoins());
         assertEquals(5L, playerStats.getDefenseKills());
         assertEquals(1L, playerStats.getFinalBlows());
-        assertEquals(100_000_000L, playerStats.getPotentialPayout());
+        assertEquals(POOL, playerStats.getPotentialPayout());
     }
 
     private Optional<Pool> createPool() {
         final Pool pool = new Pool();
         pool.setYearMonth(getYearMonth(LocalDate.now()));
-        pool.setBalance(100_000_000L);
+        pool.setBalance(POOL);
+        pool.setClaimedCoins(COINS);
         return Optional.of(pool);
     }
 
