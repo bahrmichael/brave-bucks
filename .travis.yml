@@ -16,6 +16,6 @@ deploy:
   skip_cleanup: true
   script: rsync --quiet $TRAVIS_BUILD_DIR/target/thebuyback*.war $USER@$HOST:~ && ssh-agent -k
   on:
-    branch: /\d+\.\d+\.\d+/
+    tags: true
 env:
   secure: cVYPgrxi13/aEj97ZR+7XZyzeT1HmSusaGOWaCejp2RdBr+h06jS4KUbXb9/FuAajHHlydoOa2SzOBToeLDuQkWl5GxVWD03p/E/0rihp49gYIV7sGJ/Oy+uGsLhYn+a/UZXEfmoQXtWD3sMDCkMlvtYr6AWlFb/lTUyW09W76hYxGdW+00UWebB+MwkdQKNd3BCB+9chisW8YyLBjjO9kp3Sty+Xnyr0/gQKFzqFdbdnmpyH/laGEvlqvVNUQUPlMEpq2715wCzSPpGH6rZM6d5/vYFYT80NefxMwKAWWhgIvqF7IaBYJZ+8eAW7W/vhvfXvxyDEO8/U0nCSbhcuV8MtH0ofp8RtzPfM5/PO4obZporzi8jm/ON+BxBjMJUNoe7KFtbU6TIrPcJs1vWXJnaTh8hK2UAyIlkNgq7E88q+D8DjhiBJFO7M5R+OkH/8YNbhsAkfqHauOH8Eai5OTm83O7Ysh1N3Inb0mxxppaVrpMLUd5qY1XmFwKabM/pBy3ZCytrzJXQrVxARXDljh7KbAbtOncsOV5zDwbOeudLF/9xF4SmgYrXA+TqbBAkKmDEPBMCs2agvnDT44LUJYKwnfmESkPtePT/Ehvxp1jzdAL01vF0zGdmEit176Dq2xBKCkB+lSTdn4K5/KP0M4mLib4/l52sAz5bvKYYF4o=
