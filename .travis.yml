@@ -1,7 +1,7 @@
 before_install:
 - openssl aes-256-cbc -K $encrypted_4a21bc166b29_key -iv $encrypted_4a21bc166b29_iv -in secrets.tar.enc -out secrets.tar -d
 - tar xvf secrets.tar
-- mv application-prod.yml.enc src/main/resources/config/application-prod.yml
+- mv application-prod.yml src/main/resources/config/application-prod.yml
 - mv deploy_rsa /tmp/deploy_rsa
 language: java
 script: mvn clean package -Pprod
