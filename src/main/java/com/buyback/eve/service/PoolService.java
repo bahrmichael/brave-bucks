@@ -24,7 +24,7 @@ public class PoolService {
         this.userRepository = userRepository;
     }
 
-    public boolean hasPlayer(final long characterId, final Pool pool) {
+    boolean hasPlayer(final long characterId, final Pool pool) {
         for (PoolPlayer poolPlayer : pool.getPoolPlayers()) {
             if (characterId == poolPlayer.getCharacterId()) {
                 return true;
