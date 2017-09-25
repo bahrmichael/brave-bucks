@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class KillmailPuller {
 
+    private static final int HOUR = 3600;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final KillmailRepository killmailRepository;
@@ -42,10 +43,20 @@ public class KillmailPuller {
     @Async
     @Scheduled(cron = "0 */10 * * * *")
     public void pullKillmails() {
+        pullKillmails(HOUR);
+    }
+
+    public void longPull() {
+        int maxDuration = HOUR * 24 * 7;
+        pullKillmails(maxDuration);
+    }
+
+    private void pullKillmails(final long duration) {
         userRepository.findAll().stream().filter(user -> user.getCharacterId() != null)
-                      .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId()).ifPresent(jsonArray -> {
+                      .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId(), duration).ifPresent(jsonArray -> {
+                          log.info("Adding killmails for characterId={}", user.getCharacterId());
                           if (jsonArray.length() > 0) {
-                              List<Killmail> killmails = parseKillmails(jsonArray, user.getCharacterId());
+                              List<Killmail> killmails = parseKillmails(jsonArray);
                               filterAndSaveKillmails(killmails);
                           }
         }));
@@ -62,7 +73,7 @@ public class KillmailPuller {
     }
 
     private boolean isNotInFleet(final Killmail killmail) {
-        return killmail.getAttackerCount() <= 20;
+        return killmail.getAttackerIds().size() <= 20;
     }
 
     private boolean isNotAnEmptyPod(final Killmail killmail) {
@@ -98,5 +109,4 @@ public class KillmailPuller {
     private boolean isVictimNotBrave(final Killmail killmail) {
         return !killmail.getVictimAlliance().equals("Brave Collective");
     }
-
 }

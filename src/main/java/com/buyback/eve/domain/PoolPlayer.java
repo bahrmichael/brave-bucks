@@ -32,7 +32,7 @@ public class PoolPlayer {
         this.killmailIds = killmailIds;
     }
 
-    void addKillmailId(final long killId) {
+    public void addKillmailId(final long killId) {
         killmailIds.add(killId);
     }
 }

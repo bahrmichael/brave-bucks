@@ -11,8 +11,8 @@ import com.buyback.eve.repository.PoolRepository;
 import com.buyback.eve.repository.UserRepository;
 import com.buyback.eve.security.SecurityUtils;
 
+import static com.buyback.eve.service.DateUtil.getYearMonth;
 import static com.buyback.eve.service.KillmailParser.calculateCoins;
-import static com.buyback.eve.service.KillmailToPoolTransformer.getYearMonth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,11 +45,11 @@ public class PlayerStatsService {
             final long[] defenseKills = {0};
             final long[] finalBlows = {0};
             Long characterId = user.get().getCharacterId();
-            killmailRepository.findByCharacterId(characterId).stream()
-                              .filter(KillmailToPoolTransformer::isCurrentMonth)
+            killmailRepository.findByAttackerId(characterId).stream()
+                              .filter(DateUtil::isCurrentMonth)
                               .forEach(killmail -> {
-                                  coins[0] += calculateCoins(killmail);
-                                  finalBlows[0] += killmail.isFinalBlow() ? 1 : 0;
+                                  coins[0] += calculateCoins(killmail, characterId);
+                                  finalBlows[0] += killmail.getFinalBlowAttackerId() == characterId ? 1 : 0;
                                   defenseKills[0]++;
                               });
             Pool pool = poolOptional.get();

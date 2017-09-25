@@ -18,24 +18,22 @@ public class KillmailParser {
     private KillmailParser() {
     }
 
-    public static Killmail parseKillmail(final JSONObject object, final Long characterId) {
+    public static Killmail parseKillmail(final JSONObject object) {
         if (null == object) {
             log.error("JSONObject for characterID {} was null. Skipping.");
             throw new IllegalArgumentException("KillmailParser#parseKillmail JSONObject was null.");
         }
         Killmail result = new Killmail();
-        result.setCharacterId(characterId);
         result.setKillId(object.getLong("killID"));
         result.setSolarSystemId(object.getLong("solarSystemID"));
         result.setKillTime(object.getString("killTime"));
         JSONArray attackers = object.getJSONArray("attackers");
-        result.setAttackerCount(attackers.length());
         for (int i = 0; i < attackers.length(); i++) {
-            int finalBlow = attackers.getJSONObject(i).getInt("finalBlow");
             long attackerId = attackers.getJSONObject(i).getLong("characterID");
-            if (attackerId == characterId && finalBlow == 1) {
-                result.setFinalBlow(true);
-                break;
+            result.addAttackerId(attackerId);
+            int finalBlow = attackers.getJSONObject(i).getInt("finalBlow");
+            if (finalBlow == 1) {
+                result.setFinalBlowAttackerId(attackerId);
             }
         }
         result.setNpc(object.getJSONObject("zkb").getBoolean("npc"));
@@ -46,19 +44,18 @@ public class KillmailParser {
         return result;
     }
 
-    public static List<Killmail> parseKillmails(final JSONArray killmailArray, final Long characterId) {
+    public static List<Killmail> parseKillmails(final JSONArray killmailArray) {
         List<Killmail> killmails = new ArrayList<>();
         for (int i = 0; i < killmailArray.length(); i++) {
-            Killmail killmail = parseKillmail(killmailArray.getJSONObject(i), characterId);
+            Killmail killmail = parseKillmail(killmailArray.getJSONObject(i));
             killmails.add(killmail);
         }
         return killmails;
     }
 
-
-    public static long calculateCoins(final Killmail killmail) {
-        long points = (long) Math.sqrt((double)killmail.getPoints());
-        if (killmail.isFinalBlow()) {
+    public static long calculateCoins(final Killmail killmail, final long characterId) {
+        long points = (long) Math.sqrt((double) killmail.getPoints());
+        if (killmail.getFinalBlowAttackerId() == characterId) {
             points += 2;
         }
         // todo: adm

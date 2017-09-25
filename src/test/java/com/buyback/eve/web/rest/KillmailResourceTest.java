@@ -28,7 +28,7 @@ public class KillmailResourceTest {
     public void addKillmail_withAlreadyExisting_skipsTheRest() throws Exception {
         when(repo.findByKillId(1L)).thenReturn(Optional.of(new Killmail()));
 
-        ResponseEntity responseEntity = sut.addKillmail(1L, 1L);
+        ResponseEntity responseEntity = sut.addKillmail(1L);
 
         assertEquals(200, responseEntity.getStatusCodeValue());
 
@@ -40,7 +40,7 @@ public class KillmailResourceTest {
         when(repo.findByKillId(1L)).thenReturn(Optional.empty());
         when(jsonService.getKillmail(1L)).thenReturn(Optional.empty());
 
-        ResponseEntity responseEntity = sut.addKillmail(1L, 1L);
+        ResponseEntity responseEntity = sut.addKillmail(1L);
 
         assertEquals(200, responseEntity.getStatusCodeValue());
 
@@ -52,7 +52,7 @@ public class KillmailResourceTest {
         when(repo.findByKillId(1L)).thenReturn(Optional.empty());
         when(jsonService.getKillmail(1L)).thenReturn(Optional.of(object1));
 
-        ResponseEntity responseEntity = sut.addKillmail(1L, 1L);
+        ResponseEntity responseEntity = sut.addKillmail(1L);
 
         assertEquals(200, responseEntity.getStatusCodeValue());
 
