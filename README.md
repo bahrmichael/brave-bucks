@@ -1,1 +1,1 @@
-[![Coverage Status](https://coveralls.io/repos/github/bahrmichael/the-buyback/badge.svg?branch=coverage)](https://coveralls.io/github/bahrmichael/the-buyback?branch=coverage)
+[![codecov](https://codecov.io/gh/bahrmichael/the-buyback/branch/master/graph/badge.svg)](https://codecov.io/gh/bahrmichael/the-buyback)
