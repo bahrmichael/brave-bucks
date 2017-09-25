@@ -2,9 +2,6 @@ package com.buyback.eve.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import static com.buyback.eve.service.KillmailParser.calculateCoins;
 
 import org.springframework.data.annotation.Id;
 
@@ -12,15 +9,9 @@ public class Pool {
 
     @Id
     private String yearMonth;
-    private Long balance;
-    private Long claimedCoins;
-    private List<PoolPlayer> poolPlayers;
-
-    public Pool() {
-        poolPlayers = new ArrayList<>();
-        balance = 0L;
-        claimedCoins = 0L;
-    }
+    private long balance;
+    private long claimedCoins;
+    private List<PoolPlayer> poolPlayers = new ArrayList<>();
 
     public String getYearMonth() {
         return yearMonth;
@@ -54,4 +45,7 @@ public class Pool {
         this.poolPlayers = poolPlayers;
     }
 
+    public void addPoolPlayer(final PoolPlayer poolPlayer) {
+        poolPlayers.add(poolPlayer);
+    }
 }

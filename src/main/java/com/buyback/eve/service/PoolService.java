@@ -71,24 +71,33 @@ public class PoolService {
     public void addPoolDataForAttacker(final Killmail killmail, final Pool pool, final Long attackerId) {
         long coins = calculateCoins(killmail, attackerId);
         if (hasPlayer(attackerId, pool)) {
-            for (PoolPlayer poolPlayer : pool.getPoolPlayers()) {
-                if (Objects.equals(attackerId, poolPlayer.getCharacterId())) {
-                    poolPlayer.setCoins(poolPlayer.getCoins() + coins);
-                    poolPlayer.addKillmailId(killmail.getKillId());
-                    break;
-                }
-            }
+            addKillmailToExistingPlayers(killmail, pool, attackerId, coins);
         } else {
-            final PoolPlayer poolPlayer = new PoolPlayer();
-            poolPlayer.setCharacterId(attackerId);
-            poolPlayer.setCoins(coins);
-            poolPlayer.addKillmailId(killmail.getKillId());
-            pool.getPoolPlayers().add(poolPlayer);
+            addNewPlayerToPool(killmail, pool, attackerId, coins);
         }
         pool.setClaimedCoins(pool.getClaimedCoins() + coins);
     }
 
-    public boolean attackerSignedUp(final Long attackerId) {
+    void addKillmailToExistingPlayers(final Killmail killmail, final Pool pool, final Long attackerId,
+                                      final long coins) {
+        for (PoolPlayer poolPlayer : pool.getPoolPlayers()) {
+            if (Objects.equals(attackerId, poolPlayer.getCharacterId())) {
+                poolPlayer.setCoins(poolPlayer.getCoins() + coins);
+                poolPlayer.addKillmailId(killmail.getKillId());
+                break;
+            }
+        }
+    }
+
+    void addNewPlayerToPool(final Killmail killmail, final Pool pool, final Long attackerId, final long coins) {
+        final PoolPlayer poolPlayer = new PoolPlayer();
+        poolPlayer.setCharacterId(attackerId);
+        poolPlayer.setCoins(coins);
+        poolPlayer.addKillmailId(killmail.getKillId());
+        pool.addPoolPlayer(poolPlayer);
+    }
+
+    boolean attackerSignedUp(final Long attackerId) {
         return userRepository.findOneByCharacterId(attackerId).isPresent();
     }
 }

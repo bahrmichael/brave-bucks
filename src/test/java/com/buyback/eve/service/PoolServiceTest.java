@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.buyback.eve.domain.Killmail;
 import com.buyback.eve.domain.Pool;
 import com.buyback.eve.domain.PoolPlayer;
 import com.buyback.eve.domain.User;
@@ -100,7 +101,29 @@ public class PoolServiceTest {
     }
 
     @Test
-    public void addPoolDataForAttacker() throws Exception {
+    public void addPoolDataForAttacker_withExistingPlayer() throws Exception {
+        final PoolPlayer existingPlayer = new PoolPlayer();
+        existingPlayer.setCoins(10L);
+        existingPlayer.setCharacterId(1L);
+        final Pool pool = new Pool();
+        pool.setPoolPlayers(Collections.singletonList(existingPlayer));
+        final Killmail killmail = new Killmail();
+        killmail.setPoints(100);
+
+        sut.addPoolDataForAttacker(killmail, pool, 1L);
+
+        assertEquals(20, existingPlayer.getCoins().intValue());
+    }
+
+    @Test
+    public void addPoolDataForAttacker_withoutExistingPlayer() throws Exception {
+        final Pool pool = new Pool();
+        final Killmail killmail = new Killmail();
+        killmail.setPoints(100);
+
+        sut.addPoolDataForAttacker(killmail, pool, 1L);
+
+        assertEquals(10, pool.getPoolPlayers().get(0).getCoins().intValue());
     }
 
     @Test
@@ -117,4 +140,46 @@ public class PoolServiceTest {
         assertFalse(sut.attackerSignedUp(1L));
     }
 
+    @Test
+    public void addNewPlayerToPool() throws Exception {
+        final Killmail killmail = new Killmail();
+        killmail.setKillId(1L);
+        final Pool pool = new Pool();
+        final Long attackerId = 2L;
+        final long coins = 3L;
+
+        sut.addNewPlayerToPool(killmail, pool, attackerId, coins);
+
+        assertEquals(1, pool.getPoolPlayers().size());
+        PoolPlayer poolPlayer = pool.getPoolPlayers().get(0);
+        assertEquals(attackerId, poolPlayer.getCharacterId());
+        assertEquals(coins, poolPlayer.getCoins().longValue());
+        assertTrue(poolPlayer.getKillmailIds().contains(1L));
+    }
+
+    @Test
+    public void addKillmailToExistingPlayers_withMultiplePlayers() throws Exception {
+        Pool pool = new Pool();
+        final List<PoolPlayer> poolPlayers = new ArrayList<>();
+        poolPlayers.add(createPoolPlayer(1L));
+        poolPlayers.add(createPoolPlayer(2L));
+        pool.setPoolPlayers(poolPlayers);
+
+        final Killmail killmail = new Killmail();
+        killmail.setKillId(5);
+
+        sut.addKillmailToExistingPlayers(killmail, pool, 1L, 10);
+
+        assertEquals(2, pool.getPoolPlayers().size());
+        PoolPlayer player = pool.getPoolPlayers().get(0);
+        assertEquals(10, player.getCoins().intValue());
+        assertTrue(player.getKillmailIds().contains(5L));
+    }
+
+    private PoolPlayer createPoolPlayer(final long characterId) {
+        PoolPlayer player = new PoolPlayer();
+        player.setCharacterId(characterId);
+        player.setCoins(0L);
+        return player;
+    }
 }
