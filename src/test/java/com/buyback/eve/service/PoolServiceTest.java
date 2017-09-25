@@ -3,6 +3,7 @@ package com.buyback.eve.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.buyback.eve.domain.Pool;
 import com.buyback.eve.domain.PoolPlayer;
@@ -11,7 +12,12 @@ import com.buyback.eve.repository.UserRepository;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class PoolServiceTest {
 
@@ -69,7 +75,26 @@ public class PoolServiceTest {
     }
 
     @Test
-    public void getPool() throws Exception {
+    public void getPool_alreadyExists() throws Exception {
+        Pool pool = new Pool();
+        when(repo.findByYearMonth(anyString())).thenReturn(Optional.of(pool));
+
+        Pool result = sut.getPool("test");
+
+        assertEquals(pool, result);
+    }
+
+    @Test
+    public void getPool_newPool() throws Exception {
+        when(repo.findByYearMonth(anyString())).thenReturn(Optional.empty());
+        when(repo.save(any(Pool.class))).thenReturn(null);
+
+        Pool result = sut.getPool("test");
+
+        assertEquals(0L, result.getBalance().longValue());
+        assertEquals("test", result.getYearMonth());
+
+        verify(repo).save(any(Pool.class));
     }
 
     @Test
