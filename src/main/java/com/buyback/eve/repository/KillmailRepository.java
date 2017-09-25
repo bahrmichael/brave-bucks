@@ -1,6 +1,7 @@
 package com.buyback.eve.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.buyback.eve.domain.Killmail;
 
@@ -11,4 +12,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface KillmailRepository extends MongoRepository<Killmail, String> {
     List<Killmail> findByCharacterId(long characterId);
+
+    Optional<Killmail> findByKillId(long killmailId);
 }

@@ -18,10 +18,10 @@ public class KillmailParser {
     private KillmailParser() {
     }
 
-    static Optional<Killmail> parseKillmail(final JSONObject object, final Long characterId) {
+    public static Killmail parseKillmail(final JSONObject object, final Long characterId) {
         if (null == object) {
-            log.warn("JSONObject for characterID {} was null. Skipping.");
-            return Optional.empty();
+            log.error("JSONObject for characterID {} was null. Skipping.");
+            throw new IllegalArgumentException("KillmailParser#parseKillmail JSONObject was null.");
         }
         Killmail result = new Killmail();
         result.setCharacterId(characterId);
@@ -43,13 +43,14 @@ public class KillmailParser {
         result.setPoints(object.getJSONObject("zkb").getLong("points"));
         result.setVictimId(object.getJSONObject("victim").getLong("characterID"));
         result.setVictimAlliance(object.getJSONObject("victim").getString("allianceName"));
-        return Optional.of(result);
+        return result;
     }
 
-    static List<Killmail> parseKillmails(final JSONArray killmailArray, final Long characterId) {
+    public static List<Killmail> parseKillmails(final JSONArray killmailArray, final Long characterId) {
         List<Killmail> killmails = new ArrayList<>();
         for (int i = 0; i < killmailArray.length(); i++) {
-            parseKillmail(killmailArray.getJSONObject(i), characterId).ifPresent(killmails::add);
+            Killmail killmail = parseKillmail(killmailArray.getJSONObject(i), characterId);
+            killmails.add(killmail);
         }
         return killmails;
     }

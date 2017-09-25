@@ -1,7 +1,6 @@
 package com.buyback.eve.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -10,13 +9,8 @@ import javax.annotation.PostConstruct;
 import com.buyback.eve.domain.Killmail;
 import com.buyback.eve.repository.KillmailRepository;
 import com.buyback.eve.repository.UserRepository;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import static com.buyback.eve.service.KillmailParser.parseKillmails;
 
-import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -30,11 +24,14 @@ public class KillmailPuller {
 
     private final KillmailRepository killmailRepository;
     private final UserRepository userRepository;
+    private final JsonRequestService jsonRequestService;
 
     public KillmailPuller(final KillmailRepository killmailRepository,
-                          final UserRepository userRepository) {
+                          final UserRepository userRepository,
+                          final JsonRequestService jsonRequestService) {
         this.killmailRepository = killmailRepository;
         this.userRepository = userRepository;
+        this.jsonRequestService = jsonRequestService;
     }
 
     @PostConstruct
@@ -46,18 +43,22 @@ public class KillmailPuller {
     @Scheduled(cron = "0 */10 * * * *")
     public void pullKillmails() {
         userRepository.findAll().stream().filter(user -> user.getCharacterId() != null)
-                      .forEach(user -> getRawData(user.getCharacterId()).ifPresent(jsonArray -> {
+                      .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId()).ifPresent(jsonArray -> {
                           if (jsonArray.length() > 0) {
                               List<Killmail> killmails = parseKillmails(jsonArray, user.getCharacterId());
-                              List<Killmail> filtered = killmails.stream()
-                                                                 .filter(this::isVictimNotBrave)
-                                                                 .filter(this::isInBraveSystem)
-                                                                 .filter(this::isNotAnEmptyPod)
-                                                                 .filter(this::isNotInFleet)
-                                                                 .collect(Collectors.toList());
-                              killmailRepository.save(filtered);
+                              filterAndSaveKillmails(killmails);
                           }
         }));
+    }
+
+    public void filterAndSaveKillmails(final List<Killmail> killmails) {
+        List<Killmail> filtered = killmails.stream()
+                                           .filter(this::isVictimNotBrave)
+                                           .filter(this::isInBraveSystem)
+                                           .filter(this::isNotAnEmptyPod)
+                                           .filter(this::isNotInFleet)
+                                           .collect(Collectors.toList());
+        killmailRepository.save(filtered);
     }
 
     private boolean isNotInFleet(final Killmail killmail) {
@@ -98,22 +99,4 @@ public class KillmailPuller {
         return !killmail.getVictimAlliance().equals("Brave Collective");
     }
 
-    private Optional<JSONArray> getRawData(final Long characterId) {
-        final long duration = 3600;
-        String url = "https://zkillboard.com/api/kills/characterID/" + characterId + "/pastSeconds/" + duration + "/no-items/";
-        try {
-            HttpResponse<JsonNode> response = Unirest.get(url)
-                                                                 .header("Accept-Encoding", "gzip")
-                                                                 .header("User-Agent", "EvE: Rihan Shazih")
-                                                                 .asJson();
-            if (response.getStatus() != 200) {
-                log.warn("{} returned status code {}. Data will not be parsed.", url, response.getStatus());
-                return Optional.empty();
-            }
-            return Optional.of(response.getBody().getArray());
-        } catch (UnirestException e) {
-            log.error("Failed to get data from zKill={}", url, e);
-            return Optional.empty();
-        }
-    }
 }

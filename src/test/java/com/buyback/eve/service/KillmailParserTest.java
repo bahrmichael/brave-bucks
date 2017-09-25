@@ -47,11 +47,9 @@ public class KillmailParserTest {
 
     @Test
     public void mapJsonToKillmail() throws Exception {
-        Optional<Killmail> optional = KillmailParser.parseKillmail(object1, 1L);
+        Killmail killmail = KillmailParser.parseKillmail(object1, 1L);
 
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        Killmail killmail = optional.get();
+        assertNotNull(killmail);
         assertEquals(1L, killmail.getCharacterId());
         assertEquals(63894774L, killmail.getKillId());
         assertEquals(30001178L, killmail.getSolarSystemId());
@@ -67,11 +65,9 @@ public class KillmailParserTest {
 
     @Test
     public void mapJsonToKillmail_b() throws Exception {
-        Optional<Killmail> optional = KillmailParser.parseKillmail(object2, 2L);
+        Killmail killmail = KillmailParser.parseKillmail(object2, 2L);
 
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        Killmail killmail = optional.get();
+        assertNotNull(killmail);
         assertEquals(2L, killmail.getCharacterId());
         assertEquals(63894773L, killmail.getKillId());
         assertEquals(30001173L, killmail.getSolarSystemId());
@@ -96,7 +92,7 @@ public class KillmailParserTest {
         assertEquals(2, killmails.size());
     }
 
-    private final JSONObject object1 = new JSONObject("{\n"
+    public static final JSONObject object1 = new JSONObject("{\n"
                                                       + "        \"killID\"       : 63894774,\n"
                                                       + "        \"solarSystemID\": 30001178,\n"
                                                       + "        \"killTime\"     : \"2017-08-05 21:23:25\",\n"
@@ -135,11 +131,9 @@ public class KillmailParserTest {
 
     @Test
     public void mapJsonToKillmail_issue22() throws Exception {
-        Optional<Killmail> optional = KillmailParser.parseKillmail(issue22, 96919940L);
+        Killmail killmail = KillmailParser.parseKillmail(issue22, 96919940L);
 
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        Killmail killmail = optional.get();
+        assertNotNull(killmail);
         assertEquals(96919940L, killmail.getCharacterId());
         assertEquals(64870712L, killmail.getKillId());
         assertEquals(30001204L, killmail.getSolarSystemId());
