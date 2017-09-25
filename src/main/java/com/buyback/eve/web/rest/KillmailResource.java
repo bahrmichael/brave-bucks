@@ -1,5 +1,6 @@
 package com.buyback.eve.web.rest;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class KillmailResource {
 
     private final Logger log = LoggerFactory.getLogger(KillmailResource.class);
+
+    private LocalDateTime lastLongPullInvocation = fiveMinutesAgo();
 
     private final KillmailRepository killmailRepository;
     private final KillmailPuller killmailPuller;
@@ -60,4 +63,18 @@ public class KillmailResource {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/long-pull")
+    public ResponseEntity longPull() {
+        if (lastLongPullInvocation.isBefore(fiveMinutesAgo())) {
+            lastLongPullInvocation = LocalDateTime.now();
+            killmailPuller.longPull();
+            return ResponseEntity.status(200).build();
+        } else {
+            return ResponseEntity.status(420).build();
+        }
+    }
+
+    private LocalDateTime fiveMinutesAgo() {
+        return LocalDateTime.now().minusMinutes(5L);
+    }
 }

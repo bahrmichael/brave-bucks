@@ -18,8 +18,7 @@ public class JsonRequestService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    Optional<JSONArray> getKillmails(final Long characterId) {
-        final long duration = 3600;
+    Optional<JSONArray> getKillmails(final Long characterId, final long duration) {
         String url = "https://zkillboard.com/api/kills/characterID/" + characterId + "/pastSeconds/" + duration + "/no-items/";
         try {
             HttpResponse<JsonNode> response = Unirest.get(url)

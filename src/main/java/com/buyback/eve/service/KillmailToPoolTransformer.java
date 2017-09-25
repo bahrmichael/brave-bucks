@@ -1,14 +1,16 @@
 package com.buyback.eve.service;
 
+import javax.annotation.PostConstruct;
+
 import com.buyback.eve.repository.KillmailRepository;
 import com.codahale.metrics.annotation.Timed;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class KillmailToPoolTransformer {
 
     private final KillmailRepository killmailRepository;
@@ -19,6 +21,11 @@ public class KillmailToPoolTransformer {
                                      final PoolService poolService) {
         this.killmailRepository = killmailRepository;
         this.poolService = poolService;
+    }
+
+    @PostConstruct
+    public void init() {
+        addKillmailsToPool();
     }
 
     @Async
