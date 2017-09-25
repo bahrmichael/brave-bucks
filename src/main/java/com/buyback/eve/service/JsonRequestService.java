@@ -48,7 +48,7 @@ public class JsonRequestService {
                 log.warn("{} returned status code {}. Data will not be parsed.", url, response.getStatus());
                 return Optional.empty();
             }
-            return Optional.of(response.getBody().getObject());
+            return Optional.of(response.getBody().getArray().getJSONObject(0));
         } catch (UnirestException e) {
             log.error("Failed to get data from zKill={}", url, e);
             return Optional.empty();
