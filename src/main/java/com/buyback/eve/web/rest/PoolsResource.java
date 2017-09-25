@@ -48,7 +48,7 @@ public class PoolsResource {
     }
 
     private Long previous() {
-        Optional<Pool> optional = poolRepository.findByYearMonth(getYearMonth(LocalDate.now().minusDays(30)));
+        Optional<Pool> optional = poolRepository.findByYearMonth(getYearMonth(LocalDate.now().minusMonths(1)));
         return optional.map(Pool::getBalance).orElse(0L);
     }
 
@@ -58,7 +58,7 @@ public class PoolsResource {
     }
 
     private Long next() {
-        Optional<Pool> optional = poolRepository.findByYearMonth(getYearMonth(LocalDate.now().plusDays(30)));
+        Optional<Pool> optional = poolRepository.findByYearMonth(getYearMonth(LocalDate.now().plusMonths(1)));
         return optional.map(Pool::getBalance).orElse(0L);
     }
 }

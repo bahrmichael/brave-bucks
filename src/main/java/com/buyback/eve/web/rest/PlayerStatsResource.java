@@ -37,14 +37,12 @@ public class PlayerStatsResource {
 
     @GetMapping(path = "/stats/my")
     public ResponseEntity getPlayerStats() {
-        PlayerStats statsForCurrentUser = playerStatsService.getStatsForCurrentUser();
-        return ResponseEntity.ok(statsForCurrentUser);
+        return ResponseEntity.ok(playerStatsService.getStatsForCurrentUser());
     }
 
     @GetMapping(path = "/stats/potentialPayout")
     public ResponseEntity getPotentialPayout() {
-        long potentialPayout = playerStatsService.getStatsForCurrentUser().getPotentialPayout();
-        return ResponseEntity.ok(potentialPayout);
+        return ResponseEntity.ok(playerStatsService.getStatsForCurrentUser().getPotentialPayout());
     }
 
     @GetMapping(path = "/killmails")
