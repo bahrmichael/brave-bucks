@@ -11,7 +11,7 @@
 
     <groupId>com.buyback.eve</groupId>
     <artifactId>thebuyback</artifactId>
-    <version>0.5.9</version>
+    <version>0.5.10</version>
     <packaging>war</packaging>
     <name>TheBuyback</name>
 
