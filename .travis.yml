@@ -5,6 +5,8 @@ before_install:
 - mv deploy_rsa /tmp/deploy_rsa
 language: java
 script: mvn clean package -Pprod
+after_success:
+  - mvn clean test jacoco:report coveralls:report
 addons:
   ssh_known_hosts: 107.170.29.174
 before_deploy:
