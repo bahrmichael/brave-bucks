@@ -13,6 +13,7 @@ import com.buyback.eve.repository.PoolRepository;
 import com.buyback.eve.repository.UserRepository;
 
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -75,6 +76,25 @@ public class PoolServiceTest {
 
     @Test
     public void addKillmailIfNotExists() throws Exception {
+        ArgumentCaptor<Pool> tArgumentCaptor = ArgumentCaptor.forClass(Pool.class);
+        when(repo.save(tArgumentCaptor.capture())).thenReturn(null);
+        Pool value = new Pool();
+        value.setYearMonth("2017-07");
+        when(repo.findByYearMonth("2017-07")).thenReturn(Optional.of(value));
+        when(userRepo.findOneByCharacterId(2L)).thenReturn(Optional.of(new User()));
+
+        final Killmail killmail = new Killmail();
+        killmail.setKillTime("2017-07-01 10:00:00");
+        killmail.setKillId(1);
+        killmail.setPoints(1);
+        killmail.setAttackerIds(Collections.singletonList(2L));
+
+        sut.addKillmailIfNotExists(killmail);
+
+        Pool pool = tArgumentCaptor.getValue();
+        assertEquals(1, pool.getClaimedCoins().intValue());
+        assertEquals(1, pool.getPoolPlayers().size());
+        assertEquals("2017-07", pool.getYearMonth());
     }
 
     @Test
@@ -182,4 +202,5 @@ public class PoolServiceTest {
         player.setCoins(0L);
         return player;
     }
+
 }

@@ -33,7 +33,7 @@ public class PoolService {
         return false;
     }
 
-    public boolean hasKillmail(final long needle, final Pool pool) {
+    boolean hasKillmail(final long needle, final Pool pool) {
         for (PoolPlayer poolPlayer : pool.getPoolPlayers()) {
             for (Long killmailId : poolPlayer.getKillmailIds()) {
                 if (killmailId == needle) {
@@ -44,7 +44,7 @@ public class PoolService {
         return false;
     }
 
-    public void addKillmailIfNotExists(final Killmail killmail) {
+    void addKillmailIfNotExists(final Killmail killmail) {
         // todo: change killmail entity to take actual java date
         String yearMonth = getYearMonth(DateUtil.getLocalDate(killmail.getKillTime()));
         Pool pool = getPool(yearMonth);
@@ -54,12 +54,11 @@ public class PoolService {
         repository.save(pool);
     }
 
-    public Pool getPool(final String yearMonth) {
+    Pool getPool(final String yearMonth) {
         Optional<Pool> optional = repository.findByYearMonth(yearMonth);
         Pool pool;
         if (!optional.isPresent()) {
             pool = new Pool();
-            pool.setBalance(0L);
             pool.setYearMonth(yearMonth);
             repository.save(pool);
         } else {
@@ -68,7 +67,7 @@ public class PoolService {
         return pool;
     }
 
-    public void addPoolDataForAttacker(final Killmail killmail, final Pool pool, final Long attackerId) {
+    void addPoolDataForAttacker(final Killmail killmail, final Pool pool, final Long attackerId) {
         long coins = calculateCoins(killmail, attackerId);
         if (hasPlayer(attackerId, pool)) {
             addKillmailToExistingPlayers(killmail, pool, attackerId, coins);
