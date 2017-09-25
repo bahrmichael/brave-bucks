@@ -7,12 +7,14 @@ import java.util.Optional;
 
 import com.buyback.eve.domain.Pool;
 import com.buyback.eve.domain.PoolPlayer;
+import com.buyback.eve.domain.User;
 import com.buyback.eve.repository.PoolRepository;
 import com.buyback.eve.repository.UserRepository;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -102,6 +104,17 @@ public class PoolServiceTest {
     }
 
     @Test
-    public void attackerSignedUp() throws Exception {
+    public void attackerSignedUp_true() throws Exception {
+        when(userRepo.findOneByCharacterId(anyLong())).thenReturn(Optional.of(new User()));
+
+        assertTrue(sut.attackerSignedUp(1L));
     }
+
+    @Test
+    public void attackerSignedUp_false() throws Exception {
+        when(userRepo.findOneByCharacterId(anyLong())).thenReturn(Optional.empty());
+
+        assertFalse(sut.attackerSignedUp(1L));
+    }
+
 }
