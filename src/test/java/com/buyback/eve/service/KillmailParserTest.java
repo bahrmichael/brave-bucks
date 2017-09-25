@@ -132,4 +132,74 @@ public class KillmailParserTest {
                                                       + "            \"npc\"        : true\n"
                                                       + "        }\n"
                                                       + "    }");
+
+    @Test
+    public void mapJsonToKillmail_issue22() throws Exception {
+        Optional<Killmail> optional = KillmailParser.parseKillmail(issue22, 96919940L);
+
+        assertNotNull(optional);
+        assertTrue(optional.isPresent());
+        Killmail killmail = optional.get();
+        assertEquals(96919940L, killmail.getCharacterId());
+        assertEquals(64870712L, killmail.getKillId());
+        assertEquals(30001204L, killmail.getSolarSystemId());
+        assertEquals("2017-09-24 08:18:33", killmail.getKillTime());
+        assertEquals(1, killmail.getAttackerCount());
+        assertEquals(259230154L, killmail.getTotalValue());
+        assertEquals(50, killmail.getPoints());
+        assertEquals(false, killmail.isNpc());
+        assertEquals(90013607L, killmail.getVictimId());
+        assertEquals("Red Alliance", killmail.getVictimAlliance());
+        assertTrue(killmail.isFinalBlow());
+    }
+
+    private final JSONObject issue22 = new JSONObject("{\n"
+                                                      + "        \"killID\": 64870712,\n"
+                                                      + "        \"solarSystemID\": 30001204,\n"
+                                                      + "        \"killTime\": \"2017-09-24 08:18:33\",\n"
+                                                      + "        \"moonID\": 0,\n"
+                                                      + "        \"victim\": {\n"
+                                                      + "            \"shipTypeID\": 33818,\n"
+                                                      + "            \"characterID\": 90013607,\n"
+                                                      + "            \"characterName\": \"Mumrik1\",\n"
+                                                      + "            \"corporationID\": 1722847451,\n"
+                                                      + "            \"corporationName\": \"Bad Robot Inc.\",\n"
+                                                      + "            \"allianceID\": 1220922756,\n"
+                                                      + "            \"allianceName\": \"Red Alliance\",\n"
+                                                      + "            \"factionID\": 0,\n"
+                                                      + "            \"factionName\": \"\",\n"
+                                                      + "            \"damageTaken\": 15563\n"
+                                                      + "        },\n"
+                                                      + "        \"attackers\": [\n"
+                                                      + "            {\n"
+                                                      + "                \"characterID\": 96919940,\n"
+                                                      + "                \"characterName\": \"Futility Prevails\",\n"
+                                                      + "                \"corporationID\": 98169165,\n"
+                                                      + "                \"corporationName\": \"Brave Newbies Inc.\",\n"
+                                                      + "                \"allianceID\": 99003214,\n"
+                                                      + "                \"allianceName\": \"Brave Collective\",\n"
+                                                      + "                \"factionID\": 0,\n"
+                                                      + "                \"factionName\": \"\",\n"
+                                                      + "                \"securityStatus\": 5,\n"
+                                                      + "                \"damageDone\": 15563,\n"
+                                                      + "                \"finalBlow\": 1,\n"
+                                                      + "                \"weaponTypeID\": 2175,\n"
+                                                      + "                \"shipTypeID\": 16233\n"
+                                                      + "            }\n"
+                                                      + "        ],\n"
+                                                      + "        \"position\": {\n"
+                                                      + "            \"y\": -231065645588.13,\n"
+                                                      + "            \"x\": 2009892244049.2,\n"
+                                                      + "            \"z\": -3717810205848.4\n"
+                                                      + "        },\n"
+                                                      + "        \"zkb\": {\n"
+                                                      + "            \"locationID\": 50003029,\n"
+                                                      + "            \"hash\": "
+                                                      + "\"771ad0db14e8ab1b71888aba7fbbf503571bbce9\",\n"
+                                                      + "            \"fittedValue\": 254083935.79,\n"
+                                                      + "            \"totalValue\": 259230154.52,\n"
+                                                      + "            \"points\": 50,\n"
+                                                      + "            \"npc\": false\n"
+                                                      + "        }\n"
+                                                      + "    }");
 }
