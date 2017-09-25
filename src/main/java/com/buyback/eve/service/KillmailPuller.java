@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class KillmailPuller {
 
-    private static final int HOUR = 3600;
+    static final long HOUR = 3600L;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final KillmailRepository killmailRepository;
@@ -47,11 +47,11 @@ public class KillmailPuller {
     }
 
     public void longPull() {
-        int maxDuration = HOUR * 24 * 7;
+        long maxDuration = HOUR * 24 * 7L;
         pullKillmails(maxDuration);
     }
 
-    private void pullKillmails(final long duration) {
+    void pullKillmails(Long duration) {
         userRepository.findAll().stream().filter(user -> user.getCharacterId() != null)
                       .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId(), duration).ifPresent(jsonArray -> {
                           log.info("Adding killmails for characterId={}", user.getCharacterId());
@@ -72,16 +72,16 @@ public class KillmailPuller {
         killmailRepository.save(filtered);
     }
 
-    private boolean isNotInFleet(final Killmail killmail) {
+    boolean isNotInFleet(final Killmail killmail) {
         return killmail.getAttackerIds().size() <= 20;
     }
 
-    private boolean isNotAnEmptyPod(final Killmail killmail) {
+    boolean isNotAnEmptyPod(final Killmail killmail) {
         // Capsules are valued 10k
         return killmail.getTotalValue() != 10_000L;
     }
 
-    private static final List<Long> systems = Stream.of(
+    static final List<Long> systems = Stream.of(
                                     30001198L, // GE
                                     30001162L, // V-3
                                     30001156L, // B-3
@@ -102,11 +102,11 @@ public class KillmailPuller {
                                     30001224L // CX65
                                   ).collect(Collectors.toList());
 
-    private boolean isInBraveSystem(final Killmail killmail) {
+    boolean isInBraveSystem(final Killmail killmail) {
         return systems.contains(killmail.getSolarSystemId());
     }
 
-    private boolean isVictimNotBrave(final Killmail killmail) {
+    boolean isVictimNotBrave(final Killmail killmail) {
         return !killmail.getVictimAlliance().equals("Brave Collective");
     }
 }
