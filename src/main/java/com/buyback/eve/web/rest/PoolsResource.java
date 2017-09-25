@@ -7,7 +7,8 @@ import java.util.stream.Stream;
 
 import com.buyback.eve.domain.Pool;
 import com.buyback.eve.repository.PoolRepository;
-import static com.buyback.eve.service.KillmailToPoolTransformer.getYearMonth;
+
+import static com.buyback.eve.service.DateUtil.getYearMonth;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

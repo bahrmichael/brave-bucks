@@ -1,43 +1,35 @@
 package com.buyback.eve.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 
 public class Killmail {
     @Id
     private long killId;
-    private long characterId;
     private long solarSystemId;
     private String killTime;
-    private long attackerCount;
     private long totalValue;
     private long points;
     private boolean npc;
     private long victimId;
     private String victimAlliance;
-    private boolean isFinalBlow;
+    private List<Long> attackerIds = new ArrayList<>();
+    private long finalBlowAttackerId;
 
     public Killmail() {
     }
 
-    public Killmail(final long characterId, final String killTime, final long points) {
-        this.characterId = characterId;
+    public Killmail(final String killTime, final long points) {
         this.killTime = killTime;
         this.points = points;
     }
 
-    public Killmail(final long characterId, final String killTime, final long points, final boolean isFinalBlow) {
-        this.characterId = characterId;
+    public Killmail(final String killTime, final long points, final long finalBlowAttackerId) {
         this.killTime = killTime;
         this.points = points;
-        this.isFinalBlow = isFinalBlow;
-    }
-
-    public long getCharacterId() {
-        return characterId;
-    }
-
-    public void setCharacterId(final long characterId) {
-        this.characterId = characterId;
+        this.finalBlowAttackerId = finalBlowAttackerId;
     }
 
     public long getKillId() {
@@ -64,12 +56,16 @@ public class Killmail {
         this.killTime = killTime;
     }
 
-    public long getAttackerCount() {
-        return attackerCount;
+    public List<Long> getAttackerIds() {
+        return attackerIds;
     }
 
-    public void setAttackerCount(final long attackerCount) {
-        this.attackerCount = attackerCount;
+    public void setAttackerIds(final List<Long> attackerIds) {
+        this.attackerIds = attackerIds;
+    }
+
+    public void addAttackerId(long attackerId) {
+        this.attackerIds.add(attackerId);
     }
 
     public long getTotalValue() {
@@ -112,11 +108,11 @@ public class Killmail {
         return victimAlliance;
     }
 
-    public boolean isFinalBlow() {
-        return isFinalBlow;
+    public long getFinalBlowAttackerId() {
+        return finalBlowAttackerId;
     }
 
-    public void setFinalBlow(final boolean finalBlow) {
-        isFinalBlow = finalBlow;
+    public void setFinalBlowAttackerId(final long finalBlowAttackerId) {
+        this.finalBlowAttackerId = finalBlowAttackerId;
     }
 }

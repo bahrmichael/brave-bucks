@@ -45,7 +45,7 @@ public class KillmailPuller {
         userRepository.findAll().stream().filter(user -> user.getCharacterId() != null)
                       .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId()).ifPresent(jsonArray -> {
                           if (jsonArray.length() > 0) {
-                              List<Killmail> killmails = parseKillmails(jsonArray, user.getCharacterId());
+                              List<Killmail> killmails = parseKillmails(jsonArray);
                               filterAndSaveKillmails(killmails);
                           }
         }));
@@ -62,7 +62,7 @@ public class KillmailPuller {
     }
 
     private boolean isNotInFleet(final Killmail killmail) {
-        return killmail.getAttackerCount() <= 20;
+        return killmail.getAttackerIds().size() <= 20;
     }
 
     private boolean isNotAnEmptyPod(final Killmail killmail) {

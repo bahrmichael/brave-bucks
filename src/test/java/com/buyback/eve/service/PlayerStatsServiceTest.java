@@ -12,7 +12,7 @@ import com.buyback.eve.repository.KillmailRepository;
 import com.buyback.eve.repository.PoolRepository;
 import com.buyback.eve.repository.UserRepository;
 
-import static com.buyback.eve.service.KillmailToPoolTransformer.getYearMonth;
+import static com.buyback.eve.service.DateUtil.getYearMonth;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -36,7 +36,7 @@ public class PlayerStatsServiceTest {
         long characterId = 1L;
 
         when(userRepositoryMock.findOneByLogin(username)).thenReturn(createUser(characterId));
-        when(killmailRepository.findByCharacterId(characterId)).thenReturn(createKillList(characterId));
+        when(killmailRepository.findByAttackerId(characterId)).thenReturn(createKillList(characterId));
         when(poolRepository.findByYearMonth(getYearMonth(LocalDate.now()))).thenReturn(createPool());
 
         PlayerStats playerStats = sut.getStatsForUser(username);
@@ -58,12 +58,12 @@ public class PlayerStatsServiceTest {
     private List<Killmail> createKillList(final long characterId) {
         String date = getYearMonth(LocalDate.now()) + "-02 17:50:11";
         return Collections.newArrayList(
-            new Killmail(characterId, "2017-03-02 17:50:11", 5),
-            new Killmail(characterId, date, 2),
-            new Killmail(characterId, date, 3),
-            new Killmail(characterId, date, 1),
-            new Killmail(characterId, date, 2),
-            new Killmail(characterId, date, 2, true)
+            new Killmail("2017-03-02 17:50:11", 5),
+            new Killmail(date, 2),
+            new Killmail(date, 3),
+            new Killmail(date, 1),
+            new Killmail(date, 2),
+            new Killmail(date, 2, characterId)
                                        );
     }
 

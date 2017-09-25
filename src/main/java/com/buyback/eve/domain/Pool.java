@@ -2,6 +2,7 @@ package com.buyback.eve.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.buyback.eve.service.KillmailParser.calculateCoins;
 
@@ -53,45 +54,4 @@ public class Pool {
         this.poolPlayers = poolPlayers;
     }
 
-    public boolean hasPlayer(final long characterId) {
-        for (PoolPlayer poolPlayer : poolPlayers) {
-            if (characterId == poolPlayer.getCharacterId()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean hasKillmail(final long needle) {
-        for (PoolPlayer poolPlayer : poolPlayers) {
-            for (Long killmailId : poolPlayer.getKillmailIds()) {
-                if (killmailId == needle) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public void addKillmailIfNotExists(final Killmail killmail) {
-        if (!hasKillmail(killmail.getKillId())) {
-            long coins = calculateCoins(killmail);
-            if (hasPlayer(killmail.getCharacterId())) {
-                for (PoolPlayer poolPlayer : poolPlayers) {
-                    if (killmail.getCharacterId() == poolPlayer.getCharacterId()) {
-                        poolPlayer.setCoins(poolPlayer.getCoins() + coins);
-                        poolPlayer.addKillmailId(killmail.getKillId());
-                        break;
-                    }
-                }
-            } else {
-                final PoolPlayer poolPlayer = new PoolPlayer();
-                poolPlayer.setCharacterId(killmail.getCharacterId());
-                poolPlayer.setCoins(coins);
-                poolPlayer.addKillmailId(killmail.getKillId());
-                poolPlayers.add(poolPlayer);
-            }
-            claimedCoins += coins;
-        }
-    }
 }

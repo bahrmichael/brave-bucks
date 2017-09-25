@@ -21,9 +21,9 @@ public class KillmailParserTest {
     public void calculatePoints() throws Exception {
         final Killmail killmail = new Killmail();
         killmail.setPoints(1L);
-        killmail.setFinalBlow(false);
+        killmail.setFinalBlowAttackerId(2L);
 
-        long points = KillmailParser.calculateCoins(killmail);
+        long points = KillmailParser.calculateCoins(killmail, 9L);
 
         assertEquals(1L, points);
     }
@@ -32,53 +32,51 @@ public class KillmailParserTest {
     public void calculatePoints_finalBlow() throws Exception {
         final Killmail killmail = new Killmail();
         killmail.setPoints(2L);
-        killmail.setFinalBlow(true);
+        killmail.setFinalBlowAttackerId(3L);
 
-        long points = KillmailParser.calculateCoins(killmail);
+        long points = KillmailParser.calculateCoins(killmail, 3L);
 
         assertEquals(3L, points);
     }
 
     @Test
     public void withEmptyArray() throws Exception {
-        List<Killmail> killmails = KillmailParser.parseKillmails(new JSONArray("[]"), 123L);
+        List<Killmail> killmails = KillmailParser.parseKillmails(new JSONArray("[]"));
         assertTrue(killmails.isEmpty());
     }
 
     @Test
     public void mapJsonToKillmail() throws Exception {
-        Killmail killmail = KillmailParser.parseKillmail(object1, 1L);
+        Killmail killmail = KillmailParser.parseKillmail(object1);
 
         assertNotNull(killmail);
-        assertEquals(1L, killmail.getCharacterId());
         assertEquals(63894774L, killmail.getKillId());
         assertEquals(30001178L, killmail.getSolarSystemId());
         assertEquals("2017-08-05 21:23:25", killmail.getKillTime());
-        assertEquals(5, killmail.getAttackerCount());
+        assertEquals(5, killmail.getAttackerIds().size());
         assertEquals(2721466267L, killmail.getTotalValue());
         assertEquals(40, killmail.getPoints());
         assertEquals(false, killmail.isNpc());
         assertEquals(123L, killmail.getVictimId());
         assertEquals("Goons", killmail.getVictimAlliance());
-        assertTrue(killmail.isFinalBlow());
+        assertEquals(1L, killmail.getFinalBlowAttackerId());
     }
 
     @Test
     public void mapJsonToKillmail_b() throws Exception {
-        Killmail killmail = KillmailParser.parseKillmail(object2, 2L);
+        Killmail killmail = KillmailParser.parseKillmail(object2);
 
         assertNotNull(killmail);
-        assertEquals(2L, killmail.getCharacterId());
         assertEquals(63894773L, killmail.getKillId());
         assertEquals(30001173L, killmail.getSolarSystemId());
         assertEquals("2017-03-05 21:23:23", killmail.getKillTime());
-        assertEquals(3, killmail.getAttackerCount());
+        assertEquals(3, killmail.getAttackerIds().size());
         assertEquals(3L, killmail.getTotalValue());
         assertEquals(3, killmail.getPoints());
         assertEquals(true, killmail.isNpc());
         assertEquals(456L, killmail.getVictimId());
         assertEquals("Goons", killmail.getVictimAlliance());
-        assertFalse(killmail.isFinalBlow());
+        assertEquals(1L, killmail.getFinalBlowAttackerId());
     }
 
     @Test
@@ -86,7 +84,7 @@ public class KillmailParserTest {
         final Collection collection = Collections.newArrayList(object1, object2);
         JSONArray data = new JSONArray(collection);
 
-        List<Killmail> killmails = KillmailParser.parseKillmails(data, 1L);
+        List<Killmail> killmails = KillmailParser.parseKillmails(data);
 
         assertNotNull(killmails);
         assertEquals(2, killmails.size());
@@ -131,20 +129,19 @@ public class KillmailParserTest {
 
     @Test
     public void mapJsonToKillmail_issue22() throws Exception {
-        Killmail killmail = KillmailParser.parseKillmail(issue22, 96919940L);
+        Killmail killmail = KillmailParser.parseKillmail(issue22);
 
         assertNotNull(killmail);
-        assertEquals(96919940L, killmail.getCharacterId());
         assertEquals(64870712L, killmail.getKillId());
         assertEquals(30001204L, killmail.getSolarSystemId());
         assertEquals("2017-09-24 08:18:33", killmail.getKillTime());
-        assertEquals(1, killmail.getAttackerCount());
+        assertEquals(1, killmail.getAttackerIds().size());
         assertEquals(259230154L, killmail.getTotalValue());
         assertEquals(50, killmail.getPoints());
         assertEquals(false, killmail.isNpc());
         assertEquals(90013607L, killmail.getVictimId());
         assertEquals("Red Alliance", killmail.getVictimAlliance());
-        assertTrue(killmail.isFinalBlow());
+        assertEquals(96919940L, killmail.getFinalBlowAttackerId());
     }
 
     private final JSONObject issue22 = new JSONObject("{\n"

@@ -53,13 +53,15 @@ public class PlayerStatsResource {
         if (!oneByLogin.isPresent()) {
             return ResponseEntity.badRequest().body("Could not resolve user.");
         }
-        return ResponseEntity.ok(killmailRepository.findByCharacterId(oneByLogin.get().getCharacterId())
-                                                   .stream().map(this::createMailDto).collect(Collectors.toList()));
+        return ResponseEntity.ok(killmailRepository.findByAttackerId(oneByLogin.get().getCharacterId())
+                                                   .stream()
+                                                   .map(mail -> createMailDto(mail, oneByLogin.get().getCharacterId()))
+                                                   .collect(Collectors.toList()));
     }
 
-    private KillmailDto createMailDto(final Killmail mail) {
+    private KillmailDto createMailDto(final Killmail mail, final long characterId) {
         KillmailDto dto = new KillmailDto();
-        dto.setCoins(calculateCoins(mail));
+        dto.setCoins(calculateCoins(mail, characterId));
         dto.setKillmailId(mail.getKillId());
         dto.setKillTime(mail.getKillTime());
         dto.setVictimAlliance(mail.getVictimAlliance());

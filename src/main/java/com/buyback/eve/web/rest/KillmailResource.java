@@ -43,18 +43,17 @@ public class KillmailResource {
      * Adds a killmail if it doesn't exist yet.
      *
      * @param killmailId
-     * @param characterId
      * @return
      */
-    @PostMapping("/{killmailId}/{characterId}")
-    public ResponseEntity addKillmail(@PathVariable("killmailId") Long killmailId, @PathVariable("characterId") Long characterId) {
+    @PostMapping("/{killmailId}")
+    public ResponseEntity addKillmail(@PathVariable("killmailId") Long killmailId) {
         log.info("Adding Killmail manually. ID={}", killmailId);
 
         Optional<Killmail> existingKill = killmailRepository.findByKillId(killmailId);
         if (!existingKill.isPresent()) {
             Optional<JSONObject> jsonObject = jsonRequestService.getKillmail(killmailId);
             if (jsonObject.isPresent()) {
-                Killmail killmail = parseKillmail(jsonObject.get(), characterId);
+                Killmail killmail = parseKillmail(jsonObject.get());
                 killmailPuller.filterAndSaveKillmails(Collections.singletonList(killmail));
             }
         }
