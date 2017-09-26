@@ -11,6 +11,7 @@ import com.buyback.eve.repository.KillmailRepository;
 import com.buyback.eve.repository.UserRepository;
 import static com.buyback.eve.service.KillmailParser.parseKillmails;
 
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -53,10 +54,11 @@ public class KillmailPuller {
 
     void pullKillmails(Long duration) {
         userRepository.findAll().stream().filter(user -> user.getCharacterId() != null)
-                      .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId(), duration).ifPresent(jsonArray -> {
+                      .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId(), duration).ifPresent(jsonBody -> {
+                          JSONArray array = jsonBody.getArray();
                           log.info("Adding killmails for characterId={}", user.getCharacterId());
-                          if (jsonArray.length() > 0) {
-                              List<Killmail> killmails = parseKillmails(jsonArray);
+                          if (array.length() > 0) {
+                              List<Killmail> killmails = parseKillmails(array);
                               filterAndSaveKillmails(killmails);
                           }
         }));

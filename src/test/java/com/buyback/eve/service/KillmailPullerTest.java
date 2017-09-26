@@ -10,6 +10,7 @@ import com.buyback.eve.domain.Killmail;
 import com.buyback.eve.domain.User;
 import com.buyback.eve.repository.KillmailRepository;
 import com.buyback.eve.repository.UserRepository;
+import com.mashape.unirest.http.JsonNode;
 import static com.buyback.eve.service.KillmailPuller.HOUR;
 
 import org.json.JSONArray;
@@ -141,7 +142,7 @@ public class KillmailPullerTest {
         User user = new User();
         user.setCharacterId(2L);
         when(userRepo.findAll()).thenReturn(Collections.singletonList(user));
-        when(requestService.getKillmails(2L, 1L)).thenReturn(Optional.of(new JSONArray("[]")));
+        when(requestService.getKillmails(2L, 1L)).thenReturn(Optional.of(new JsonNode("[]")));
 
         sut.pullKillmails(1L);
 
@@ -153,7 +154,7 @@ public class KillmailPullerTest {
         User user = new User();
         user.setCharacterId(2L);
         when(userRepo.findAll()).thenReturn(Collections.singletonList(user));
-        when(requestService.getKillmails(2L, 1L)).thenReturn(Optional.of(new JSONArray("[{}]")));
+        when(requestService.getKillmails(2L, 1L)).thenReturn(Optional.of(new JsonNode("[{}]")));
         doNothing().when(sut).filterAndSaveKillmails(emptyList());
 
         sut.pullKillmails(1L);
