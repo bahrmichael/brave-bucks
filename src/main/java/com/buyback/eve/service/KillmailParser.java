@@ -21,8 +21,8 @@ public class KillmailParser {
 
     public static Killmail parseKillmail(final JSONObject object) {
         if (null == object) {
-            log.error("JSONObject for characterID {} was null. Skipping.");
-            throw new IllegalArgumentException("KillmailParser#parseKillmail JSONObject was null.");
+            log.error("A JSONObject was null. Skipping.");
+            return null;
         }
         try {
             Killmail result = new Killmail();

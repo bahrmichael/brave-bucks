@@ -193,4 +193,9 @@ public class KillmailParserTest {
                                                       + "            \"npc\": false\n"
                                                       + "        }\n"
                                                       + "    }");
+
+    @Test
+    public void parseKillmail_nullReturnsNull() throws Exception {
+        assertNull(KillmailParser.parseKillmail(null));
+    }
 }

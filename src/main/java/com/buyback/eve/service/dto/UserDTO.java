@@ -4,10 +4,6 @@ import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
-import com.buyback.eve.config.Constants;
 import com.buyback.eve.domain.Authority;
 import com.buyback.eve.domain.User;
 
@@ -21,8 +17,6 @@ public class UserDTO {
     private String id;
 
     @NotBlank
-    @Pattern(regexp = Constants.LOGIN_REGEX)
-    @Size(min = 1, max = 50)
     private String login;
 
     private boolean activated = false;
