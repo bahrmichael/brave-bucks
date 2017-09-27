@@ -6,6 +6,7 @@ import com.buyback.eve.domain.Killmail;
 import com.buyback.eve.repository.KillmailRepository;
 import com.buyback.eve.service.JsonRequestService;
 import com.buyback.eve.service.KillmailPuller;
+import com.mashape.unirest.http.JsonNode;
 import static com.buyback.eve.service.KillmailParserTest.object1;
 
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class KillmailResourceTest {
     @Test
     public void addKillmail_whenJsonRequestSucceeds_savesAKillmail() throws Exception {
         when(repo.findByKillId(1L)).thenReturn(Optional.empty());
-        when(jsonService.getKillmail(1L)).thenReturn(Optional.of(object1));
+        when(jsonService.getKillmail(1L)).thenReturn(Optional.of(new JsonNode(object1.toString())));
 
         ResponseEntity responseEntity = sut.addKillmail(1L);
 

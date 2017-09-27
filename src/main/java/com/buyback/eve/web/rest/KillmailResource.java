@@ -8,6 +8,7 @@ import com.buyback.eve.domain.Killmail;
 import com.buyback.eve.repository.KillmailRepository;
 import com.buyback.eve.service.JsonRequestService;
 import com.buyback.eve.service.KillmailPuller;
+import com.mashape.unirest.http.JsonNode;
 import static com.buyback.eve.service.KillmailParser.parseKillmail;
 
 import org.json.JSONObject;
@@ -54,9 +55,9 @@ public class KillmailResource {
 
         Optional<Killmail> existingKill = killmailRepository.findByKillId(killmailId);
         if (!existingKill.isPresent()) {
-            Optional<JSONObject> jsonObject = jsonRequestService.getKillmail(killmailId);
-            if (jsonObject.isPresent()) {
-                Killmail killmail = parseKillmail(jsonObject.get());
+            Optional<JsonNode> jsonNode = jsonRequestService.getKillmail(killmailId);
+            if (jsonNode.isPresent()) {
+                Killmail killmail = parseKillmail(jsonNode.get().getArray().getJSONObject(0));
                 killmailPuller.filterAndSaveKillmails(Collections.singletonList(killmail));
             }
         }
