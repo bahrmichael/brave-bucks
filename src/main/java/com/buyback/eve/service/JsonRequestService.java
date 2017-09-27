@@ -23,6 +23,7 @@ public class JsonRequestService {
     private static final String UNIREST_EXCEPTION = "Failed to get data from url={}";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private Map<String, String> defaultHeaders;
+
     public JsonRequestService() {
         defaultHeaders = new HashMap<>();
         defaultHeaders.put("User-Agent", "EvE: Rihan Shazih");
@@ -65,7 +66,7 @@ public class JsonRequestService {
         return executeRequest(getRequest);
     }
 
-    private Optional<JsonNode> executeRequest(final BaseRequest request) {
+    Optional<JsonNode> executeRequest(final BaseRequest request) {
         try {
             HttpResponse<JsonNode> response = request.asJson();
             if (response.getStatus() != 200) {
@@ -79,18 +80,11 @@ public class JsonRequestService {
         }
     }
 
-    private GetRequest get(String url, Map<String, String> headers) {
-        return Unirest.get(url)
-                      .headers(defaultHeaders)
-                      .headers(headers);
+    GetRequest get(String url, Map<String, String> headers) {
+        return Unirest.get(url).headers(defaultHeaders).headers(headers);
     }
 
-    private MultipartBody post(final String url, final String username, final String password,
-                               final Map<String, String> headers, final Map<String, Object> fields) {
-        return Unirest.post(url)
-                      .basicAuth(username, password)
-                      .headers(defaultHeaders)
-                      .headers(headers)
-                      .fields(fields);
+    MultipartBody post(final String url, final String username, final String password, final Map<String, String> headers, final Map<String, Object> fields) {
+        return Unirest.post(url).basicAuth(username, password).headers(defaultHeaders).headers(headers).fields(fields);
     }
 }
