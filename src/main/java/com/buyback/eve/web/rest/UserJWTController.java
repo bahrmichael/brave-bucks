@@ -64,37 +64,63 @@ public class UserJWTController {
     @Timed
     public ResponseEntity authorize(@RequestParam("code") String code, @RequestParam("state") String state, HttpServletResponse response) {
 
-        String characterName = null;
-        Long characterId = null;
-        Optional<JsonNode> accessToken = requestService.getAccessToken(clientId, clientSecret, code);
-        if (accessToken.isPresent()) {
-            Optional<JsonNode> detailsOptional = requestService.getUserDetails(accessToken.get().getObject().getString("access_token"));
-            if (detailsOptional.isPresent()) {
-                JSONObject details = detailsOptional.get().getObject();
-                characterName = details.getString("CharacterName");
-                characterId = details.getLong("CharacterID");
-            }
-        }
-
-        if (null == characterId || null == characterName) {
+        CharacterDetails characterDetails = getCharacterDetails(clientId, clientSecret, code);
+        if (null == characterDetails) {
             return new ResponseEntity<>("AuthenticationException", HttpStatus.UNAUTHORIZED);
         }
 
-        if (!userRepository.findOneByLogin(characterName).isPresent()) {
-            userService.createUser(characterName, characterId);
-        }
+        createIfNotExists(characterDetails);
 
         try {
             final GrantedAuthority authority = new SimpleGrantedAuthority(AuthoritiesConstants.USER);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(characterName, characterName, Collections.singletonList(authority));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(characterDetails.getName(), characterDetails.getName(), Collections.singletonList(authority));
             String jwt = tokenProvider.createToken(authentication, true);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             response.addHeader(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
             return ResponseEntity.ok(new JWTToken(jwt));
         } catch (AuthenticationException ae) {
             log.trace("Authentication exception trace: {}", ae);
             return new ResponseEntity<>(Collections.singletonMap("AuthenticationException",
                 ae.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    void createIfNotExists(final CharacterDetails characterDetails) {
+        if (!userRepository.findOneByLogin(characterDetails.getName()).isPresent()) {
+            userService.createUser(characterDetails.getName(), characterDetails.getId());
+        }
+    }
+
+    CharacterDetails getCharacterDetails(final String clientId, final String clientSecret, final String code) {
+        final CharacterDetails[] characterDetails = {null};
+        requestService.getAccessToken(clientId, clientSecret, code).ifPresent(response -> {
+            JSONObject object = response.getObject();
+            String accessToken = object.getString("access_token");
+            requestService.getUserDetails(accessToken).ifPresent(detailsResponse -> {
+                JSONObject details = detailsResponse.getObject();
+                String characterName = details.getString("CharacterName");
+                Long characterId = details.getLong("CharacterID");
+                characterDetails[0] = new CharacterDetails(characterName, characterId);
+            });
+        });
+        return characterDetails[0];
+    }
+
+    static class CharacterDetails {
+        private final String name;
+        private final Long id;
+
+        CharacterDetails(final String name, final Long id) {
+            this.name = name;
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Long getId() {
+            return id;
         }
     }
 
