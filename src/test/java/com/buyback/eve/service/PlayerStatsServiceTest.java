@@ -16,7 +16,11 @@ import static com.buyback.eve.service.DateUtil.getYearMonth;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.flapdoodle.embed.process.collections.Collections;
@@ -37,7 +41,7 @@ public class PlayerStatsServiceTest {
 
         when(userRepositoryMock.findOneByLogin(username)).thenReturn(createUser(characterId));
         when(killmailRepository.findByAttackerId(characterId)).thenReturn(createKillList(characterId));
-        when(poolRepository.findByYearMonth(getYearMonth(LocalDate.now()))).thenReturn(createPool());
+        when(poolRepository.findByYearMonth(getYearMonth(LocalDate.now()))).thenReturn(createPool(COINS));
 
         PlayerStats playerStats = sut.getStatsForUser(username);
 
@@ -47,11 +51,28 @@ public class PlayerStatsServiceTest {
         assertEquals(POOL, playerStats.getPotentialPayout());
     }
 
-    private Optional<Pool> createPool() {
+    @Test
+    public void getStatsForUser_with0ClaimedCoins_thenPayoutIs0() throws Exception {
+        String username = "someUser";
+        long characterId = 1L;
+
+        when(userRepositoryMock.findOneByLogin(username)).thenReturn(createUser(characterId));
+        when(killmailRepository.findByAttackerId(characterId)).thenReturn(createKillList(characterId));
+        when(poolRepository.findByYearMonth(getYearMonth(LocalDate.now()))).thenReturn(createPool(0L));
+
+        PlayerStats playerStats = sut.getStatsForUser(username);
+
+        assertEquals(COINS, playerStats.getCoins());
+        assertEquals(5L, playerStats.getDefenseKills());
+        assertEquals(1L, playerStats.getFinalBlows());
+        assertEquals(0L, playerStats.getPotentialPayout());
+    }
+
+    private Optional<Pool> createPool(final Long coins) {
         final Pool pool = new Pool();
         pool.setYearMonth(getYearMonth(LocalDate.now()));
         pool.setBalance(POOL);
-        pool.setClaimedCoins(COINS);
+        pool.setClaimedCoins(coins);
         return Optional.of(pool);
     }
 
@@ -71,5 +92,35 @@ public class PlayerStatsServiceTest {
         final User user = new User();
         user.setCharacterId(characterId);
         return Optional.of(user);
+    }
+
+    @Test
+    public void getStatsForCurrentUser_callsGetStatsForUser() throws Exception {
+        PlayerStatsService sut = spy(new PlayerStatsService(null, null, null));
+        doReturn(null).when(sut).getStatsForUser(anyString());
+
+        sut.getStatsForCurrentUser();
+
+        verify(sut).getStatsForUser(anyString());
+    }
+
+    @Test
+    public void getStatusForUser_withoutUserResult_returnsNull() throws Exception {
+        when(userRepositoryMock.findOneByLogin(anyString())).thenReturn(Optional.empty());
+
+        PlayerStats statsForUser = sut.getStatsForUser("");
+
+        assertNull(statsForUser);
+    }
+
+    @Test
+    public void getStatusForUser_withoutPoolResult_returnsNull() throws Exception {
+        when(userRepositoryMock.findOneByLogin(anyString())).thenReturn(Optional.of(new User()));
+        when(poolRepository.findByYearMonth(anyString())).thenReturn(Optional.empty());
+
+        PlayerStats statsForUser = sut.getStatsForUser("");
+
+        assertNull(statsForUser);
+
     }
 }

@@ -3,19 +3,25 @@ package com.buyback.eve.service;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import static java.util.Collections.emptyList;
 
 import com.buyback.eve.domain.Killmail;
+import com.buyback.eve.domain.User;
 import com.buyback.eve.repository.KillmailRepository;
+import com.buyback.eve.repository.UserRepository;
+import com.mashape.unirest.http.JsonNode;
 import static com.buyback.eve.service.KillmailPuller.HOUR;
 
+import org.json.JSONArray;
 import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,7 +29,9 @@ import static org.mockito.Mockito.when;
 public class KillmailPullerTest {
 
     private KillmailRepository killmailRepo = mock(KillmailRepository.class);
-    private KillmailPuller sut = spy(new KillmailPuller(killmailRepo, null, null));
+    private UserRepository userRepo = mock(UserRepository.class);
+    private JsonRequestService requestService = mock(JsonRequestService.class);
+    private KillmailPuller sut = spy(new KillmailPuller(killmailRepo, userRepo, requestService));
 
     @Test
     public void pullKillmails() throws Exception {
@@ -106,5 +114,51 @@ public class KillmailPullerTest {
         sut.filterAndSaveKillmails(killmails);
 
         verify(killmailRepo).save(anyList());
+    }
+
+    @Test
+    public void pullKillmails_userWithoutCharacterId_doesNothing() throws Exception {
+        when(userRepo.findAll()).thenReturn(Collections.singletonList(new User()));
+
+        sut.pullKillmails(1L);
+
+        verify(requestService, never()).getKillmails(null, 1L);
+    }
+
+    @Test
+    public void pullKillmails_requestReturnsNothing_doesNothing() throws Exception {
+        User user = new User();
+        user.setCharacterId(2L);
+        when(userRepo.findAll()).thenReturn(Collections.singletonList(user));
+        when(requestService.getKillmails(2L, 1L)).thenReturn(Optional.empty());
+
+        sut.pullKillmails(1L);
+
+        verify(killmailRepo, never()).save(anyList());
+    }
+
+    @Test
+    public void pullKillmails_requestReturnsEmptyArray_doesntSaveAny() throws Exception {
+        User user = new User();
+        user.setCharacterId(2L);
+        when(userRepo.findAll()).thenReturn(Collections.singletonList(user));
+        when(requestService.getKillmails(2L, 1L)).thenReturn(Optional.of(new JsonNode("[]")));
+
+        sut.pullKillmails(1L);
+
+        verify(killmailRepo, never()).save(anyList());
+    }
+
+    @Test
+    public void pullKillmails_requestReturnsSomething_doesSave() throws Exception {
+        User user = new User();
+        user.setCharacterId(2L);
+        when(userRepo.findAll()).thenReturn(Collections.singletonList(user));
+        when(requestService.getKillmails(2L, 1L)).thenReturn(Optional.of(new JsonNode("[{}]")));
+        doNothing().when(sut).filterAndSaveKillmails(emptyList());
+
+        sut.pullKillmails(1L);
+
+        verify(sut).filterAndSaveKillmails(emptyList());
     }
 }
