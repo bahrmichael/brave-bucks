@@ -37,4 +37,12 @@ public class DateUtilTest {
 
         assertTrue(DateUtil.isCurrentMonth(killmail));
     }
+
+    @Test
+    public void getLocalDate() throws Exception {
+        LocalDate date = DateUtil.getLocalDate("2017-01-10 17:53:39");
+        assertEquals(2017, date.getYear());
+        assertEquals(1, date.getMonthValue());
+        assertEquals(10, date.getDayOfMonth());
+    }
 }

@@ -1,7 +1,6 @@
 package com.buyback.eve.web.rest;
 
 import java.util.Collections;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,7 +12,6 @@ import com.buyback.eve.service.JsonRequestService;
 import com.buyback.eve.service.UserService;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mashape.unirest.http.JsonNode;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;

@@ -5,10 +5,10 @@ import { JhiPaginationUtil } from 'ng-jhipster';
 
 import { UserMgmtComponent } from './user-management.component';
 import { UserMgmtDetailComponent } from './user-management-detail.component';
-import { UserDialogComponent } from './user-management-dialog.component';
 import { UserDeleteDialogComponent } from './user-management-delete-dialog.component';
 
 import { Principal } from '../../shared';
+import {UserDialogComponent} from "./user-management-dialog.component";
 
 @Injectable()
 export class UserResolve implements CanActivate {
@@ -57,11 +57,6 @@ export const userMgmtRoute: Routes = [
 ];
 
 export const userDialogRoute: Routes = [
-    {
-        path: 'user-management-new',
-        component: UserDialogComponent,
-        outlet: 'popup'
-    },
     {
         path: 'user-management/:login/edit',
         component: UserDialogComponent,

@@ -8,6 +8,9 @@ import com.buyback.eve.domain.Killmail;
 
 public class DateUtil {
 
+    private DateUtil() {
+    }
+
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     static boolean isCurrentMonth(final Killmail killmail) {
@@ -20,7 +23,7 @@ public class DateUtil {
         return String.format("%d-%02d", localDate.getYear(), localDate.getMonthValue());
     }
 
-    static LocalDate getLocalDate(final String killTime) {
-        return LocalDateTime.parse(killTime, FORMATTER).toLocalDate();
+    static LocalDate getLocalDate(final String date) {
+        return LocalDateTime.parse(date, FORMATTER).toLocalDate();
     }
 }

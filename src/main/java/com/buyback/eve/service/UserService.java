@@ -39,7 +39,6 @@ public class UserService {
     }
 
     public User createUser(String login, final Long characterId) {
-
         User newUser = new User();
         Authority authority = authorityRepository.findOne(AuthoritiesConstants.USER);
         Set<Authority> authorities = new HashSet<>();
@@ -55,21 +54,6 @@ public class UserService {
         return newUser;
     }
 
-    public User createUser(UserDTO userDTO) {
-        User user = new User();
-        user.setLogin(userDTO.getLogin());
-        if (userDTO.getAuthorities() != null) {
-            Set<Authority> authorities = new HashSet<>();
-            userDTO.getAuthorities().forEach(
-                authority -> authorities.add(authorityRepository.findOne(authority))
-            );
-            user.setAuthorities(authorities);
-        }
-        user.setActivated(true);
-        userRepository.save(user);
-        log.debug("Created Information for User: {}", user);
-        return user;
-    }
 
     /**
      * Update all information for a specific user, and return the modified user.

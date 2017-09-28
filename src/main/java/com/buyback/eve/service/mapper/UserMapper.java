@@ -45,13 +45,6 @@ public class UserMapper {
         }
     }
 
-    public List<User> userDTOsToUsers(List<UserDTO> userDTOs) {
-        return userDTOs.stream()
-            .filter(Objects::nonNull)
-            .map(this::userDTOToUser)
-            .collect(Collectors.toList());
-    }
-
     public User userFromId(String id) {
         if (id == null) {
             return null;
