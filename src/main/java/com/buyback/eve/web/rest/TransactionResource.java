@@ -1,5 +1,6 @@
 package com.buyback.eve.web.rest;
 
+import com.buyback.eve.security.AuthoritiesConstants;
 import com.codahale.metrics.annotation.Timed;
 import com.buyback.eve.domain.Transaction;
 import com.buyback.eve.service.TransactionService;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -48,6 +50,7 @@ public class TransactionResource {
      */
     @PostMapping("/transactions")
     @Timed
+    @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) throws URISyntaxException {
         log.debug("REST request to save Transaction : {}", transaction);
         if (transaction.getId() != null) {
@@ -70,6 +73,7 @@ public class TransactionResource {
      */
     @PutMapping("/transactions")
     @Timed
+    @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Transaction> updateTransaction(@RequestBody Transaction transaction) throws URISyntaxException {
         log.debug("REST request to update Transaction : {}", transaction);
         if (transaction.getId() == null) {
@@ -89,6 +93,7 @@ public class TransactionResource {
      */
     @GetMapping("/transactions")
     @Timed
+    @Secured(AuthoritiesConstants.MANAGER)
     public ResponseEntity<List<Transaction>> getAllTransactions(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Transactions");
         Page<Transaction> page = transactionService.findAll(pageable);
@@ -104,23 +109,10 @@ public class TransactionResource {
      */
     @GetMapping("/transactions/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Transaction> getTransaction(@PathVariable String id) {
         log.debug("REST request to get Transaction : {}", id);
         Transaction transaction = transactionService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(transaction));
-    }
-
-    /**
-     * DELETE  /transactions/:id : delete the "id" transaction.
-     *
-     * @param id the id of the transaction to delete
-     * @return the ResponseEntity with status 200 (OK)
-     */
-    @DeleteMapping("/transactions/{id}")
-    @Timed
-    public ResponseEntity<Void> deleteTransaction(@PathVariable String id) {
-        log.debug("REST request to delete Transaction : {}", id);
-        transactionService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id)).build();
     }
 }
