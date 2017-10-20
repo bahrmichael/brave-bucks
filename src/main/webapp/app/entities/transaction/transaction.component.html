@@ -11,7 +11,7 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="user"><span>User</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="instant"><span>Instant</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="instant"><span>Date</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="amount"><span>Amount</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="type"><span>Type</span> <span class="fa fa-sort"></span></th>
             <th *jhiHasAnyAuthority="'ROLE_ADMIN'"></th>
@@ -20,8 +20,8 @@
             <tbody>
             <tr *ngFor="let transaction of transactions ;trackBy: trackId">
                 <td>{{transaction.user}}</td>
-                <td>{{transaction.instant | date:'medium'}}</td>
-                <td>{{transaction.amount}}</td>
+                <td>{{transaction.instant | date:'short'}}</td>
+                <td>{{transaction.amount | number:'1.0-0'}} ISK</td>
                 <td>{{transaction.type}}</td>
                 <td *jhiHasAnyAuthority="'ROLE_ADMIN'" class="text-right">
                     <div class="btn-group flex-btn-group-container">

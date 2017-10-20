@@ -4,6 +4,8 @@ import com.buyback.eve.domain.Transaction;
 import com.buyback.eve.domain.enumeration.PayoutStatus;
 import com.buyback.eve.domain.enumeration.TransactionType;
 import com.buyback.eve.repository.TransactionRepository;
+import com.buyback.eve.security.AuthoritiesConstants;
+import com.buyback.eve.security.SecurityUtils;
 import com.codahale.metrics.annotation.Timed;
 import com.buyback.eve.domain.Payout;
 
@@ -19,11 +21,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,17 +60,21 @@ public class PayoutResource {
      */
     @PostMapping("/payouts")
     @Timed
-    public ResponseEntity<Payout> createPayout(@RequestBody Payout payout) throws URISyntaxException {
+    @Secured(AuthoritiesConstants.MANAGER)
+    public ResponseEntity<Payout> createPayout(@RequestBody final Payout payout) throws URISyntaxException {
         log.debug("REST request to save Payout : {}", payout);
         if (payout.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new payout cannot already have an ID")).body(null);
         }
-        Payout result = payoutRepository.save(payout);
+        payout.setLastModifiedBy(SecurityUtils.getCurrentUserLogin());
+        payout.setLastUpdated(Instant.now());
+
+        final Payout result = payoutRepository.save(payout);
 
         addTransactionIfPaid(result);
 
         return ResponseEntity.created(new URI("/api/payouts/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId()))
             .body(result);
     }
 
@@ -81,13 +89,14 @@ public class PayoutResource {
      */
     @PutMapping("/payouts")
     @Timed
-    public ResponseEntity<Payout> updatePayout(@RequestBody Payout payout) throws URISyntaxException {
+    @Secured(AuthoritiesConstants.MANAGER)
+    public ResponseEntity<Payout> updatePayout(@RequestBody final Payout payout) throws URISyntaxException {
         log.debug("REST request to update Payout : {}", payout);
         if (payout.getId() == null) {
             return createPayout(payout);
         }
 
-        Payout existing = payoutRepository.findOne(payout.getId());
+        final Payout existing = payoutRepository.findOne(payout.getId());
         if (null == existing) {
             return ResponseEntity.notFound().build();
         }
@@ -95,18 +104,21 @@ public class PayoutResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "badstatus", "A payout with status PAID cannot be modified.")).body(null);
         }
 
-        Payout result = payoutRepository.save(payout);
+        payout.setLastModifiedBy(SecurityUtils.getCurrentUserLogin());
+        payout.setLastUpdated(Instant.now());
+
+        final Payout result = payoutRepository.save(payout);
 
         addTransactionIfPaid(result);
 
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, payout.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, payout.getId()))
             .body(result);
     }
 
-    public void addTransactionIfPaid(final Payout result) {
+    private void addTransactionIfPaid(final Payout result) {
         if (PayoutStatus.PAID == result.getStatus()) {
-            transactionRepository.save(new Transaction(result.getUser(), result.getAmount(), TransactionType.PAYOUT));
+            transactionRepository.save(new Transaction(result.getUser(), -1 * result.getAmount(), TransactionType.PAYOUT));
         }
     }
 
@@ -118,6 +130,7 @@ public class PayoutResource {
      */
     @GetMapping("/payouts")
     @Timed
+    @Secured(AuthoritiesConstants.MANAGER)
     public ResponseEntity<List<Payout>> getAllPayouts(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Payouts");
         Page<Payout> page = payoutRepository.findAll(pageable);
@@ -133,6 +146,7 @@ public class PayoutResource {
      */
     @GetMapping("/payouts/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.MANAGER)
     public ResponseEntity<Payout> getPayout(@PathVariable String id) {
         log.debug("REST request to get Payout : {}", id);
         Payout payout = payoutRepository.findOne(id);
@@ -147,8 +161,18 @@ public class PayoutResource {
      */
     @DeleteMapping("/payouts/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.MANAGER)
     public ResponseEntity<Void> deletePayout(@PathVariable String id) {
         log.debug("REST request to delete Payout : {}", id);
+
+        final Payout existing = payoutRepository.findOne(id);
+        if (null == existing) {
+            return ResponseEntity.notFound().build();
+        }
+        if (PayoutStatus.PAID == existing.getStatus()) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "badstatus", "A payout with status PAID cannot be modified.")).body(null);
+        }
+
         payoutRepository.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id)).build();
     }

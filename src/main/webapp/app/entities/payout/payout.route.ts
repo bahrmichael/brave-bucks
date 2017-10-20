@@ -33,7 +33,7 @@ export const payoutRoute: Routes = [
             'pagingParams': PayoutResolvePagingParams
         },
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_MANAGER'],
             pageTitle: 'Payouts'
         },
         canActivate: [UserRouteAccessService]
@@ -41,7 +41,7 @@ export const payoutRoute: Routes = [
         path: 'payout/:id',
         component: PayoutDetailComponent,
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_MANAGER'],
             pageTitle: 'Payouts'
         },
         canActivate: [UserRouteAccessService]
@@ -53,7 +53,7 @@ export const payoutPopupRoute: Routes = [
         path: 'payout-new',
         component: PayoutPopupComponent,
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_MANAGER'],
             pageTitle: 'Payouts'
         },
         canActivate: [UserRouteAccessService],
@@ -63,7 +63,7 @@ export const payoutPopupRoute: Routes = [
         path: 'payout/:id/edit',
         component: PayoutPopupComponent,
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_MANAGER'],
             pageTitle: 'Payouts'
         },
         canActivate: [UserRouteAccessService],
@@ -73,7 +73,7 @@ export const payoutPopupRoute: Routes = [
         path: 'payout/:id/delete',
         component: PayoutDeletePopupComponent,
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_MANAGER'],
             pageTitle: 'Payouts'
         },
         canActivate: [UserRouteAccessService],

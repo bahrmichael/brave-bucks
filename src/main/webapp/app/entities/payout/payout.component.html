@@ -16,11 +16,8 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="user"><span>User</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="user"><span>Character Name</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="amount"><span>Amount</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="lastUpdated"><span>Last Updated</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="lastModifiedBy"><span>Last Modified By</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="status"><span>Status</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="details"><span>Details</span> <span class="fa fa-sort"></span></th>
             <th></th>
@@ -28,11 +25,8 @@
             </thead>
             <tbody>
             <tr *ngFor="let payout of payouts ;trackBy: trackId">
-                <td><a [routerLink]="['../payout', payout.id ]">{{payout.id}}</a></td>
                 <td>{{payout.user}}</td>
-                <td>{{payout.amount}}</td>
-                <td>{{payout.lastUpdated | date:'medium'}}</td>
-                <td>{{payout.lastModifiedBy}}</td>
+                <td>{{payout.amount | number:'1.0-0'}} ISK</td>
                 <td>{{payout.status}}</td>
                 <td>{{payout.details}}</td>
                 <td class="text-right">
