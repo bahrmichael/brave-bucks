@@ -1,13 +1,15 @@
 package com.buyback.eve.service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import static java.util.stream.Collectors.toList;
 
 import javax.annotation.PostConstruct;
 
 import com.buyback.eve.domain.Killmail;
+import com.buyback.eve.domain.SolarSystem;
 import com.buyback.eve.repository.KillmailRepository;
+import com.buyback.eve.repository.SolarSystemRepository;
 import com.buyback.eve.repository.UserRepository;
 import static com.buyback.eve.service.KillmailParser.parseKillmails;
 
@@ -23,17 +25,21 @@ public class KillmailPuller {
 
     static final long HOUR = 3600L;
     private final Logger log = LoggerFactory.getLogger(getClass());
+    private List<Long> systems;
 
     private final KillmailRepository killmailRepository;
     private final UserRepository userRepository;
     private final JsonRequestService jsonRequestService;
+    private final SolarSystemRepository solarSystemRepository;
 
     public KillmailPuller(final KillmailRepository killmailRepository,
                           final UserRepository userRepository,
-                          final JsonRequestService jsonRequestService) {
+                          final JsonRequestService jsonRequestService,
+                          final SolarSystemRepository solarSystemRepository) {
         this.killmailRepository = killmailRepository;
         this.userRepository = userRepository;
         this.jsonRequestService = jsonRequestService;
+        this.solarSystemRepository = solarSystemRepository;
     }
 
     @PostConstruct
@@ -48,13 +54,17 @@ public class KillmailPuller {
     }
 
     public void longPull() {
-        long maxDuration = HOUR * 24 * 7L;
+        final long maxDuration = HOUR * 24 * 7L;
         pullKillmails(maxDuration);
     }
 
     void pullKillmails(final Long duration) {
+        systems = new ArrayList<>();
+        solarSystemRepository.findAll().stream().mapToLong(SolarSystem::getSystemId).forEach(id -> systems.add(id));
+
         userRepository.findAll().stream().filter(user -> user.getCharacterId() != null)
-                      .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId(), duration).ifPresent(jsonBody -> {
+                      .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId(), duration)
+                      .ifPresent(jsonBody -> {
                           final JSONArray array = jsonBody.getArray();
                           log.info("Adding killmails for characterId={}", user.getCharacterId());
                           if (array.length() > 0) {
@@ -70,7 +80,7 @@ public class KillmailPuller {
                                            .filter(this::isInBraveSystem)
                                            .filter(this::isNotAnEmptyPod)
                                            .filter(this::isNotInFleet)
-                                           .collect(Collectors.toList());
+                                           .collect(toList());
         killmailRepository.save(filtered);
     }
 
@@ -83,29 +93,12 @@ public class KillmailPuller {
         return killmail.getTotalValue() != 10_000L;
     }
 
-    static final List<Long> systems = Stream.of(
-                                    30001198L, // GE
-                                    30001162L, // V-3
-                                    30001156L, // B-3
-                                    30001159L, // HY-
-                                    30001204L, // YHN
-                                    30001200L, // 3GD
-                                    30001831L, // DSS (stain)
-                                    30001201L, // 4M
-                                    30001199L, // 3-OK
-                                    30001203L, // AX-DOT
-                                    30001213L, // MUXX
-                                    30001214L, // E1
-                                    30001202L, // MY
-                                    30001219L, // 8B
-                                    30001221L, // HP
-                                    30001220L, // SNVF
-                                    30001222L, // V2-V
-                                    30001224L // CX65
-                                  ).collect(Collectors.toList());
-
     boolean isInBraveSystem(final Killmail killmail) {
         return systems.contains(killmail.getSolarSystemId());
+    }
+
+    public void setSystems(final List<Long> systems) {
+        this.systems = systems;
     }
 
     boolean isVictimNotBrave(final Killmail killmail) {
