@@ -31,6 +31,16 @@ public class Transaction implements Serializable {
     @Field("type")
     private TransactionType type;
 
+    public Transaction() {
+    }
+
+    public Transaction(final String user, final Double amount, final TransactionType type) {
+        this.user = user;
+        instant = Instant.now();
+        this.amount = amount;
+        this.type = type;
+    }
+
     // jhipster-needle-entity-add-field - Jhipster will add fields here, do not remove
     public String getId() {
         return id;
