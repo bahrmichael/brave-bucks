@@ -16,4 +16,7 @@ public interface KillmailRepository extends MongoRepository<Killmail, String> {
     List<Killmail> findByAttackerId(long attackerId);
 
     Optional<Killmail> findByKillId(long killmailId);
+
+    @Query("{ payoutCalculated: false }")
+    List<Killmail> findPending();
 }
