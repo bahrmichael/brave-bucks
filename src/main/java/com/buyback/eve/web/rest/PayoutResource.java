@@ -38,6 +38,7 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class PayoutResource {
 
+    public static final double PAYOUT_THRESHOLD = 100000000.0;
     private final Logger log = LoggerFactory.getLogger(PayoutResource.class);
 
     private static final String ENTITY_NAME = "payout";
@@ -76,6 +77,25 @@ public class PayoutResource {
         return ResponseEntity.created(new URI("/api/payouts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId()))
             .body(result);
+    }
+
+    @PutMapping("/payouts/trigger")
+    @Timed
+    @Secured(AuthoritiesConstants.USER)
+    public ResponseEntity<Payout> triggerPayoutRequest() {
+        if (payoutRepository.findOneByUser(SecurityUtils.getCurrentUserLogin()).isPresent()) {
+            return ResponseEntity.status(409).headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "requestexists", "Only one open request may exist at a time.")).body(null);
+        }
+
+        final double sum = transactionRepository.findAllByUser().stream().mapToDouble(Transaction::getAmount).sum();
+        if (sum < PAYOUT_THRESHOLD) {
+            return ResponseEntity.status(412).headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "thresholdnotreached", "Payouts can only be requested from " + PAYOUT_THRESHOLD + " ISK.")).body(null);
+        }
+
+        final Payout payout = new Payout(SecurityUtils.getCurrentUserLogin(), sum, SecurityUtils.getCurrentUserLogin(), PayoutStatus.REQUESTED, null);
+        payoutRepository.save(payout);
+
+        return ResponseEntity.ok().build();
     }
 
     /**

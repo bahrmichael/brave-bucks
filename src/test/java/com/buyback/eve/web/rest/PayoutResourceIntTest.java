@@ -54,7 +54,7 @@ public class PayoutResourceIntTest {
     private static final String DEFAULT_LAST_MODIFIED_BY = "AAAAAAAAAA";
     private static final String UPDATED_LAST_MODIFIED_BY = "BBBBBBBBBB";
 
-    private static final PayoutStatus DEFAULT_STATUS = PayoutStatus.PENDING;
+    private static final PayoutStatus DEFAULT_STATUS = PayoutStatus.REQUESTED;
     private static final PayoutStatus UPDATED_STATUS = PayoutStatus.PAID;
 
     private static final String DEFAULT_DETAILS = "AAAAAAAAAA";

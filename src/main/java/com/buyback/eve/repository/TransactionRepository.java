@@ -1,5 +1,7 @@
 package com.buyback.eve.repository;
 
+import java.util.List;
+
 import com.buyback.eve.domain.Transaction;
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +14,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 @Repository
 public interface TransactionRepository extends MongoRepository<Transaction, String> {
 
+    List<Transaction> findAllByUser();
 }
