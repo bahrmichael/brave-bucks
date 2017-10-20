@@ -1,13 +1,18 @@
 package com.buyback.eve.web.rest;
 
+import com.buyback.eve.service.JsonRequestService;
 import com.codahale.metrics.annotation.Timed;
 import com.buyback.eve.domain.SolarSystem;
 
 import com.buyback.eve.repository.SolarSystemRepository;
 import com.buyback.eve.web.rest.util.HeaderUtil;
 import com.buyback.eve.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
+import com.mashape.unirest.http.JsonNode;
+
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiParam;
+
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -35,8 +40,11 @@ public class SolarSystemResource {
     private static final String ENTITY_NAME = "solarSystem";
 
     private final SolarSystemRepository solarSystemRepository;
-    public SolarSystemResource(SolarSystemRepository solarSystemRepository) {
+    private final JsonRequestService jsonRequestService;
+    public SolarSystemResource(SolarSystemRepository solarSystemRepository,
+                               final JsonRequestService jsonRequestService) {
         this.solarSystemRepository = solarSystemRepository;
+        this.jsonRequestService = jsonRequestService;
     }
 
     /**
@@ -53,32 +61,23 @@ public class SolarSystemResource {
         if (solarSystem.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new solarSystem cannot already have an ID")).body(null);
         }
-        SolarSystem result = solarSystemRepository.save(solarSystem);
-        return ResponseEntity.created(new URI("/api/solar-systems/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
-    }
 
-    /**
-     * PUT  /solar-systems : Updates an existing solarSystem.
-     *
-     * @param solarSystem the solarSystem to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated solarSystem,
-     * or with status 400 (Bad Request) if the solarSystem is not valid,
-     * or with status 500 (Internal Server Error) if the solarSystem couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PutMapping("/solar-systems")
-    @Timed
-    public ResponseEntity<SolarSystem> updateSolarSystem(@RequestBody SolarSystem solarSystem) throws URISyntaxException {
-        log.debug("REST request to update SolarSystem : {}", solarSystem);
-        if (solarSystem.getId() == null) {
-            return createSolarSystem(solarSystem);
+        solarSystem.setSystemName(solarSystem.getSystemName().toUpperCase());
+
+        Optional<JsonNode> optional = jsonRequestService.searchSolarSystem(solarSystem.getSystemName());
+        if (optional.isPresent()) {
+            JSONObject object = optional.get().getObject();
+            if (object.has("solarsystem")) {
+                long systemId = object.getJSONArray("solarsystem").getLong(0);
+                solarSystem.setSystemId(systemId);
+                SolarSystem result = solarSystemRepository.save(solarSystem);
+                return ResponseEntity.created(new URI("/api/solar-systems/" + result.getId()))
+                                     .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                                     .body(result);
+            }
         }
-        SolarSystem result = solarSystemRepository.save(solarSystem);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, solarSystem.getId().toString()))
-            .body(result);
+        return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "notresolved",
+                                                                                 "The system could not be found. Is there a typo?")).body(null);
     }
 
     /**
@@ -109,7 +108,6 @@ public class SolarSystemResource {
         SolarSystem solarSystem = solarSystemRepository.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(solarSystem));
     }
-
     /**
      * DELETE  /solar-systems/:id : delete the "id" solarSystem.
      *

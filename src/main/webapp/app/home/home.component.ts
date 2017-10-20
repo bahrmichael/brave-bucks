@@ -49,11 +49,11 @@ export class HomeComponent implements OnInit {
 
     requestPayout() {
         this.http.put('/api/payouts/trigger', "").subscribe(
-            data => {
+            (data) => {
                 this.potentialPayout = 0;
                 this.payoutRequested = true;
             },
-            err => console.log(err)
+            (err) => console.log(err)
         );
     }
 

@@ -4,6 +4,7 @@ import com.buyback.eve.ThebuybackApp;
 
 import com.buyback.eve.domain.SolarSystem;
 import com.buyback.eve.repository.SolarSystemRepository;
+import com.buyback.eve.service.JsonRequestService;
 import com.buyback.eve.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -33,13 +35,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ThebuybackApp.class)
+@ContextConfiguration(initializers = EnvironmentTestConfiguration.class)
 public class SolarSystemResourceIntTest {
 
-    private static final Long DEFAULT_SYSTEM_ID = 1L;
-    private static final Long UPDATED_SYSTEM_ID = 2L;
+    private static final Long DEFAULT_SYSTEM_ID = 30001198L;
 
-    private static final String DEFAULT_SYTEM_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_SYTEM_NAME = "BBBBBBBBBB";
+    private static final String DEFAULT_SYSTEM_NAME = "GE-8JV";
 
     @Autowired
     private SolarSystemRepository solarSystemRepository;
@@ -53,6 +54,9 @@ public class SolarSystemResourceIntTest {
     @Autowired
     private ExceptionTranslator exceptionTranslator;
 
+    @Autowired
+    private JsonRequestService jsonRequestService;
+
     private MockMvc restSolarSystemMockMvc;
 
     private SolarSystem solarSystem;
@@ -60,7 +64,8 @@ public class SolarSystemResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final SolarSystemResource solarSystemResource = new SolarSystemResource(solarSystemRepository);
+        final SolarSystemResource solarSystemResource = new SolarSystemResource(solarSystemRepository,
+                                                                                jsonRequestService);
         this.restSolarSystemMockMvc = MockMvcBuilders.standaloneSetup(solarSystemResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -76,7 +81,7 @@ public class SolarSystemResourceIntTest {
     public static SolarSystem createEntity() {
         SolarSystem solarSystem = new SolarSystem()
             .systemId(DEFAULT_SYSTEM_ID)
-            .sytemName(DEFAULT_SYTEM_NAME);
+            .systemName(DEFAULT_SYSTEM_NAME);
         return solarSystem;
     }
 
@@ -101,7 +106,7 @@ public class SolarSystemResourceIntTest {
         assertThat(solarSystemList).hasSize(databaseSizeBeforeCreate + 1);
         SolarSystem testSolarSystem = solarSystemList.get(solarSystemList.size() - 1);
         assertThat(testSolarSystem.getSystemId()).isEqualTo(DEFAULT_SYSTEM_ID);
-        assertThat(testSolarSystem.getSytemName()).isEqualTo(DEFAULT_SYTEM_NAME);
+        assertThat(testSolarSystem.getSystemName()).isEqualTo(DEFAULT_SYSTEM_NAME);
     }
 
     @Test
@@ -133,7 +138,7 @@ public class SolarSystemResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(solarSystem.getId())))
             .andExpect(jsonPath("$.[*].systemId").value(hasItem(DEFAULT_SYSTEM_ID.intValue())))
-            .andExpect(jsonPath("$.[*].sytemName").value(hasItem(DEFAULT_SYTEM_NAME.toString())));
+            .andExpect(jsonPath("$.[*].systemName").value(hasItem(DEFAULT_SYSTEM_NAME.toString())));
     }
 
     @Test
@@ -147,7 +152,7 @@ public class SolarSystemResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(solarSystem.getId()))
             .andExpect(jsonPath("$.systemId").value(DEFAULT_SYSTEM_ID.intValue()))
-            .andExpect(jsonPath("$.sytemName").value(DEFAULT_SYTEM_NAME.toString()));
+            .andExpect(jsonPath("$.systemName").value(DEFAULT_SYSTEM_NAME.toString()));
     }
 
     @Test
@@ -155,48 +160,6 @@ public class SolarSystemResourceIntTest {
         // Get the solarSystem
         restSolarSystemMockMvc.perform(get("/api/solar-systems/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void updateSolarSystem() throws Exception {
-        // Initialize the database
-        solarSystemRepository.save(solarSystem);
-        int databaseSizeBeforeUpdate = solarSystemRepository.findAll().size();
-
-        // Update the solarSystem
-        SolarSystem updatedSolarSystem = solarSystemRepository.findOne(solarSystem.getId());
-        updatedSolarSystem
-            .systemId(UPDATED_SYSTEM_ID)
-            .sytemName(UPDATED_SYTEM_NAME);
-
-        restSolarSystemMockMvc.perform(put("/api/solar-systems")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedSolarSystem)))
-            .andExpect(status().isOk());
-
-        // Validate the SolarSystem in the database
-        List<SolarSystem> solarSystemList = solarSystemRepository.findAll();
-        assertThat(solarSystemList).hasSize(databaseSizeBeforeUpdate);
-        SolarSystem testSolarSystem = solarSystemList.get(solarSystemList.size() - 1);
-        assertThat(testSolarSystem.getSystemId()).isEqualTo(UPDATED_SYSTEM_ID);
-        assertThat(testSolarSystem.getSytemName()).isEqualTo(UPDATED_SYTEM_NAME);
-    }
-
-    @Test
-    public void updateNonExistingSolarSystem() throws Exception {
-        int databaseSizeBeforeUpdate = solarSystemRepository.findAll().size();
-
-        // Create the SolarSystem
-
-        // If the entity doesn't have an ID, it will be created instead of just being updated
-        restSolarSystemMockMvc.perform(put("/api/solar-systems")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(solarSystem)))
-            .andExpect(status().isCreated());
-
-        // Validate the SolarSystem in the database
-        List<SolarSystem> solarSystemList = solarSystemRepository.findAll();
-        assertThat(solarSystemList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
     @Test

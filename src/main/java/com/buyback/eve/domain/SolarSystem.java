@@ -19,8 +19,8 @@ public class SolarSystem implements Serializable {
     @Field("system_id")
     private Long systemId;
 
-    @Field("sytem_name")
-    private String sytemName;
+    @Field("system_name")
+    private String systemName;
 
     // jhipster-needle-entity-add-field - Jhipster will add fields here, do not remove
     public String getId() {
@@ -44,17 +44,17 @@ public class SolarSystem implements Serializable {
         this.systemId = systemId;
     }
 
-    public String getSytemName() {
-        return sytemName;
+    public String getSystemName() {
+        return systemName;
     }
 
-    public SolarSystem sytemName(String sytemName) {
-        this.sytemName = sytemName;
+    public SolarSystem systemName(String systemName) {
+        this.systemName = systemName;
         return this;
     }
 
-    public void setSytemName(String sytemName) {
-        this.sytemName = sytemName;
+    public void setSystemName(String systemName) {
+        this.systemName = systemName;
     }
     // jhipster-needle-entity-add-getters-setters - Jhipster will add getters and setters here, do not remove
 
@@ -83,7 +83,7 @@ public class SolarSystem implements Serializable {
         return "SolarSystem{" +
             "id=" + getId() +
             ", systemId='" + getSystemId() + "'" +
-            ", sytemName='" + getSytemName() + "'" +
+            ", systemName='" + getSystemName() + "'" +
             "}";
     }
 }

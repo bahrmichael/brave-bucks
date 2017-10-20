@@ -6,7 +6,6 @@ import {
     SolarSystemService,
     SolarSystemPopupService,
     SolarSystemComponent,
-    SolarSystemDetailComponent,
     SolarSystemDialogComponent,
     SolarSystemPopupComponent,
     SolarSystemDeletePopupComponent,
@@ -28,7 +27,6 @@ const ENTITY_STATES = [
     ],
     declarations: [
         SolarSystemComponent,
-        SolarSystemDetailComponent,
         SolarSystemDialogComponent,
         SolarSystemDeleteDialogComponent,
         SolarSystemPopupComponent,

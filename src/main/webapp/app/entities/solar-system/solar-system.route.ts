@@ -5,7 +5,6 @@ import { UserRouteAccessService } from '../../shared';
 import { JhiPaginationUtil } from 'ng-jhipster';
 
 import { SolarSystemComponent } from './solar-system.component';
-import { SolarSystemDetailComponent } from './solar-system-detail.component';
 import { SolarSystemPopupComponent } from './solar-system-dialog.component';
 import { SolarSystemDeletePopupComponent } from './solar-system-delete-dialog.component';
 
@@ -33,15 +32,7 @@ export const solarSystemRoute: Routes = [
             'pagingParams': SolarSystemResolvePagingParams
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'SolarSystems'
-        },
-        canActivate: [UserRouteAccessService]
-    }, {
-        path: 'solar-system/:id',
-        component: SolarSystemDetailComponent,
-        data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_MANAGER'],
             pageTitle: 'SolarSystems'
         },
         canActivate: [UserRouteAccessService]
@@ -53,17 +44,7 @@ export const solarSystemPopupRoute: Routes = [
         path: 'solar-system-new',
         component: SolarSystemPopupComponent,
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'SolarSystems'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'solar-system/:id/edit',
-        component: SolarSystemPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_MANAGER'],
             pageTitle: 'SolarSystems'
         },
         canActivate: [UserRouteAccessService],
@@ -73,7 +54,7 @@ export const solarSystemPopupRoute: Routes = [
         path: 'solar-system/:id/delete',
         component: SolarSystemDeletePopupComponent,
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_MANAGER'],
             pageTitle: 'SolarSystems'
         },
         canActivate: [UserRouteAccessService],
