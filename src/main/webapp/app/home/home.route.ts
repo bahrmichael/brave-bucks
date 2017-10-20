@@ -8,6 +8,6 @@ export const HOME_ROUTE: Route = {
     component: HomeComponent,
     data: {
         authorities: [],
-        pageTitle: 'Brave Nukem'
+        pageTitle: 'BraveBucks'
     }
 };

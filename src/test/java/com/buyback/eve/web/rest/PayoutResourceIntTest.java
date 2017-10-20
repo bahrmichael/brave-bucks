@@ -126,8 +126,6 @@ public class PayoutResourceIntTest {
         Payout testPayout = payoutList.get(payoutList.size() - 1);
         assertThat(testPayout.getUser()).isEqualTo(DEFAULT_USER);
         assertThat(testPayout.getAmount()).isEqualTo(DEFAULT_AMOUNT);
-        assertThat(testPayout.getLastUpdated()).isEqualTo(DEFAULT_LAST_UPDATED);
-        assertThat(testPayout.getLastModifiedBy()).isEqualTo(DEFAULT_LAST_MODIFIED_BY);
         assertThat(testPayout.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testPayout.getDetails()).isEqualTo(DEFAULT_DETAILS);
     }
@@ -205,8 +203,6 @@ public class PayoutResourceIntTest {
         updatedPayout
             .user(UPDATED_USER)
             .amount(UPDATED_AMOUNT)
-            .lastUpdated(UPDATED_LAST_UPDATED)
-            .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
             .status(UPDATED_STATUS)
             .details(UPDATED_DETAILS);
 
@@ -221,8 +217,6 @@ public class PayoutResourceIntTest {
         Payout testPayout = payoutList.get(payoutList.size() - 1);
         assertThat(testPayout.getUser()).isEqualTo(UPDATED_USER);
         assertThat(testPayout.getAmount()).isEqualTo(UPDATED_AMOUNT);
-        assertThat(testPayout.getLastUpdated()).isEqualTo(UPDATED_LAST_UPDATED);
-        assertThat(testPayout.getLastModifiedBy()).isEqualTo(UPDATED_LAST_MODIFIED_BY);
         assertThat(testPayout.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testPayout.getDetails()).isEqualTo(UPDATED_DETAILS);
     }
