@@ -17,6 +17,7 @@ public class Killmail {
     private String victimAlliance;
     private List<Long> attackerIds = new ArrayList<>();
     private long finalBlowAttackerId;
+    private boolean payoutCalculated;
 
     public Killmail() {
     }
@@ -30,6 +31,14 @@ public class Killmail {
         this.killTime = killTime;
         this.points = points;
         this.finalBlowAttackerId = finalBlowAttackerId;
+    }
+
+    public boolean isPayoutCalculated() {
+        return payoutCalculated;
+    }
+
+    public void setPayoutCalculated(final boolean payoutCalculated) {
+        this.payoutCalculated = payoutCalculated;
     }
 
     public long getKillId() {

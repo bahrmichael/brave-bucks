@@ -13,9 +13,6 @@ import {Http} from "@angular/http";
 })
 export class HomeComponent implements OnInit {
     account: Account;
-    myStats: any;
-    pools: any[];
-    exchangeRate: number;
     potentialPayout: number;
     killmails: any[];
     payoutThreshold = 100000000;
@@ -62,15 +59,6 @@ export class HomeComponent implements OnInit {
     }
 
     getData() {
-        // this.http.get('/api/stats/my').subscribe((data) => {
-        //     this.myStats = data.json();
-        // });
-        // this.http.get('/api/pools/isk').subscribe((data) => {
-        //     this.pools = data.json();
-        // });
-        // this.http.get('/api/pools/current/exchange').subscribe((data) => {
-        //     this.exchangeRate = +data.text();
-        // });
         this.http.get('/api/stats/potentialPayout').subscribe((data) => {
             this.potentialPayout = +data.text();
         });

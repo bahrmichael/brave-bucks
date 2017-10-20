@@ -11,27 +11,24 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
-public class KillmailToPoolTransformer {
+public class PayoutCalculator {
 
     private final KillmailRepository killmailRepository;
-    private final PoolService poolService;
 
     @Autowired
-    public KillmailToPoolTransformer(final KillmailRepository killmailRepository,
-                                     final PoolService poolService) {
+    public PayoutCalculator(final KillmailRepository killmailRepository) {
         this.killmailRepository = killmailRepository;
-        this.poolService = poolService;
     }
 
     @PostConstruct
     public void init() {
-        addKillmailsToPool();
+        calculatePayouts();
     }
 
     @Async
     @Timed
-    @Scheduled(cron = "0 */10 * * * *")
-    public void addKillmailsToPool() {
-        killmailRepository.findAll().stream().filter(DateUtil::isCurrentMonth).forEach(poolService::addKillmailIfNotExists);
+    @Scheduled(cron = "0 0 * * * *")
+    public void calculatePayouts() {
+//        killmailRepository.findAll().stream().filter(DateUtil::isCurrentMonth).forEach(poolService::addKillmailIfNotExists);
     }
 }
