@@ -50,7 +50,7 @@ public class PlayerStatsResourceTest {
         ResponseEntity playerStats = sut.getPotentialPayout();
 
         assertEquals(HttpStatus.OK, playerStats.getStatusCode());
-        assertEquals(1L, playerStats.getBody());
+        assertEquals(0.0, playerStats.getBody());
     }
 
     @Test
