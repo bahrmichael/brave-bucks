@@ -24,8 +24,11 @@ public class InitialSetupMigration {
         adminAuthority.setName(AuthoritiesConstants.ADMIN);
         Authority userAuthority = new Authority();
         userAuthority.setName(AuthoritiesConstants.USER);
+        Authority managerAuthority = new Authority();
+        userAuthority.setName(AuthoritiesConstants.MANAGER);
         mongoTemplate.save(adminAuthority);
         mongoTemplate.save(userAuthority);
+        mongoTemplate.save(managerAuthority);
     }
 
     @ChangeSet(order = "02", author = "initiator", id = "02-addUsers")
@@ -34,6 +37,8 @@ public class InitialSetupMigration {
         adminAuthority.setName(AuthoritiesConstants.ADMIN);
         Authority userAuthority = new Authority();
         userAuthority.setName(AuthoritiesConstants.USER);
+        Authority managerAuthority = new Authority();
+        managerAuthority.setName(AuthoritiesConstants.MANAGER);
 
         User systemUser = new User();
         systemUser.setId("user-0");
@@ -71,6 +76,16 @@ public class InitialSetupMigration {
         userUser.setCreatedDate(Instant.now());
         userUser.getAuthorities().add(userAuthority);
         mongoTemplate.save(userUser);
+
+        User managerUser = new User();
+        managerUser.setId("user-4");
+        managerUser.setLogin("manager");
+        managerUser.setActivated(true);
+        managerUser.setCreatedBy(systemUser.getLogin());
+        managerUser.setCreatedDate(Instant.now());
+        managerUser.getAuthorities().add(managerAuthority);
+        managerUser.getAuthorities().add(userAuthority);
+        mongoTemplate.save(managerUser);
     }
 
 }
