@@ -5,11 +5,15 @@ import java.util.List;
 import java.util.Optional;
 
 import com.buyback.eve.domain.Killmail;
+import com.mashape.unirest.http.JsonNode;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import de.flapdoodle.embed.process.collections.Collections;
 
@@ -17,37 +21,24 @@ public class KillmailParserTest {
 
     // todo: error handling for broken json
 
-    @Test
-    public void calculatePoints() throws Exception {
-        final Killmail killmail = new Killmail();
-        killmail.setPoints(1L);
-        killmail.setFinalBlowAttackerId(2L);
+    private JsonRequestService requestService = mock(JsonRequestService.class);
+    private KillmailParser sut = new KillmailParser(requestService);
 
-        long points = KillmailParser.calculateCoins(killmail, 9L);
-
-        assertEquals(1L, points);
-    }
-
-    @Test
-    public void calculatePoints_finalBlow() throws Exception {
-        final Killmail killmail = new Killmail();
-        killmail.setPoints(2L);
-        killmail.setFinalBlowAttackerId(3L);
-
-        long points = KillmailParser.calculateCoins(killmail, 3L);
-
-        assertEquals(3L, points);
+    @Before
+    public void setUp() throws Exception {
+        when(requestService.getPlayerGroupNames(1)).thenReturn(Optional.of(new JsonNode("[{\"alliance_id\": 1, \"alliance_name\": \"Goons\"}]")));
+        when(requestService.getPlayerGroupNames(2)).thenReturn(Optional.of(new JsonNode("[{\"alliance_id\": 2, \"alliance_name\": \"Red Alliance\"}]")));
     }
 
     @Test
     public void withEmptyArray() throws Exception {
-        List<Killmail> killmails = KillmailParser.parseKillmails(new JSONArray("[]"));
+        List<Killmail> killmails = sut.parseKillmails(new JSONArray("[]"));
         assertTrue(killmails.isEmpty());
     }
 
     @Test
     public void mapJsonToKillmail() throws Exception {
-        Killmail killmail = KillmailParser.parseKillmail(object1);
+        Killmail killmail = sut.parseKillmail(object1);
 
         assertNotNull(killmail);
         assertEquals(63894774L, killmail.getKillId());
@@ -58,13 +49,13 @@ public class KillmailParserTest {
         assertEquals(40, killmail.getPoints());
         assertEquals(false, killmail.isNpc());
         assertEquals(123L, killmail.getVictimId());
-        assertEquals("Goons", killmail.getVictimAlliance());
+        assertEquals("Goons", killmail.getVictimGroupName());
         assertEquals(1L, killmail.getFinalBlowAttackerId());
     }
 
     @Test
     public void mapJsonToKillmail_b() throws Exception {
-        Killmail killmail = KillmailParser.parseKillmail(object2);
+        Killmail killmail = sut.parseKillmail(object2);
 
         assertNotNull(killmail);
         assertEquals(63894773L, killmail.getKillId());
@@ -75,7 +66,7 @@ public class KillmailParserTest {
         assertEquals(3, killmail.getPoints());
         assertEquals(true, killmail.isNpc());
         assertEquals(456L, killmail.getVictimId());
-        assertEquals("Goons", killmail.getVictimAlliance());
+        assertEquals("Goons", killmail.getVictimGroupName());
         assertEquals(1L, killmail.getFinalBlowAttackerId());
     }
 
@@ -84,23 +75,23 @@ public class KillmailParserTest {
         final Collection collection = Collections.newArrayList(object1, object2);
         JSONArray data = new JSONArray(collection);
 
-        List<Killmail> killmails = KillmailParser.parseKillmails(data);
+        List<Killmail> killmails = sut.parseKillmails(data);
 
         assertNotNull(killmails);
         assertEquals(2, killmails.size());
     }
 
     public static final JSONObject object1 = new JSONObject("{\n"
-                                                      + "        \"killID\"       : 63894774,\n"
-                                                      + "        \"solarSystemID\": 30001178,\n"
-                                                      + "        \"killTime\"     : \"2017-08-05 21:23:25\",\n"
-                                                      + "        \"victim\"     : {\"characterID\":123, \"allianceName\":\"Goons\"},\n"
+                                                      + "        \"killmail_id\"       : 63894774,\n"
+                                                      + "        \"solar_system_id\": 30001178,\n"
+                                                      + "        \"killmail_time\"     : \"2017-08-05 21:23:25\",\n"
+                                                      + "        \"victim\"     : {\"character_id\":123, \"alliance_id\":\"1\"},\n"
                                                       + "        \"attackers\"    : [\n"
-                                                      + "            {\"characterID\":1, \"finalBlow\": 1},"
-                                                      + "            {\"characterID\":2, \"finalBlow\": 0},"
-                                                      + "            {\"characterID\":3, \"finalBlow\": 0},"
-                                                      + "            {\"characterID\":4, \"finalBlow\": 0},"
-                                                      + "            {\"characterID\":5, \"finalBlow\": 0}"
+                                                      + "            {\"character_id\":1, \"final_blow\": true},"
+                                                      + "            {\"character_id\":2, \"final_blow\": false},"
+                                                      + "            {\"character_id\":3, \"final_blow\": false},"
+                                                      + "            {\"character_id\":4, \"final_blow\": false},"
+                                                      + "            {\"character_id\":5, \"final_blow\": false}"
                                                       + "        ],\n"
                                                       + "        \"zkb\"          : {\n"
                                                       + "            \"totalValue\" : 2721466267.32,\n"
@@ -111,14 +102,14 @@ public class KillmailParserTest {
 
 
     private final JSONObject object2 = new JSONObject("{\n"
-                                                      + "        \"killID\"       : 63894773,\n"
-                                                      + "        \"solarSystemID\": 30001173,\n"
-                                                      + "        \"killTime\"     : \"2017-03-05 21:23:23\",\n"
-                                                      + "        \"victim\"     : {\"characterID\":456, \"allianceName\":\"Goons\"},\n"
+                                                      + "        \"killmail_id\"       : 63894773,\n"
+                                                      + "        \"solar_system_id\": 30001173,\n"
+                                                      + "        \"killmail_time\"     : \"2017-03-05 21:23:23\",\n"
+                                                      + "        \"victim\"     : {\"character_id\":456, \"alliance_id\":\"1\"},\n"
                                                       + "        \"attackers\"    : [\n"
-                                                      + "            {\"characterID\":1, \"finalBlow\": 1},"
-                                                      + "            {\"characterID\":2, \"finalBlow\": 0},"
-                                                      + "            {\"characterID\":3, \"finalBlow\": 0}"
+                                                      + "            {\"character_id\":1, \"final_blow\": true},"
+                                                      + "            {\"character_id\":2, \"final_blow\": false},"
+                                                      + "            {\"character_id\":3, \"final_blow\": false}"
                                                       + "        ],\n"
                                                       + "        \"zkb\"          : {\n"
                                                       + "            \"totalValue\" : 3.32,\n"
@@ -129,7 +120,7 @@ public class KillmailParserTest {
 
     @Test
     public void mapJsonToKillmail_issue22() throws Exception {
-        Killmail killmail = KillmailParser.parseKillmail(issue22);
+        Killmail killmail = sut.parseKillmail(issue22);
 
         assertNotNull(killmail);
         assertEquals(64870712L, killmail.getKillId());
@@ -140,40 +131,39 @@ public class KillmailParserTest {
         assertEquals(50, killmail.getPoints());
         assertEquals(false, killmail.isNpc());
         assertEquals(90013607L, killmail.getVictimId());
-        assertEquals("Red Alliance", killmail.getVictimAlliance());
+        assertEquals("Red Alliance", killmail.getVictimGroupName());
         assertEquals(96919940L, killmail.getFinalBlowAttackerId());
     }
 
     private final JSONObject issue22 = new JSONObject("{\n"
-                                                      + "        \"killID\": 64870712,\n"
-                                                      + "        \"solarSystemID\": 30001204,\n"
-                                                      + "        \"killTime\": \"2017-09-24 08:18:33\",\n"
+                                                      + "        \"killmail_id\": 64870712,\n"
+                                                      + "        \"solar_system_id\": 30001204,\n"
+                                                      + "        \"killmail_time\": \"2017-09-24 08:18:33\",\n"
                                                       + "        \"moonID\": 0,\n"
                                                       + "        \"victim\": {\n"
                                                       + "            \"shipTypeID\": 33818,\n"
-                                                      + "            \"characterID\": 90013607,\n"
+                                                      + "            \"character_id\": 90013607,\n"
                                                       + "            \"characterName\": \"Mumrik1\",\n"
                                                       + "            \"corporationID\": 1722847451,\n"
                                                       + "            \"corporationName\": \"Bad Robot Inc.\",\n"
-                                                      + "            \"allianceID\": 1220922756,\n"
-                                                      + "            \"allianceName\": \"Red Alliance\",\n"
+                                                      + "            \"alliance_id\": 2,\n"
                                                       + "            \"factionID\": 0,\n"
                                                       + "            \"factionName\": \"\",\n"
                                                       + "            \"damageTaken\": 15563\n"
                                                       + "        },\n"
                                                       + "        \"attackers\": [\n"
                                                       + "            {\n"
-                                                      + "                \"characterID\": 96919940,\n"
+                                                      + "                \"character_id\": 96919940,\n"
                                                       + "                \"characterName\": \"Futility Prevails\",\n"
                                                       + "                \"corporationID\": 98169165,\n"
                                                       + "                \"corporationName\": \"Brave Newbies Inc.\",\n"
-                                                      + "                \"allianceID\": 99003214,\n"
+                                                      + "                \"alliance_id\": 3,\n"
                                                       + "                \"allianceName\": \"Brave Collective\",\n"
                                                       + "                \"factionID\": 0,\n"
                                                       + "                \"factionName\": \"\",\n"
                                                       + "                \"securityStatus\": 5,\n"
                                                       + "                \"damageDone\": 15563,\n"
-                                                      + "                \"finalBlow\": 1,\n"
+                                                      + "                \"final_blow\": true,\n"
                                                       + "                \"weaponTypeID\": 2175,\n"
                                                       + "                \"shipTypeID\": 16233\n"
                                                       + "            }\n"
@@ -196,6 +186,6 @@ public class KillmailParserTest {
 
     @Test
     public void parseKillmail_nullReturnsNull() throws Exception {
-        assertNull(KillmailParser.parseKillmail(null));
+        assertNull(sut.parseKillmail(null));
     }
 }

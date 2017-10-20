@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "killmail")
 public class Killmail {
     @Id
     private long killId;
@@ -14,7 +16,7 @@ public class Killmail {
     private long points;
     private boolean npc;
     private long victimId;
-    private String victimAlliance;
+    private String victimGroupName;
     private List<Long> attackerIds = new ArrayList<>();
     private long finalBlowAttackerId;
     private boolean payoutCalculated;
@@ -109,12 +111,12 @@ public class Killmail {
         this.victimId = victimId;
     }
 
-    public void setVictimAlliance(final String victimAlliance) {
-        this.victimAlliance = victimAlliance;
+    public void setVictimGroupName(final String victimGroupName) {
+        this.victimGroupName = victimGroupName;
     }
 
-    public String getVictimAlliance() {
-        return victimAlliance;
+    public String getVictimGroupName() {
+        return victimGroupName;
     }
 
     public long getFinalBlowAttackerId() {
@@ -124,4 +126,5 @@ public class Killmail {
     public void setFinalBlowAttackerId(final long finalBlowAttackerId) {
         this.finalBlowAttackerId = finalBlowAttackerId;
     }
+
 }

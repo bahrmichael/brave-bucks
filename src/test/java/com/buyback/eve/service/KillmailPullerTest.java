@@ -1,7 +1,6 @@
 package com.buyback.eve.service;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import static java.util.Collections.emptyList;
@@ -34,7 +33,9 @@ public class KillmailPullerTest {
     private UserRepository userRepo = mock(UserRepository.class);
     private JsonRequestService requestService = mock(JsonRequestService.class);
     private SolarSystemRepository solarSystemRepository = mock(SolarSystemRepository.class);
-    private KillmailPuller sut = spy(new KillmailPuller(killmailRepo, userRepo, requestService, solarSystemRepository));
+    private KillmailParser killmailParser = mock(KillmailParser.class);
+    private KillmailPuller sut = spy(new KillmailPuller(killmailRepo, userRepo, requestService, solarSystemRepository,
+                                                        killmailParser));
 
     @Test
     public void pullKillmails() throws Exception {
@@ -60,14 +61,14 @@ public class KillmailPullerTest {
     @Test
     public void isVictimNotBrave_true() throws Exception {
         final Killmail killmail = new Killmail();
-        killmail.setVictimAlliance("notBrave");
+        killmail.setVictimGroupName("notBrave");
         assertTrue(sut.isVictimNotBrave(killmail));
     }
 
     @Test
     public void isVictimNotBrave_false() throws Exception {
         final Killmail killmail = new Killmail();
-        killmail.setVictimAlliance("Brave Collective");
+        killmail.setVictimGroupName("Brave Collective");
         assertFalse(sut.isVictimNotBrave(killmail));
     }
 
@@ -117,7 +118,7 @@ public class KillmailPullerTest {
         when(killmailRepo.save(anyList())).thenReturn(null);
 
         final Killmail killmail = new Killmail();
-        killmail.setVictimAlliance("test");
+        killmail.setVictimGroupName("test");
         killmail.setSolarSystemId(1L);
         final List<Killmail> killmails = singletonList(killmail);
 

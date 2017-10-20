@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.buyback.eve.domain.Killmail;
 import com.buyback.eve.repository.KillmailRepository;
 import com.buyback.eve.service.JsonRequestService;
+import com.buyback.eve.service.KillmailParser;
 import com.buyback.eve.service.KillmailPuller;
 import com.mashape.unirest.http.JsonNode;
 import static com.buyback.eve.service.KillmailParserTest.object1;
@@ -23,7 +24,8 @@ public class KillmailResourceTest {
     private KillmailRepository repo = mock(KillmailRepository.class);
     private KillmailPuller puller = mock(KillmailPuller.class);
     private JsonRequestService jsonService = mock(JsonRequestService.class);
-    private KillmailResource sut = new KillmailResource(repo, puller, jsonService);
+    private KillmailParser killmailParser = mock(KillmailParser.class);
+    private KillmailResource sut = new KillmailResource(repo, puller, jsonService, killmailParser);
 
     @Test
     public void addKillmail_withAlreadyExisting_skipsTheRest() throws Exception {

@@ -93,18 +93,24 @@
                 </div>
             </div>
             <br/>
-            <div *ngIf="payoutRequested" class="alert alert-success">Payout requested!</div>
-            <div class="input-group">
-                <div class="progress" style="width: 100%;">
-                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="height: 40px" [style.width]="getBarWidth(potentialPayout)+'%'">
-                        <span *ngIf="potentialPayout >= payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Payouts</h3>
+                    <span *ngIf="monthAvailable">Available this month: {{monthAvailable | number:'1.0-0'}} ISK</span>
+                    <div *ngIf="payoutRequested" class="alert alert-success">Payout requested!</div>
+                    <div class="input-group">
+                        <div class="progress" style="width: 100%;">
+                            <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="height: 40px" [style.width]="getBarWidth(potentialPayout)+'%'">
+                                <span *ngIf="potentialPayout >= payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
+                            </div>
+                            <span *ngIf="potentialPayout < payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem; padding-left: 10px">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
+                        </div>
+                        <button *ngIf="potentialPayout >= payoutThreshold" class="btn btn-primary" (click)="requestPayout()">Request Payout</button>
                     </div>
-                    <span *ngIf="potentialPayout < payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem; padding-left: 10px">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
+                    <p *ngIf="potentialPayout < payoutThreshold" style="text-align: center">{{potentialPayout | number:'1.0-0'}}/{{payoutThreshold | number:'1.0-0'}} ISK until you can request a payout</p>
+                    <br/>
                 </div>
-                <button *ngIf="potentialPayout >= payoutThreshold" class="btn btn-primary" (click)="requestPayout()">Request Payout</button>
             </div>
-            <p *ngIf="potentialPayout < payoutThreshold" style="text-align: center">{{potentialPayout | number:'1.0-0'}}/{{payoutThreshold | number:'1.0-0'}} ISK until you can request a payout</p>
-            <br/>
             <!--<div class="row">-->
                 <!--<div *ngIf="pools" class="col-md-6">-->
                     <!--<h4>Hunter Pool</h4>-->
@@ -175,13 +181,11 @@
                     <table class="table table-condensed table-striped" *ngIf="killmails && killmails.length">
                         <tr>
                            <th>Killmail</th>
-                           <th>BraveBucks</th>
                            <th>Kill Time</th>
                            <th>Victim Alliance</th>
                         </tr>
                         <tr *ngFor="let killmail of killmails">
                             <td><a target="_blank" href="https://zkillboard.com/kill/{{killmail.killmailId}}">{{killmail.killmailId}}</a></td>
-                            <td>{{killmail.coins}}</td>
                             <td>{{killmail.killTime}}</td>
                             <td>{{killmail.victimAlliance}}</td>
                         </tr>

@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -73,17 +74,26 @@ public class PayoutCalculator {
 
         for (final Long userId : userIds) {
             final long pointsForUser = getPointsForUser(pendingKillmails, userId);
+            if (pointsForUser == 0 || totalPoints == 0) {
+                continue;
+            }
             final double factor = (double) pointsForUser / totalPoints;
             final double userPayable = todayPayable * factor;
             final String user = getUserName(users, userId);
             transactions.add(new Transaction(user, userPayable, TransactionType.KILL));
         }
 
+        transactionRepository.findAll().stream().filter(this::isToday).forEach(transactionRepository::delete);
+
         transactionRepository.save(transactions);
         pendingKillmails.forEach(km -> {
             km.setPayoutCalculated(true);
             killmailRepository.save(km);
         });
+    }
+
+    private boolean isToday(final Transaction transaction) {
+        return transaction.getInstant().toEpochMilli() >= LocalDate.now().toEpochDay();
     }
 
     private String getUserName(final Iterable<User> users, final Long userId) {
@@ -120,7 +130,7 @@ public class PayoutCalculator {
     private Instant getMonthBorder() {
         final LocalDate now = LocalDate.now();
         final LocalDate of = LocalDate.of(now.getYear(), now.getMonth(), 1);
-        return Instant.ofEpochSecond(of.toEpochDay());
+        return of.atStartOfDay().toInstant(ZoneOffset.UTC);
     }
 
     private long getPointsForUser(final Iterable<Killmail> killmails, final Long userId) {

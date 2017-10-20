@@ -50,6 +50,12 @@ public class JsonRequestService {
         return executeRequest(getRequest);
     }
 
+    public Optional<JsonNode> getPlayerGroupNames(final long allianceId) {
+        String url = "https://esi.tech.ccp.is/v1/alliances/names/?alliance_ids=" + allianceId + "&datasource=tranquility";
+        GetRequest getRequest = get(url, null);
+        return executeRequest(getRequest);
+    }
+
     public Optional<JsonNode> getAccessToken(final String clientId, final String clientSecret, final String code) {
         String url = "https://login.eveonline.com/oauth/token";
         Map<String, String> headers = new HashMap<>();

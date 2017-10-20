@@ -11,7 +11,6 @@ import com.buyback.eve.domain.SolarSystem;
 import com.buyback.eve.repository.KillmailRepository;
 import com.buyback.eve.repository.SolarSystemRepository;
 import com.buyback.eve.repository.UserRepository;
-import static com.buyback.eve.service.KillmailParser.parseKillmails;
 
 import org.json.JSONArray;
 import org.slf4j.Logger;
@@ -31,15 +30,18 @@ public class KillmailPuller {
     private final UserRepository userRepository;
     private final JsonRequestService jsonRequestService;
     private final SolarSystemRepository solarSystemRepository;
+    private final KillmailParser killmailParser;
 
     public KillmailPuller(final KillmailRepository killmailRepository,
                           final UserRepository userRepository,
                           final JsonRequestService jsonRequestService,
-                          final SolarSystemRepository solarSystemRepository) {
+                          final SolarSystemRepository solarSystemRepository,
+                          final KillmailParser killmailParser) {
         this.killmailRepository = killmailRepository;
         this.userRepository = userRepository;
         this.jsonRequestService = jsonRequestService;
         this.solarSystemRepository = solarSystemRepository;
+        this.killmailParser = killmailParser;
     }
 
     @PostConstruct
@@ -66,9 +68,9 @@ public class KillmailPuller {
                       .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId(), duration)
                       .ifPresent(jsonBody -> {
                           final JSONArray array = jsonBody.getArray();
-                          log.info("Adding killmails for characterId={}", user.getCharacterId());
+                          log.info("Adding {} killmails for characterId {}", array.length(), user.getCharacterId());
                           if (array.length() > 0) {
-                              final List<Killmail> killmails = parseKillmails(array);
+                              final List<Killmail> killmails = killmailParser.parseKillmails(array);
                               filterAndSaveKillmails(killmails);
                           }
         }));
@@ -102,6 +104,6 @@ public class KillmailPuller {
     }
 
     boolean isVictimNotBrave(final Killmail killmail) {
-        return !killmail.getVictimAlliance().equals("Brave Collective");
+        return !killmail.getVictimGroupName().equals("Brave Collective");
     }
 }

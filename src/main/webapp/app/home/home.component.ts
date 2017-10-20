@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit {
     payoutThreshold = 100000000;
     isFirstLogin: boolean;
     payoutRequested: boolean;
+    monthAvailable: number;
 
     constructor(
         private principal: Principal,
@@ -59,6 +60,9 @@ export class HomeComponent implements OnInit {
     }
 
     getData() {
+        this.http.get('/api/stats/month-available').subscribe((data) => {
+            this.monthAvailable = +data.text();
+        });
         this.http.get('/api/stats/potentialPayout').subscribe((data) => {
             this.potentialPayout = +data.text();
         });
