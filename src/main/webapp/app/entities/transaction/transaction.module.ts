@@ -6,7 +6,6 @@ import {
     TransactionService,
     TransactionPopupService,
     TransactionComponent,
-    TransactionDetailComponent,
     TransactionDialogComponent,
     TransactionPopupComponent,
     TransactionDeletePopupComponent,
@@ -28,7 +27,6 @@ const ENTITY_STATES = [
     ],
     declarations: [
         TransactionComponent,
-        TransactionDetailComponent,
         TransactionDialogComponent,
         TransactionDeleteDialogComponent,
         TransactionPopupComponent,
