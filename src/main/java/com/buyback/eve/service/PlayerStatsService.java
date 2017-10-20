@@ -3,11 +3,16 @@ package com.buyback.eve.service;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import com.buyback.eve.domain.Payout;
 import com.buyback.eve.domain.PlayerStats;
 import com.buyback.eve.domain.Pool;
+import com.buyback.eve.domain.Transaction;
 import com.buyback.eve.domain.User;
+import com.buyback.eve.domain.enumeration.PayoutStatus;
 import com.buyback.eve.repository.KillmailRepository;
+import com.buyback.eve.repository.PayoutRepository;
 import com.buyback.eve.repository.PoolRepository;
+import com.buyback.eve.repository.TransactionRepository;
 import com.buyback.eve.repository.UserRepository;
 import com.buyback.eve.security.SecurityUtils;
 
@@ -23,14 +28,20 @@ public class PlayerStatsService {
     private final UserRepository userRepository;
     private final KillmailRepository killmailRepository;
     private final PoolRepository poolRepository;
+    private final TransactionRepository transactionRepository;
+    private final PayoutRepository payoutRepository;
 
     @Autowired
     public PlayerStatsService(final UserRepository userRepository,
                               final KillmailRepository killmailRepository,
-                              final PoolRepository poolRepository) {
+                              final PoolRepository poolRepository,
+                              final TransactionRepository transactionRepository,
+                              final PayoutRepository payoutRepository) {
         this.userRepository = userRepository;
         this.killmailRepository = killmailRepository;
         this.poolRepository = poolRepository;
+        this.transactionRepository = transactionRepository;
+        this.payoutRepository = payoutRepository;
     }
 
     public PlayerStats getStatsForCurrentUser() {
@@ -64,5 +75,12 @@ public class PlayerStatsService {
         } else {
             return null;
         }
+    }
+
+    public Double getPotentialPayout() {
+        return transactionRepository.findAllByUser(SecurityUtils.getCurrentUserLogin()).stream()
+            .mapToDouble(Transaction::getAmount).sum()
+            - payoutRepository.findAllByUserAndStatus(SecurityUtils.getCurrentUserLogin(), PayoutStatus.REQUESTED)
+                        .stream().mapToDouble(Payout::getAmount).sum();
     }
 }

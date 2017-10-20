@@ -1,8 +1,11 @@
 package com.buyback.eve.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.buyback.eve.domain.Payout;
+import com.buyback.eve.domain.enumeration.PayoutStatus;
+
 import org.springframework.stereotype.Repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -13,5 +16,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 @SuppressWarnings("unused")
 @Repository
 public interface PayoutRepository extends MongoRepository<Payout, String> {
-    Optional<Payout> findOneByUser(String userLogin);
+    Optional<Payout> findOneByUser(String user);
+
+    List<Payout> findAllByUserAndStatus(String user, PayoutStatus status);
 }

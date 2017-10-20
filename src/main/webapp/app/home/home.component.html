@@ -93,88 +93,79 @@
                 </div>
             </div>
             <br/>
-            <div class="row">
-                <div class="col-md-12">
-                    <small style="float: right">Current exchange rate: 1 BraveBuck = {{exchangeRate | number:'1.0-0'}} ISK</small>
-                </div>
-            </div>
-            <div class="progress" *ngIf="myStats">
-                <div class="progress-bar bg-info" role="progressbar" style="height: 40px" [style.width]="getBarWidth(myStats['coins'])+'%'">
-                    <span *ngIf="myStats['coins'] >= payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
-                </div>
-                <span *ngIf="myStats['coins'] < payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem; padding-left: 10px">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
-            </div>
-            <p *ngIf="myStats" style="text-align: center">{{myStats['coins']}}/{{payoutThreshold}} BraveBucks until Payout</p>
-
-            <div class="row">
-                <div *ngIf="pools" class="col-md-6">
-                    <h4>Hunter Pool</h4>
-                    <table class="table table-condensed table-striped table-bordered">
-                        <tr>
-                            <td width="50%">Next Month (WIP)</td>
-                            <td>{{pools[0] | number:'1.0-0'}} ISK</td>
-                        </tr>
-                        <tr>
-                            <td><b>This Month</b></td>
-                            <td>{{pools[1] | number:'1.0-0'}} ISK</td>
-                        </tr>
-                        <tr>
-                            <td>Last Month</td>
-                            <td>{{pools[2] | number:'1.0-0'}} ISK</td>
-                        </tr>
-                    </table>
-                </div>
-                <div *ngIf="myStats" class="col-md-6">
-                    <h4>Your Stats for This Month</h4>
-                    <table class="table table-condensed table-striped">
-                        <tr>
-                            <td width="50%">BraveBucks</td>
-                            <td>{{myStats['coins']}}</td>
-                        </tr>
-                        <tr>
-                            <td>Defense Kills</td>
-                            <td>{{myStats['defenseKills']}}</td>
-                        </tr>
-                        <tr>
-                            <td>Final Blows</td>
-                            <td>{{myStats['finalBlows']}}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <h4>Top Donations</h4>
-                    <table class="table table-condensed table-striped">
-                        <tr>
-                            <td width="50%">The Buyback</td>
-                            <td>200,000,000 ISK</td>
-                        </tr>
-                    </table>
-                    <div class="alert alert-warning">
-                        We need your help! If you like our work and the space we live in, please consider donating
-                        to encourage more local PvP and content. Send any amount of ISK you want to share to the character
-                        "BraveBucks". Or DM Rihan Shazih on Slack.
+            <div *ngIf="payoutRequested" class="alert alert-success">Payout requested!</div>
+            <div class="input-group">
+                <div class="progress" style="width: 100%;">
+                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="height: 40px" [style.width]="getBarWidth(potentialPayout)+'%'">
+                        <span *ngIf="potentialPayout >= payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
                     </div>
+                    <span *ngIf="potentialPayout < payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem; padding-left: 10px">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
                 </div>
-                <div class="col-md-6" style="color: lightgrey">
-                    <h4>Recent Payouts</h4>
-                    <table class="table table-condensed table-striped">
-                        <tr>
-                            <td width="50%">11.05.2017</td>
-                            <td>127,148,217 ISK</td>
-                        </tr>
-                        <tr>
-                            <td>28.04.2017</td>
-                            <td>12,845,184 ISK</td>
-                        </tr>
-                        <tr>
-                            <td>10.04.2017</td>
-                            <td>8,283,453 ISK</td>
-                        </tr>
-                    </table>
-                </div>
+                <button *ngIf="potentialPayout >= payoutThreshold" class="btn btn-primary" (click)="requestPayout()">Request Payout</button>
             </div>
+            <p *ngIf="potentialPayout < payoutThreshold" style="text-align: center">{{potentialPayout | number:'1.0-0'}}/{{payoutThreshold | number:'1.0-0'}} ISK until you can request a payout</p>
+            <br/>
+            <!--<div class="row">-->
+                <!--<div *ngIf="pools" class="col-md-6">-->
+                    <!--<h4>Hunter Pool</h4>-->
+                    <!--<table class="table table-condensed table-striped table-bordered">-->
+                        <!--<tr>-->
+                            <!--<td width="50%">Next Month (WIP)</td>-->
+                            <!--<td>{{pools[0] | number:'1.0-0'}} ISK</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td><b>This Month</b></td>-->
+                            <!--<td>{{pools[1] | number:'1.0-0'}} ISK</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td>Last Month</td>-->
+                            <!--<td>{{pools[2] | number:'1.0-0'}} ISK</td>-->
+                        <!--</tr>-->
+                    <!--</table>-->
+                <!--</div>-->
+                <!--<div *ngIf="myStats" class="col-md-6">-->
+                    <!--<h4>Your Stats</h4>-->
+                    <!--<table class="table table-condensed table-striped">-->
+                        <!--<tr>-->
+                            <!--<td width="50%">BraveBucks Today</td>-->
+                            <!--<td>{{myStats['coins']}}</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td>Defense Kills</td>-->
+                            <!--<td>{{myStats['defenseKills']}}</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td>Final Blows</td>-->
+                            <!--<td>{{myStats['finalBlows']}}</td>-->
+                        <!--</tr>-->
+                    <!--</table>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="row">-->
+                <!--<div class="col-md-6">-->
+                    <!--<div class="alert alert-warning">-->
+                        <!--We need your help! If you like our work and the space we live in, please consider donating-->
+                        <!--to encourage more local PvP and content. DM Rihan Shazih on Slack.-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="col-md-6" style="color: lightgrey">-->
+                    <!--<h4>Recent Payouts</h4>-->
+                    <!--<table class="table table-condensed table-striped">-->
+                        <!--<tr>-->
+                            <!--<td width="50%">11.05.2017</td>-->
+                            <!--<td>127,148,217 ISK</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td>28.04.2017</td>-->
+                            <!--<td>12,845,184 ISK</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td>10.04.2017</td>-->
+                            <!--<td>8,283,453 ISK</td>-->
+                        <!--</tr>-->
+                    <!--</table>-->
+                <!--</div>-->
+            <!--</div>-->
             <div class="row">
                 <div class="col-md-12">
                     <h3>Your Defense Kills</h3>

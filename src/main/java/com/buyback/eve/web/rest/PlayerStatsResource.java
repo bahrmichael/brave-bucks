@@ -42,7 +42,7 @@ public class PlayerStatsResource {
 
     @GetMapping(path = "/stats/potentialPayout")
     public ResponseEntity getPotentialPayout() {
-        return ResponseEntity.ok(playerStatsService.getStatsForCurrentUser().getPotentialPayout());
+        return ResponseEntity.ok(playerStatsService.getPotentialPayout());
     }
 
     @GetMapping(path = "/killmails")

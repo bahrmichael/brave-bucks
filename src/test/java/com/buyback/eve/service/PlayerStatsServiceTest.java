@@ -9,13 +9,15 @@ import com.buyback.eve.domain.PlayerStats;
 import com.buyback.eve.domain.Pool;
 import com.buyback.eve.domain.User;
 import com.buyback.eve.repository.KillmailRepository;
+import com.buyback.eve.repository.PayoutRepository;
 import com.buyback.eve.repository.PoolRepository;
+import com.buyback.eve.repository.TransactionRepository;
 import com.buyback.eve.repository.UserRepository;
-
 import static com.buyback.eve.service.DateUtil.getYearMonth;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -32,7 +34,10 @@ public class PlayerStatsServiceTest {
     private UserRepository userRepositoryMock = mock(UserRepository.class);
     private KillmailRepository killmailRepository = mock(KillmailRepository.class);
     private PoolRepository poolRepository = mock(PoolRepository.class);
-    private PlayerStatsService sut = new PlayerStatsService(userRepositoryMock, killmailRepository, poolRepository);
+    private TransactionRepository transactionRepository = mock(TransactionRepository.class);
+    private PayoutRepository payoutRepository = mock(PayoutRepository.class);
+    private PlayerStatsService sut = new PlayerStatsService(userRepositoryMock, killmailRepository, poolRepository,
+                                                            transactionRepository, payoutRepository);
 
     @Test
     public void getStatsForUser() throws Exception {
@@ -96,7 +101,7 @@ public class PlayerStatsServiceTest {
 
     @Test
     public void getStatsForCurrentUser_callsGetStatsForUser() throws Exception {
-        PlayerStatsService sut = spy(new PlayerStatsService(null, null, null));
+        PlayerStatsService sut = spy(new PlayerStatsService(null, null, null, transactionRepository, payoutRepository));
         doReturn(null).when(sut).getStatsForUser(anyString());
 
         sut.getStatsForCurrentUser();

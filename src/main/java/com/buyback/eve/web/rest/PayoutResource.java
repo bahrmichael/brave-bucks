@@ -83,11 +83,11 @@ public class PayoutResource {
     @Timed
     @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<Payout> triggerPayoutRequest() {
-        if (payoutRepository.findOneByUser(SecurityUtils.getCurrentUserLogin()).isPresent()) {
-            return ResponseEntity.status(409).headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "requestexists", "Only one open request may exist at a time.")).body(null);
-        }
+        double sum = transactionRepository.findAllByUser(SecurityUtils.getCurrentUserLogin()).stream()
+                                                .mapToDouble(Transaction::getAmount).sum();
+        sum -= payoutRepository.findAllByUserAndStatus(SecurityUtils.getCurrentUserLogin(), PayoutStatus.REQUESTED)
+                               .stream().mapToDouble(Payout::getAmount).sum();
 
-        final double sum = transactionRepository.findAllByUser().stream().mapToDouble(Transaction::getAmount).sum();
         if (sum < PAYOUT_THRESHOLD) {
             return ResponseEntity.status(412).headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "thresholdnotreached", "Payouts can only be requested from " + PAYOUT_THRESHOLD + " ISK.")).body(null);
         }

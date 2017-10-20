@@ -14,5 +14,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 @Repository
 public interface TransactionRepository extends MongoRepository<Transaction, String> {
 
-    List<Transaction> findAllByUser();
+    List<Transaction> findAllByUser(String user);
 }
