@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 public class KillmailPuller {
 
     static final long HOUR = 3600L;
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final KillmailRepository killmailRepository;
     private final UserRepository userRepository;
@@ -52,13 +52,13 @@ public class KillmailPuller {
         pullKillmails(maxDuration);
     }
 
-    void pullKillmails(Long duration) {
+    void pullKillmails(final Long duration) {
         userRepository.findAll().stream().filter(user -> user.getCharacterId() != null)
                       .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId(), duration).ifPresent(jsonBody -> {
-                          JSONArray array = jsonBody.getArray();
+                          final JSONArray array = jsonBody.getArray();
                           log.info("Adding killmails for characterId={}", user.getCharacterId());
                           if (array.length() > 0) {
-                              List<Killmail> killmails = parseKillmails(array);
+                              final List<Killmail> killmails = parseKillmails(array);
                               filterAndSaveKillmails(killmails);
                           }
         }));
