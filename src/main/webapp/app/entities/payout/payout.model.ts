@@ -1,7 +1,7 @@
 import { BaseEntity } from './../../shared';
 
 const enum PayoutStatus {
-    'PENDING',
+    'REQUESTED',
     'PAID',
     'CANCELLED'
 }
