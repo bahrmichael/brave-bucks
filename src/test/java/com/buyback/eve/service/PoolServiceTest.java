@@ -84,7 +84,7 @@ public class PoolServiceTest {
         when(userRepo.findOneByCharacterId(2L)).thenReturn(Optional.of(new User()));
 
         final Killmail killmail = new Killmail();
-        killmail.setKillTime("2017-07-01 10:00:00");
+        killmail.setKillTime("2017-07-01T10:00:00Z");
         killmail.setKillId(1);
         killmail.setPoints(1);
         killmail.setAttackerIds(Collections.singletonList(2L));

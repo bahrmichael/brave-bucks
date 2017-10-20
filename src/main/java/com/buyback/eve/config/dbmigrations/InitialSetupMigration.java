@@ -25,7 +25,7 @@ public class InitialSetupMigration {
         Authority userAuthority = new Authority();
         userAuthority.setName(AuthoritiesConstants.USER);
         Authority managerAuthority = new Authority();
-        userAuthority.setName(AuthoritiesConstants.MANAGER);
+        managerAuthority.setName(AuthoritiesConstants.MANAGER);
         mongoTemplate.save(adminAuthority);
         mongoTemplate.save(userAuthority);
         mongoTemplate.save(managerAuthority);

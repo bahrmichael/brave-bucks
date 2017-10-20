@@ -77,9 +77,9 @@ public class PlayerStatsServiceTest {
     }
 
     private List<Killmail> createKillList(final long characterId) {
-        String date = getYearMonth(LocalDate.now()) + "-02 17:50:11";
+        String date = getYearMonth(LocalDate.now()) + "-02T17:50:11Z";
         return Collections.newArrayList(
-            new Killmail("2017-03-02 17:50:11", 5),
+            new Killmail("2017-03-02T17:50:11Z", 5),
             new Killmail(date, 2),
             new Killmail(date, 3),
             new Killmail(date, 1),
