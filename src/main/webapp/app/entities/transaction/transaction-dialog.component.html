@@ -1,0 +1,50 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myTransactionLabel">Create or edit a Transaction</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!transaction.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="transaction.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_user">User</label>
+            <input type="text" class="form-control" name="user" id="field_user"
+                [(ngModel)]="transaction.user"  />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_instant">Instant</label>
+            <div class="d-flex">
+                <input id="field_instant" type="datetime-local" class="form-control" name="instant" [(ngModel)]="transaction.instant"
+                  />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_amount">Amount</label>
+            <input type="number" class="form-control" name="amount" id="field_amount"
+                [(ngModel)]="transaction.amount"  />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_type">Type</label>
+            <select class="form-control" name="type" [(ngModel)]="transaction.type" id="field_type" >
+                <option value="SRP">SRP</option>
+                <option value="PAYOUT">PAYOUT</option>
+                <option value="KILL">KILL</option>
+            </select>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

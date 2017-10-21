@@ -1,11 +1,13 @@
 package com.buyback.eve.web.rest;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.buyback.eve.domain.User;
 import com.buyback.eve.repository.UserRepository;
-import com.buyback.eve.security.AuthoritiesConstants;
 import com.buyback.eve.security.jwt.JWTConfigurer;
 import com.buyback.eve.security.jwt.TokenProvider;
 import com.buyback.eve.service.JsonRequestService;
@@ -22,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,11 +68,12 @@ public class UserJWTController {
             return new ResponseEntity<>("AuthenticationException", HttpStatus.UNAUTHORIZED);
         }
 
-        createIfNotExists(characterDetails);
+        User user = createIfNotExists(characterDetails);
 
         try {
-            final GrantedAuthority authority = new SimpleGrantedAuthority(AuthoritiesConstants.USER);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(characterDetails.getName(), characterDetails.getName(), Collections.singletonList(authority));
+            List<SimpleGrantedAuthority> authorities = user.getAuthorities().stream().map(
+                a -> new SimpleGrantedAuthority(a.getName())).collect(Collectors.toList());
+            Authentication authentication = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getLogin(), authorities);
             String jwt = tokenProvider.createToken(authentication, true);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             response.addHeader(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
@@ -83,10 +85,9 @@ public class UserJWTController {
         }
     }
 
-    void createIfNotExists(final CharacterDetails characterDetails) {
-        if (!userRepository.findOneByLogin(characterDetails.getName()).isPresent()) {
-            userService.createUser(characterDetails.getName(), characterDetails.getId());
-        }
+    User createIfNotExists(final CharacterDetails characterDetails) {
+        return userRepository.findOneByLogin(characterDetails.getName())
+                             .orElseGet(() -> userService.createUser(characterDetails.getName(), characterDetails.getId()));
     }
 
     CharacterDetails getCharacterDetails(final String clientId, final String clientSecret, final String code) {

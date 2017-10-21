@@ -1,19 +1,20 @@
 package com.buyback.eve.service;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 import com.buyback.eve.domain.Killmail;
+import com.buyback.eve.domain.SolarSystem;
 import com.buyback.eve.domain.User;
 import com.buyback.eve.repository.KillmailRepository;
+import com.buyback.eve.repository.SolarSystemRepository;
 import com.buyback.eve.repository.UserRepository;
 import com.mashape.unirest.http.JsonNode;
 import static com.buyback.eve.service.KillmailPuller.HOUR;
 
-import org.json.JSONArray;
 import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -31,7 +32,10 @@ public class KillmailPullerTest {
     private KillmailRepository killmailRepo = mock(KillmailRepository.class);
     private UserRepository userRepo = mock(UserRepository.class);
     private JsonRequestService requestService = mock(JsonRequestService.class);
-    private KillmailPuller sut = spy(new KillmailPuller(killmailRepo, userRepo, requestService));
+    private SolarSystemRepository solarSystemRepository = mock(SolarSystemRepository.class);
+    private KillmailParser killmailParser = mock(KillmailParser.class);
+    private KillmailPuller sut = spy(new KillmailPuller(killmailRepo, userRepo, requestService, solarSystemRepository,
+                                                        killmailParser));
 
     @Test
     public void pullKillmails() throws Exception {
@@ -57,21 +61,26 @@ public class KillmailPullerTest {
     @Test
     public void isVictimNotBrave_true() throws Exception {
         final Killmail killmail = new Killmail();
-        killmail.setVictimAlliance("notBrave");
+        killmail.setVictimGroupName("notBrave");
         assertTrue(sut.isVictimNotBrave(killmail));
     }
 
     @Test
     public void isVictimNotBrave_false() throws Exception {
         final Killmail killmail = new Killmail();
-        killmail.setVictimAlliance("Brave Collective");
+        killmail.setVictimGroupName("Brave Collective");
         assertFalse(sut.isVictimNotBrave(killmail));
     }
 
     @Test
     public void isInBraveSystem_true() throws Exception {
+        SolarSystem system = new SolarSystem();
+        system.setSystemId(1L);
+        when(solarSystemRepository.findAll()).thenReturn(singletonList(system));
         final Killmail killmail = new Killmail();
-        killmail.setSolarSystemId(KillmailPuller.systems.get(0));
+        killmail.setSolarSystemId(1L);
+
+        sut.setSystems(singletonList(1L));
         assertTrue(sut.isInBraveSystem(killmail));
     }
 
@@ -79,6 +88,8 @@ public class KillmailPullerTest {
     public void isInBraveSystem_false() throws Exception {
         final Killmail killmail = new Killmail();
         killmail.setSolarSystemId(1);
+
+        sut.setSystems(singletonList(2L));
         assertFalse(sut.isInBraveSystem(killmail));
     }
 
@@ -107,10 +118,11 @@ public class KillmailPullerTest {
         when(killmailRepo.save(anyList())).thenReturn(null);
 
         final Killmail killmail = new Killmail();
-        killmail.setVictimAlliance("test");
-        killmail.setSolarSystemId(KillmailPuller.systems.get(0));
-        final List<Killmail> killmails = Collections.singletonList(killmail);
+        killmail.setVictimGroupName("test");
+        killmail.setSolarSystemId(1L);
+        final List<Killmail> killmails = singletonList(killmail);
 
+        sut.setSystems(singletonList(1L));
         sut.filterAndSaveKillmails(killmails);
 
         verify(killmailRepo).save(anyList());
@@ -118,7 +130,7 @@ public class KillmailPullerTest {
 
     @Test
     public void pullKillmails_userWithoutCharacterId_doesNothing() throws Exception {
-        when(userRepo.findAll()).thenReturn(Collections.singletonList(new User()));
+        when(userRepo.findAll()).thenReturn(singletonList(new User()));
 
         sut.pullKillmails(1L);
 
@@ -129,7 +141,7 @@ public class KillmailPullerTest {
     public void pullKillmails_requestReturnsNothing_doesNothing() throws Exception {
         User user = new User();
         user.setCharacterId(2L);
-        when(userRepo.findAll()).thenReturn(Collections.singletonList(user));
+        when(userRepo.findAll()).thenReturn(singletonList(user));
         when(requestService.getKillmails(2L, 1L)).thenReturn(Optional.empty());
 
         sut.pullKillmails(1L);
@@ -141,7 +153,7 @@ public class KillmailPullerTest {
     public void pullKillmails_requestReturnsEmptyArray_doesntSaveAny() throws Exception {
         User user = new User();
         user.setCharacterId(2L);
-        when(userRepo.findAll()).thenReturn(Collections.singletonList(user));
+        when(userRepo.findAll()).thenReturn(singletonList(user));
         when(requestService.getKillmails(2L, 1L)).thenReturn(Optional.of(new JsonNode("[]")));
 
         sut.pullKillmails(1L);
@@ -153,7 +165,7 @@ public class KillmailPullerTest {
     public void pullKillmails_requestReturnsSomething_doesSave() throws Exception {
         User user = new User();
         user.setCharacterId(2L);
-        when(userRepo.findAll()).thenReturn(Collections.singletonList(user));
+        when(userRepo.findAll()).thenReturn(singletonList(user));
         when(requestService.getKillmails(2L, 1L)).thenReturn(Optional.of(new JsonNode("[{}]")));
         doNothing().when(sut).filterAndSaveKillmails(emptyList());
 

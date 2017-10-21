@@ -1,0 +1,56 @@
+<div>
+    <h2>
+        <span>Transactions</span>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="transactions">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="user"><span>User</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="instant"><span>Date</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="amount"><span>Amount</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="type"><span>Type</span> <span class="fa fa-sort"></span></th>
+            <th *jhiHasAnyAuthority="'ROLE_ADMIN'"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let transaction of transactions ;trackBy: trackId">
+                <td>{{transaction.user}}</td>
+                <td>{{transaction.instant | date:'short'}}</td>
+                <td>{{transaction.amount | number:'1.0-0'}} ISK</td>
+                <td>{{transaction.type}}</td>
+                <td *jhiHasAnyAuthority="'ROLE_ADMIN'" class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'transaction/'+ transaction.id + '/edit'} }]"
+                                replaceUrl="true"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="hidden-md-down">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'transaction/'+ transaction.id + '/delete'} }]"
+                                replaceUrl="true"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="hidden-md-down">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+        <div *ngIf="transactions && transactions.length">
+            <div class="row justify-content-center">
+                <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+            </div>
+            <div class="row justify-content-center">
+                <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+            </div>
+        </div>
+</div>

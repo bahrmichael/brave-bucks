@@ -1,10 +1,13 @@
 package com.buyback.eve.web.rest;
 
+import java.time.Instant;
+
 import com.buyback.eve.ThebuybackApp;
 import com.buyback.eve.config.audit.AuditEventConverter;
 import com.buyback.eve.domain.PersistentAuditEvent;
 import com.buyback.eve.repository.PersistenceAuditEventRepository;
 import com.buyback.eve.service.AuditEventService;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,13 +22,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for the AuditResource REST controller.
