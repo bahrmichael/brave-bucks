@@ -1,6 +1,6 @@
 <div>
     <h2>
-        <span>Payouts</span>
+        <span>Payout Requests</span>
         <button class="btn btn-primary float-right jh-create-entity create-payout" [routerLink]="['/', { outlets: { popup: ['payout-new'] } }]">
             <span class="fa fa-plus"></span>
             <span >
@@ -11,6 +11,7 @@
     <jhi-alert></jhi-alert>
     <div class="row">
     </div>
+    <span *ngIf="allAccounts">Total value of all accounts: {{allAccounts | number:'1.0-0'}} ISK</span>
     <br/>
     <div class="table-responsive" *ngIf="payouts">
         <table class="table table-striped">

@@ -28,6 +28,7 @@ currentAccount: any;
     predicate: any;
     previousPage: any;
     reverse: any;
+    allAccounts: number;
 
     constructor(
         private payoutService: PayoutService,
@@ -56,6 +57,9 @@ currentAccount: any;
             sort: this.sort()}).subscribe(
             (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
             (res: ResponseWrapper) => this.onError(res.json)
+        );
+        this.payoutService.getTotalValue().subscribe(
+            data => this.allAccounts = +data.text()
         );
     }
     loadPage(page: number) {

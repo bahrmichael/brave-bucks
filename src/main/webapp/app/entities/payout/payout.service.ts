@@ -68,4 +68,8 @@ export class PayoutService {
         copy.lastUpdated = this.dateUtils.toDate(payout.lastUpdated);
         return copy;
     }
+
+    getTotalValue() {
+        return this.http.get(this.resourceUrl + '/total');
+    }
 }

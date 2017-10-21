@@ -158,6 +158,14 @@ public class PayoutResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    @GetMapping("/payouts/total")
+    @Timed
+    @Secured(AuthoritiesConstants.MANAGER)
+    public ResponseEntity<Double> getTotalPayouts() {
+        final double sum = transactionRepository.findAll().parallelStream().mapToDouble(Transaction::getAmount).sum();
+        return ResponseEntity.ok(sum);
+    }
+
     /**
      * GET  /payouts/:id : get the "id" payout.
      *
