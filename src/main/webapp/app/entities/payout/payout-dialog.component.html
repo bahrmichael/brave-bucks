@@ -1,0 +1,60 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myPayoutLabel">Create or edit a Payout</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!payout.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="payout.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_user">Character Name</label>
+            <input type="text" class="form-control" name="user" id="field_user"
+                [(ngModel)]="payout.user"  />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_amount">Amount</label>
+            <input type="number" class="form-control" name="amount" id="field_amount"
+                [(ngModel)]="payout.amount"  />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_lastUpdated">Last Updated</label>
+            <div class="d-flex">
+                <input id="field_lastUpdated" type="datetime-local" class="form-control" name="lastUpdated" [(ngModel)]="payout.lastUpdated"
+                       readonly />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_lastModifiedBy">Last Modified By</label>
+            <input type="text" class="form-control" name="lastModifiedBy" id="field_lastModifiedBy"
+                [(ngModel)]="payout.lastModifiedBy" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_status">Status</label>
+            <select class="form-control" name="status" [(ngModel)]="payout.status" id="field_status" >
+                <option value="PENDING">PENDING</option>
+                <option value="PAID">PAID</option>
+                <option value="CANCELLED">CANCELLED</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_details">Details</label>
+            <input type="text" class="form-control" name="details" id="field_details"
+                [(ngModel)]="payout.details"  />
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

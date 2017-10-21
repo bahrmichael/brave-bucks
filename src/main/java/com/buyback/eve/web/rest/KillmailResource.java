@@ -7,11 +7,10 @@ import java.util.Optional;
 import com.buyback.eve.domain.Killmail;
 import com.buyback.eve.repository.KillmailRepository;
 import com.buyback.eve.service.JsonRequestService;
+import com.buyback.eve.service.KillmailParser;
 import com.buyback.eve.service.KillmailPuller;
 import com.mashape.unirest.http.JsonNode;
-import static com.buyback.eve.service.KillmailParser.parseKillmail;
 
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -34,13 +33,16 @@ public class KillmailResource {
     private final KillmailRepository killmailRepository;
     private final KillmailPuller killmailPuller;
     private final JsonRequestService jsonRequestService;
+    private final KillmailParser killmailParser;
 
     public KillmailResource(final KillmailRepository killmailRepository,
                             final KillmailPuller killmailPuller,
-                            final JsonRequestService jsonRequestService) {
+                            final JsonRequestService jsonRequestService,
+                            final KillmailParser killmailParser) {
         this.killmailRepository = killmailRepository;
         this.killmailPuller = killmailPuller;
         this.jsonRequestService = jsonRequestService;
+        this.killmailParser = killmailParser;
     }
 
     /**
@@ -57,7 +59,7 @@ public class KillmailResource {
         if (!existingKill.isPresent()) {
             Optional<JsonNode> jsonNode = jsonRequestService.getKillmail(killmailId);
             if (jsonNode.isPresent()) {
-                Killmail killmail = parseKillmail(jsonNode.get().getArray().getJSONObject(0));
+                Killmail killmail = killmailParser.parseKillmail(jsonNode.get().getArray().getJSONObject(0));
                 killmailPuller.filterAndSaveKillmails(Collections.singletonList(killmail));
             }
         }

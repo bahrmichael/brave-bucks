@@ -30,6 +30,13 @@ public class JsonRequestService {
         defaultHeaders.put("Accept-Encoding", "gzip");
     }
 
+    public Optional<JsonNode> searchSolarSystem(final String systemName) {
+        String url = "https://esi.tech.ccp.is/latest/search/?categories=solarsystem&datasource=tranquility"
+                     + "&language=en-us&search=" + systemName + "&strict=true";
+        GetRequest getRequest = get(url, null);
+        return executeRequest(getRequest);
+    }
+
     Optional<JsonNode> getKillmails(final Long characterId, final long duration) {
         String url = "https://zkillboard.com/api/kills/characterID/" + characterId + "/pastSeconds/" + duration
                      + "/no-items/";
@@ -39,6 +46,12 @@ public class JsonRequestService {
 
     public Optional<JsonNode> getKillmail(final Long killId) {
         String url = "https://zkillboard.com/api/killID/" + killId + "/no-items/";
+        GetRequest getRequest = get(url, null);
+        return executeRequest(getRequest);
+    }
+
+    public Optional<JsonNode> getPlayerGroupNames(final long allianceId) {
+        String url = "https://esi.tech.ccp.is/v1/alliances/names/?alliance_ids=" + allianceId + "&datasource=tranquility";
         GetRequest getRequest = get(url, null);
         return executeRequest(getRequest);
     }

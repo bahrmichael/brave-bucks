@@ -1,0 +1,69 @@
+<div>
+    <h2>
+        <span>Payout Requests</span>
+        <button class="btn btn-primary float-right jh-create-entity create-payout" [routerLink]="['/', { outlets: { popup: ['payout-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span >
+            Create new Payout
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+    </div>
+    <span *ngIf="allAccounts">Total value of all accounts: {{allAccounts | number:'1.0-0'}} ISK</span>
+    <br/>
+    <div class="table-responsive" *ngIf="payouts">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="user"><span>Character Name</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="amount"><span>Amount</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="status"><span>Status</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="details"><span>Details</span> <span class="fa fa-sort"></span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let payout of payouts ;trackBy: trackId">
+                <td>{{payout.user}}</td>
+                <td>{{payout.amount | number:'1.0-0'}} ISK</td>
+                <td>{{payout.status}}</td>
+                <td>{{payout.details}}</td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../payout', payout.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="hidden-md-down">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'payout/'+ payout.id + '/edit'} }]"
+                                replaceUrl="true"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="hidden-md-down">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'payout/'+ payout.id + '/delete'} }]"
+                                replaceUrl="true"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="hidden-md-down">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+        <div *ngIf="payouts && payouts.length">
+            <div class="row justify-content-center">
+                <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+            </div>
+            <div class="row justify-content-center">
+                <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+            </div>
+        </div>
+</div>

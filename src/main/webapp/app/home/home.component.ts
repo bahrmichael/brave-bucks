@@ -13,13 +13,12 @@ import {Http} from "@angular/http";
 })
 export class HomeComponent implements OnInit {
     account: Account;
-    myStats: any;
-    pools: any[];
-    exchangeRate: number;
     potentialPayout: number;
     killmails: any[];
-    payoutThreshold = 50;
+    payoutThreshold = 100000000;
     isFirstLogin: boolean;
+    payoutRequested: boolean;
+    monthAvailable: number;
 
     constructor(
         private principal: Principal,
@@ -46,19 +45,23 @@ export class HomeComponent implements OnInit {
         });
     }
 
+    requestPayout() {
+        this.http.put('/api/payouts/trigger', "").subscribe(
+            (data) => {
+                this.potentialPayout = 0;
+                this.payoutRequested = true;
+            },
+            (err) => console.log(err)
+        );
+    }
+
     isAuthenticated() {
         return this.principal.isAuthenticated();
     }
 
     getData() {
-        this.http.get('/api/stats/my').subscribe((data) => {
-            this.myStats = data.json();
-        });
-        this.http.get('/api/pools/isk').subscribe((data) => {
-            this.pools = data.json();
-        });
-        this.http.get('/api/pools/current/exchange').subscribe((data) => {
-            this.exchangeRate = +data.text();
+        this.http.get('/api/stats/month-available').subscribe((data) => {
+            this.monthAvailable = +data.text();
         });
         this.http.get('/api/stats/potentialPayout').subscribe((data) => {
             this.potentialPayout = +data.text();
@@ -68,11 +71,11 @@ export class HomeComponent implements OnInit {
         })
     }
 
-    getBarWidth(coins: number) {
-        if (!coins || coins && coins === 0) {
+    getBarWidth(payout: number) {
+        if (!payout || payout && payout === 0) {
             return 0;
         }
-        return coins / this.payoutThreshold * 100;
+        return payout / this.payoutThreshold * 100;
     }
 
     setFirstLogin() {

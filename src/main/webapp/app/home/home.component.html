@@ -1,10 +1,70 @@
 <div class="row">
     <div class="col-md-3" style="text-align: center">
         <span class="hipster img-fluid img-rounded"></span>
-        <h2>Brave Nukem</h2>
         <h3>"Babes, bullets, bombs.<br/>Damn I love this job!"</h3>
     </div>
     <div class="col-md-9">
+
+        <!-- Modal -->
+        <div class="modal fade" id="criteriaModal" tabindex="-1" role="dialog" aria-labelledby="criteriaModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="criteriaModalLabel">Killmail Criterias</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        To get BraveBucks, your killmail must not be from a fleet fight (max. 20 attackers), not an awox and in one of the circled systems on the right. Empty pods are not counted. We may expand to Impass soon ;)
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="calcModal" tabindex="-1" role="dialog" aria-labelledby="calcModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="calcModalLabel">Bucks Calculation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        What determines how many BraveBucks you get per kill? Currently we pull the points from zkill, sqrt it and add 2 points for Final Blows. Soon we will add points for ADMs, the lower the more.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="huntModal" tabindex="-1" role="dialog" aria-labelledby="huntModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="huntModalLabel">Hunting Area</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="../../content/images/map.png"/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <h1 class="display-4">Welcome, Braveling!</h1>
 
         <div *ngIf="!isAuthenticated()">
@@ -64,21 +124,32 @@
                     </div>
                 </div>
             </div>
-            <h1 style="color: red">Beta Warning<br/><small>Some of this may break or be stubs. All numbers may change.</small></h1>
+            <h1 style="color: red">Beta Warning<br/><small>Some of this may break.</small></h1>
             <div class="row">
                 <div class="col-md-6">
                     <p>We want <b>you</b> to make our space safer. Help the industry grow and the ratters raise the war chest by doing what you do best: <b>Shooting enemies!</b></p>
-                    <p>Once you logged in, this website will track your PvP activity from <a target="_blank" href="https://zkillboard.com">zkillboard</a>. Based on this data we give you BraveBux for brave defenses,
-                       last hits and all the things that boost fast local responses. Once you reach a certain number of BraveBux, we give you ISK. No bamboozles.</p>
                     <p>We believe encouraging fast local PvP responses can protect our space by protecting ratters and miners who again raise our ADMs. This again makes our space easier
                        to defend with the current sovereignty system.</p>
-                    <p>To get BraveBux, your killmail must not be from a fleet fight (max. 20 attackers), not an awox and in one of the circled systems on the right. Empty pods are not counted. We may expand to Impass soon ;)</p>
-                    <p>What determines how many BraveBux you get per kill? Currently we pull the points from zkill, sqrt it and add 2 points for Final Blows. Soon we will add points for ADMs, the lower the more.</p>
-                </div>
+                    </div>
                 <div class="col-md-6">
-                    <img src="../../content/images/map.png" class="pull-right"/>
+                    <p>Once you logged in, this website will track your PvP activity from <a target="_blank" href="https://zkillboard.com">zkillboard</a>. Based on this data we give you BraveBucks for brave defenses,
+                       last hits and all the things that boost fast local responses. Once you reach a certain number of BraveBucks, we give you ISK. No bamboozles.</p>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#criteriaModal">
+                        Killmail Criterias
+                    </button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#calcModal">
+                        Bucks Calculation
+                    </button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#huntModal">
+                        Hunting Area
+                    </button>
+                </div>
+            </div>
+            <br/>
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
@@ -88,7 +159,7 @@
                         <div class="card-body">
                             <h4 class="card-title">The Buyback</h4>
                             <p class="card-text">The Buyback will buy loot and everything in any Brave citadel for 90% Jita buy.</p>
-                            <a href="#" class="btn btn-primary" routerLink="buyback">That's awesome. I want ISK!</a>
+                            <a href="#" class="btn btn-primary" routerLink="the-buyback">That's awesome. I want ISK!</a>
                         </div>
                     </div>
                 </div>
@@ -96,86 +167,83 @@
             <br/>
             <div class="row">
                 <div class="col-md-12">
-                    <small style="float: right">Current exchange rate: 1 BraveBuck = {{exchangeRate | number:'1.0-0'}} ISK</small>
-                </div>
-            </div>
-            <div class="progress" *ngIf="myStats">
-                <div class="progress-bar bg-info" role="progressbar" style="height: 40px" [style.width]="getBarWidth(myStats['coins'])+'%'">
-                    <span *ngIf="myStats['coins'] >= payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
-                </div>
-                <span *ngIf="myStats['coins'] < payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem; padding-left: 10px">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
-            </div>
-            <p *ngIf="myStats" style="text-align: center">{{myStats['coins']}}/{{payoutThreshold}} BraveBux until Payout</p>
-
-            <div class="row">
-                <div *ngIf="pools" class="col-md-6">
-                    <h4>Hunter Pool</h4>
-                    <table class="table table-condensed table-striped table-bordered">
-                        <tr>
-                            <td width="50%">Next Month (WIP)</td>
-                            <td>{{pools[0] | number:'1.0-0'}} ISK</td>
-                        </tr>
-                        <tr>
-                            <td><b>This Month</b></td>
-                            <td>{{pools[1] | number:'1.0-0'}} ISK</td>
-                        </tr>
-                        <tr>
-                            <td>Last Month</td>
-                            <td>{{pools[2] | number:'1.0-0'}} ISK</td>
-                        </tr>
-                    </table>
-                </div>
-                <div *ngIf="myStats" class="col-md-6" style="color: black;">
-                    <h4>Your Stats for This Month</h4>
-                    <table class="table table-condensed table-striped">
-                        <tr>
-                            <td width="50%">BraveBux</td>
-                            <td>{{myStats['coins']}}</td>
-                        </tr>
-                        <tr>
-                            <td>Defense Kills</td>
-                            <td>{{myStats['defenseKills']}}</td>
-                        </tr>
-                        <tr>
-                            <td>Final Blows</td>
-                            <td>{{myStats['finalBlows']}}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <h4>Top Donations</h4>
-                    <table class="table table-condensed table-striped">
-                        <tr>
-                            <td width="50%">The Buyback</td>
-                            <td>200,000,000 ISK</td>
-                        </tr>
-                    </table>
-                    <div class="alert alert-warning">
-                        We need your help! If you like our work and the space we live in, please consider donating
-                        to encourage more local PvP and content. Send any amount of ISK you want to share to the character
-                        "Brave Nukem". Or DM Rihan Shazih on Slack.
+                    <h3>Payouts</h3>
+                    <span *ngIf="monthAvailable">Available this month: {{monthAvailable | number:'1.0-0'}} ISK</span>
+                    <div *ngIf="payoutRequested" class="alert alert-success">Payout requested!</div>
+                    <div class="input-group">
+                        <div class="progress" style="width: 100%;">
+                            <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="height: 40px" [style.width]="getBarWidth(potentialPayout)+'%'">
+                                <span *ngIf="potentialPayout >= payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
+                            </div>
+                            <span *ngIf="potentialPayout < payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem; padding-left: 10px">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
+                        </div>
+                        <button *ngIf="potentialPayout >= payoutThreshold" class="btn btn-primary" (click)="requestPayout()">Request Payout</button>
                     </div>
-                </div>
-                <div class="col-md-6" style="color: lightgrey">
-                    <h4>Recent Payouts</h4>
-                    <table class="table table-condensed table-striped">
-                        <tr>
-                            <td width="50%">11.05.2017</td>
-                            <td>127,148,217 ISK</td>
-                        </tr>
-                        <tr>
-                            <td>28.04.2017</td>
-                            <td>12,845,184 ISK</td>
-                        </tr>
-                        <tr>
-                            <td>10.04.2017</td>
-                            <td>8,283,453 ISK</td>
-                        </tr>
-                    </table>
+                    <p *ngIf="potentialPayout < payoutThreshold" style="text-align: center">{{potentialPayout | number:'1.0-0'}}/{{payoutThreshold | number:'1.0-0'}} ISK until you can request a payout</p>
+                    <br/>
                 </div>
             </div>
+            <!--<div class="row">-->
+                <!--<div *ngIf="pools" class="col-md-6">-->
+                    <!--<h4>Hunter Pool</h4>-->
+                    <!--<table class="table table-condensed table-striped table-bordered">-->
+                        <!--<tr>-->
+                            <!--<td width="50%">Next Month (WIP)</td>-->
+                            <!--<td>{{pools[0] | number:'1.0-0'}} ISK</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td><b>This Month</b></td>-->
+                            <!--<td>{{pools[1] | number:'1.0-0'}} ISK</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td>Last Month</td>-->
+                            <!--<td>{{pools[2] | number:'1.0-0'}} ISK</td>-->
+                        <!--</tr>-->
+                    <!--</table>-->
+                <!--</div>-->
+                <!--<div *ngIf="myStats" class="col-md-6">-->
+                    <!--<h4>Your Stats</h4>-->
+                    <!--<table class="table table-condensed table-striped">-->
+                        <!--<tr>-->
+                            <!--<td width="50%">BraveBucks Today</td>-->
+                            <!--<td>{{myStats['coins']}}</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td>Defense Kills</td>-->
+                            <!--<td>{{myStats['defenseKills']}}</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td>Final Blows</td>-->
+                            <!--<td>{{myStats['finalBlows']}}</td>-->
+                        <!--</tr>-->
+                    <!--</table>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="row">-->
+                <!--<div class="col-md-6">-->
+                    <!--<div class="alert alert-warning">-->
+                        <!--We need your help! If you like our work and the space we live in, please consider donating-->
+                        <!--to encourage more local PvP and content. DM Rihan Shazih on Slack.-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="col-md-6" style="color: lightgrey">-->
+                    <!--<h4>Recent Payouts</h4>-->
+                    <!--<table class="table table-condensed table-striped">-->
+                        <!--<tr>-->
+                            <!--<td width="50%">11.05.2017</td>-->
+                            <!--<td>127,148,217 ISK</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td>28.04.2017</td>-->
+                            <!--<td>12,845,184 ISK</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td>10.04.2017</td>-->
+                            <!--<td>8,283,453 ISK</td>-->
+                        <!--</tr>-->
+                    <!--</table>-->
+                <!--</div>-->
+            <!--</div>-->
             <div class="row">
                 <div class="col-md-12">
                     <h3>Your Defense Kills</h3>
@@ -185,13 +253,11 @@
                     <table class="table table-condensed table-striped" *ngIf="killmails && killmails.length">
                         <tr>
                            <th>Killmail</th>
-                           <th>BraveBux</th>
                            <th>Kill Time</th>
                            <th>Victim Alliance</th>
                         </tr>
                         <tr *ngFor="let killmail of killmails">
                             <td><a target="_blank" href="https://zkillboard.com/kill/{{killmail.killmailId}}">{{killmail.killmailId}}</a></td>
-                            <td>{{killmail.coins}}</td>
                             <td>{{killmail.killTime}}</td>
                             <td>{{killmail.victimAlliance}}</td>
                         </tr>
