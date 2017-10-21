@@ -4,6 +4,67 @@
         <h3>"Babes, bullets, bombs.<br/>Damn I love this job!"</h3>
     </div>
     <div class="col-md-9">
+
+        <!-- Modal -->
+        <div class="modal fade" id="criteriaModal" tabindex="-1" role="dialog" aria-labelledby="criteriaModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="criteriaModalLabel">Killmail Criterias</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        To get BraveBucks, your killmail must not be from a fleet fight (max. 20 attackers), not an awox and in one of the circled systems on the right. Empty pods are not counted. We may expand to Impass soon ;)
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="calcModal" tabindex="-1" role="dialog" aria-labelledby="calcModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="calcModalLabel">Bucks Calculation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        What determines how many BraveBucks you get per kill? Currently we pull the points from zkill, sqrt it and add 2 points for Final Blows. Soon we will add points for ADMs, the lower the more.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="huntModal" tabindex="-1" role="dialog" aria-labelledby="huntModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="huntModalLabel">Hunting Area</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="../../content/images/map.png"/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <h1 class="display-4">Welcome, Braveling!</h1>
 
         <div *ngIf="!isAuthenticated()">
@@ -63,21 +124,32 @@
                     </div>
                 </div>
             </div>
-            <h1 style="color: red">Beta Warning<br/><small>Some of this may break or be stubs. All numbers may change.</small></h1>
+            <h1 style="color: red">Beta Warning<br/><small>Some of this may break.</small></h1>
             <div class="row">
                 <div class="col-md-6">
                     <p>We want <b>you</b> to make our space safer. Help the industry grow and the ratters raise the war chest by doing what you do best: <b>Shooting enemies!</b></p>
-                    <p>Once you logged in, this website will track your PvP activity from <a target="_blank" href="https://zkillboard.com">zkillboard</a>. Based on this data we give you BraveBucks for brave defenses,
-                       last hits and all the things that boost fast local responses. Once you reach a certain number of BraveBucks, we give you ISK. No bamboozles.</p>
                     <p>We believe encouraging fast local PvP responses can protect our space by protecting ratters and miners who again raise our ADMs. This again makes our space easier
                        to defend with the current sovereignty system.</p>
-                    <p>To get BraveBucks, your killmail must not be from a fleet fight (max. 20 attackers), not an awox and in one of the circled systems on the right. Empty pods are not counted. We may expand to Impass soon ;)</p>
-                    <p>What determines how many BraveBucks you get per kill? Currently we pull the points from zkill, sqrt it and add 2 points for Final Blows. Soon we will add points for ADMs, the lower the more.</p>
-                </div>
+                    </div>
                 <div class="col-md-6">
-                    <img src="../../content/images/map.png" class="pull-right"/>
+                    <p>Once you logged in, this website will track your PvP activity from <a target="_blank" href="https://zkillboard.com">zkillboard</a>. Based on this data we give you BraveBucks for brave defenses,
+                       last hits and all the things that boost fast local responses. Once you reach a certain number of BraveBucks, we give you ISK. No bamboozles.</p>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#criteriaModal">
+                        Killmail Criterias
+                    </button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#calcModal">
+                        Bucks Calculation
+                    </button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#huntModal">
+                        Hunting Area
+                    </button>
+                </div>
+            </div>
+            <br/>
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
