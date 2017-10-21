@@ -24,21 +24,6 @@ public class Killmail {
     public Killmail() {
     }
 
-    public Killmail(final String killTime, final long points) {
-        this.killTime = killTime;
-        this.points = points;
-    }
-
-    public Killmail(final String killTime, final long points, final long finalBlowAttackerId) {
-        this.killTime = killTime;
-        this.points = points;
-        this.finalBlowAttackerId = finalBlowAttackerId;
-    }
-
-    public boolean isPayoutCalculated() {
-        return payoutCalculated;
-    }
-
     public void setPayoutCalculated(final boolean payoutCalculated) {
         this.payoutCalculated = payoutCalculated;
     }

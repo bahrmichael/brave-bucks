@@ -19,8 +19,6 @@ import de.flapdoodle.embed.process.collections.Collections;
 
 public class KillmailParserTest {
 
-    // todo: error handling for broken json
-
     private JsonRequestService requestService = mock(JsonRequestService.class);
     private KillmailParser sut = new KillmailParser(requestService);
 
@@ -34,6 +32,11 @@ public class KillmailParserTest {
     public void withEmptyArray() throws Exception {
         List<Killmail> killmails = sut.parseKillmails(new JSONArray("[]"));
         assertTrue(killmails.isEmpty());
+    }
+
+    @Test
+    public void noVictimCharacterId_returnsNull() throws Exception {
+        assertNull(sut.parseKillmail(new JSONObject("{'victim': {}}")));
     }
 
     @Test
