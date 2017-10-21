@@ -48,7 +48,6 @@ public class PayoutCalculatorTest {
         pendingKillmail.setPoints(1L);
         pendingKillmail.setAttackerIds(Collections.singletonList(user.getCharacterId()));
         when(killmailRepo.findPending()).thenReturn(Collections.singletonList(pendingKillmail));
-        when(transactionRepo.findAll()).thenReturn(Collections.emptyList());
         when(transactionRepo.save(anyList())).thenReturn(null);
         when(killmailRepo.save(any(Killmail.class))).thenReturn(null);
         LocalDate now = LocalDate.now();

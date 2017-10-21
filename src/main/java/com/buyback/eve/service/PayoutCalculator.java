@@ -69,9 +69,6 @@ public class PayoutCalculator {
         final List<Killmail> pendingKillmails = killmailRepository.findPending();
         final Collection<Transaction> transactions = getTransactions(users, userIds, pendingKillmails);
 
-        // remove existing kill payments from today, so we don't duplicate them when restarting the app
-        deleteExistingKillIskFromToday();
-
         transactionRepository.save(transactions);
         pendingKillmails.forEach(km -> {
             km.setPayoutCalculated(true);
