@@ -125,13 +125,6 @@ public class PayoutCalculator {
                                  .mapToDouble(this::getRemainingWorth).sum();
     }
 
-    void deleteExistingKillIskFromToday() {
-        transactionRepository.findAll().stream()
-                             .filter(this::isToday)
-                             .filter(t -> KILL == t.getType())
-                             .forEach(transactionRepository::delete);
-    }
-
     private boolean isToday(final Transaction transaction) {
         return transaction.getInstant().toEpochMilli() >= LocalDate.now().toEpochDay();
     }

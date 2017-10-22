@@ -61,15 +61,4 @@ public class PayoutCalculatorTest {
         verify(killmailRepo).save(any(Killmail.class));
         verify(transactionRepo).save(anyList());
     }
-
-    @Test
-    public void deleteExistingKillIskFromToday() throws Exception {
-        final Transaction transaction = new Transaction("test", 1.0, TransactionType.KILL);
-        transaction.setInstant(Instant.now());
-        when(transactionRepo.findAll()).thenReturn(Collections.singletonList(transaction));
-
-        sut.deleteExistingKillIskFromToday();
-
-        verify(transactionRepo).delete(transaction);
-    }
 }

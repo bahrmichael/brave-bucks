@@ -54,14 +54,4 @@ public class TransactionService {
         log.debug("Request to get Transaction : {}", id);
         return transactionRepository.findOne(id);
     }
-
-    /**
-     *  Delete the  transaction by id.
-     *
-     *  @param id the id of the entity
-     */
-    public void delete(String id) {
-        log.debug("Request to delete Transaction : {}", id);
-        transactionRepository.delete(id);
-    }
 }
