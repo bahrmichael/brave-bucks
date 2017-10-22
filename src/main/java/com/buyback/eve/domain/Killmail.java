@@ -20,12 +20,17 @@ public class Killmail {
     private List<Long> attackerIds = new ArrayList<>();
     private long finalBlowAttackerId;
     private boolean payoutCalculated;
+    private long shipTypeId;
 
     public Killmail() {
     }
 
     public void setPayoutCalculated(final boolean payoutCalculated) {
         this.payoutCalculated = payoutCalculated;
+    }
+
+    public boolean isPayoutCalculated() {
+        return payoutCalculated;
     }
 
     public long getKillId() {
@@ -112,4 +117,11 @@ public class Killmail {
         this.finalBlowAttackerId = finalBlowAttackerId;
     }
 
+    public void setShipTypeId(final long shipTypeId) {
+        this.shipTypeId = shipTypeId;
+    }
+
+    public long getShipTypeId() {
+        return shipTypeId;
+    }
 }

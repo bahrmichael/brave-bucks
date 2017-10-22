@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import com.buyback.eve.domain.Killmail;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -13,7 +15,7 @@ import org.springframework.data.mongodb.repository.Query;
  */
 public interface KillmailRepository extends MongoRepository<Killmail, String> {
     @Query("{ attackerIds: ?0 }")
-    List<Killmail> findByAttackerId(long attackerId);
+    List<Killmail> findByAttackerId(long attackerId, final Pageable pageable);
 
     Optional<Killmail> findByKillId(long killmailId);
 

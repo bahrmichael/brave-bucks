@@ -1,7 +1,6 @@
 <div class="row">
     <div class="col-md-3" style="text-align: center">
-        <span class="hipster img-fluid img-rounded"></span>
-        <h3>"Babes, bullets, bombs.<br/>Damn I love this job!"</h3>
+        <img class="img-fluid img-rounded" src="https://crossingzebras.com/wp-content/uploads/2015/04/catch_Join.png"></img>
     </div>
     <div class="col-md-9">
 
@@ -71,7 +70,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="card mb-3">
-                        <img class="card-img-top" src="../../content/images/intro1.png" width="50%" alt="Card image cap">
+                        <img class="card-img-top" src="../../content/images/intro1.png" width="50%">
                         <div class="card-body">
                             <h4 class="card-title">1. Log In with EvE SSO</h4>
                             <p class="card-text">Only authenticate, no scopes required. Your tracking starts!</p>
@@ -81,7 +80,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="card mb-3">
-                        <img class="card-img-top" src="../../content/images/intro2.png" alt="Card image cap">
+                        <img class="card-img-top" src="../../content/images/intro2.png" >
                         <div class="card-body">
                             <h4 class="card-title">2. Shoot Enemies</h4>
                             <p class="card-text">Undock and defend our space. You will see which systems are
@@ -93,7 +92,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="card mb-3">
-                        <img class="card-img-top" src="../../content/images/intro3.png" width="50%" alt="Card image cap">
+                        <img class="card-img-top" src="../../content/images/intro3.png" width="50%" >
                         <div class="card-body">
                             <h4 class="card-title">3. Get Killmails</h4>
                             <p class="card-text">Tackle, ewar, deeps or plain whoring. Do what you can do best!</p>
@@ -103,7 +102,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="card mb-3">
-                        <img class="card-img-top" src="../../content/images/intro4.png" alt="Card image cap">
+                        <img class="card-img-top" src="../../content/images/intro4.png">
                         <div class="card-body">
                             <h4 class="card-title">4. Race for the Payout</h4>
                             <p class="card-text">Check in to see your potential payout as you can closer and closer to that sweeeet ISK.</p>
@@ -124,7 +123,6 @@
                     </div>
                 </div>
             </div>
-            <h1 style="color: red">Beta Warning<br/><small>Some of this may break.</small></h1>
             <div class="row">
                 <div class="col-md-6">
                     <p>We want <b>you</b> to make our space safer. Help the industry grow and the ratters raise the war chest by doing what you do best: <b>Shooting enemies!</b></p>
@@ -179,7 +177,7 @@
                         </div>
                         <button *ngIf="potentialPayout >= payoutThreshold" class="btn btn-primary" (click)="requestPayout()">Request Payout</button>
                     </div>
-                    <p *ngIf="potentialPayout < payoutThreshold" style="text-align: center">{{potentialPayout | number:'1.0-0'}}/{{payoutThreshold | number:'1.0-0'}} ISK until you can request a payout</p>
+                    <p *ngIf="potentialPayout < payoutThreshold" style="text-align: center">{{payoutThreshold - potentialPayout | number:'1.0-0'}} ISK until you can request a payout</p>
                     <br/>
                 </div>
             </div>
@@ -246,7 +244,7 @@
             <!--</div>-->
             <div class="row">
                 <div class="col-md-12">
-                    <h3>Your Defense Kills</h3>
+                    <h3>Your Recent Defense Kills</h3>
                     <div class="alert alert-info" *ngIf="!killmails || !killmails.length">
                         Undock and hunt to get your first kills! Be in standing fleet and mumble to find targets.
                     </div>
@@ -257,8 +255,8 @@
                            <th>Victim Alliance</th>
                         </tr>
                         <tr *ngFor="let killmail of killmails">
-                            <td><a target="_blank" href="https://zkillboard.com/kill/{{killmail.killmailId}}">{{killmail.killmailId}}</a></td>
-                            <td>{{killmail.killTime}}</td>
+                            <td><img src="https://image.eveonline.com/Type/{{killmail.shipTypeId}}_32.png" /> <a target="_blank" href="https://zkillboard.com/kill/{{killmail.killmailId}}">{{killmail.killmailId}}</a></td>
+                            <td>{{killmail.killTime | date:'dd.MM.yy HH:mm'}}</td>
                             <td>{{killmail.victimAlliance}}</td>
                         </tr>
                     </table>
