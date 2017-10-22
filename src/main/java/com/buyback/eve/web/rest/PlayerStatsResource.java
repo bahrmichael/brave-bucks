@@ -1,5 +1,6 @@
 package com.buyback.eve.web.rest;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,9 @@ import com.buyback.eve.security.SecurityUtils;
 import com.buyback.eve.web.dto.KillmailDto;
 import static com.buyback.eve.domain.enumeration.PayoutStatus.REQUESTED;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,7 +76,8 @@ public class PlayerStatsResource {
         if (!oneByLogin.isPresent()) {
             return ResponseEntity.badRequest().body("Could not resolve user.");
         }
-        return ResponseEntity.ok(killmailRepository.findByAttackerId(oneByLogin.get().getCharacterId())
+        return ResponseEntity.ok(killmailRepository.findByAttackerId(oneByLogin.get().getCharacterId(),
+                                                                     new PageRequest(0, 10, Direction.DESC, "killTime"))
                                                    .stream()
                                                    .map(this::createMailDto)
                                                    .collect(Collectors.toList()));
@@ -81,8 +86,9 @@ public class PlayerStatsResource {
     private KillmailDto createMailDto(final Killmail mail) {
         final KillmailDto dto = new KillmailDto();
         dto.setKillmailId(mail.getKillId());
-        dto.setKillTime(mail.getKillTime());
+        dto.setKillTime(Instant.parse(mail.getKillTime()));
         dto.setVictimAlliance(mail.getVictimGroupName());
+        dto.setShipTypeId(mail.getShipTypeId());
         return dto;
     }
 }

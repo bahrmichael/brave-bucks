@@ -76,8 +76,8 @@ public class PayoutCalculator {
         });
     }
 
-    public Collection<Transaction> getTransactions(final List<User> users, final List<Long> userIds,
-                                                   final List<Killmail> pendingKillmails) {
+    private Collection<Transaction> getTransactions(final List<User> users, final List<Long> userIds,
+                                                    final List<Killmail> pendingKillmails) {
         final long totalPoints = getTotalPoints(pendingKillmails, userIds);
         final double todayPayable = getPayable();
 

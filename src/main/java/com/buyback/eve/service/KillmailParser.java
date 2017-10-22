@@ -44,6 +44,7 @@ public class KillmailParser {
         result.setTotalValue(object.getJSONObject("zkb").getLong("totalValue"));
         result.setPoints(object.getJSONObject("zkb").getLong("points"));
         result.setVictimId(victim.getLong("character_id"));
+        result.setShipTypeId(victim.getLong("ship_type_id"));
 
         setGroup(result, victim);
 

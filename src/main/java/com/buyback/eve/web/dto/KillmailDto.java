@@ -1,17 +1,19 @@
 package com.buyback.eve.web.dto;
 
-public class KillmailDto {
-    private long coins;
-    private long killmailId;
-    private String killTime;
-    private String victimAlliance;
+import java.time.Instant;
 
-    public void setCoins(final long coins) {
-        this.coins = coins;
+public class KillmailDto {
+    private long killmailId;
+    private Instant killTime;
+    private String victimAlliance;
+    private long shipTypeId;
+
+    public long getShipTypeId() {
+        return shipTypeId;
     }
 
-    public long getCoins() {
-        return coins;
+    public void setShipTypeId(final long shipTypeId) {
+        this.shipTypeId = shipTypeId;
     }
 
     public void setKillmailId(final long killmailId) {
@@ -22,7 +24,7 @@ public class KillmailDto {
         return killmailId;
     }
 
-    public void setKillTime(final String killTime) {
+    public void setKillTime(final Instant killTime) {
         this.killTime = killTime;
     }
 
@@ -34,7 +36,7 @@ public class KillmailDto {
         return victimAlliance;
     }
 
-    public String getKillTime() {
+    public Instant getKillTime() {
         return killTime;
     }
 }
