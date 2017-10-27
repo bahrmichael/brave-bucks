@@ -8,7 +8,6 @@ import com.buyback.eve.domain.Killmail;
 import com.mashape.unirest.http.JsonNode;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +19,11 @@ public class KillmailParser {
     private static final Logger log = LoggerFactory.getLogger(KillmailParser.class);
 
     private final JsonRequestService requestService;
+    private final AdmService admService;
 
-    public KillmailParser(final JsonRequestService requestService) {
+    public KillmailParser(final JsonRequestService requestService, final AdmService admService) {
         this.requestService = requestService;
+        this.admService = admService;
     }
 
     public Killmail parseKillmail(final JSONObject object) {
@@ -40,15 +41,28 @@ public class KillmailParser {
         result.setSolarSystemId(object.getLong("solar_system_id"));
         result.setKillTime(object.getString("killmail_time"));
         setAttackers(object, result);
-        result.setNpc(object.getJSONObject("zkb").getBoolean("npc"));
-        result.setTotalValue(object.getJSONObject("zkb").getLong("totalValue"));
-        result.setPoints(object.getJSONObject("zkb").getLong("points"));
+        JSONObject zkb = object.getJSONObject("zkb");
+        result.setNpc(zkb.getBoolean("npc"));
+        result.setTotalValue(zkb.getLong("totalValue"));
+        result.setPoints(getPoints(zkb.getLong("points"), object.getLong("solar_system_id")));
         result.setVictimId(victim.getLong("character_id"));
         result.setShipTypeId(victim.getLong("ship_type_id"));
 
         setGroup(result, victim);
 
         return result;
+    }
+
+    private long getPoints(final long points, final long solarSystemId) {
+        long preSquare = points;
+        final Integer adm = admService.getAdm(solarSystemId);
+        if (null != adm) {
+            final int factor = 6 - adm;
+            if (factor > 0) {
+                preSquare *= factor;
+            }
+        }
+        return (long) Math.sqrt(preSquare);
     }
 
     public void setAttackers(final JSONObject object, final Killmail result) {

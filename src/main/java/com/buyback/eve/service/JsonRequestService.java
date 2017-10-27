@@ -79,6 +79,14 @@ public class JsonRequestService {
         return executeRequest(getRequest);
     }
 
+    Optional<JsonNode> getAdms() {
+        return justGet("https://esi.tech.ccp.is/v1/sovereignty/structures/?datasource=tranquility");
+    }
+
+    private Optional<JsonNode> justGet(final String url) {
+        return executeRequest(get(url, null));
+    }
+
     Optional<JsonNode> executeRequest(final BaseRequest request) {
         try {
             HttpResponse<JsonNode> response = request.asJson();

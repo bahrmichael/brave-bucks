@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -20,12 +21,14 @@ import de.flapdoodle.embed.process.collections.Collections;
 public class KillmailParserTest {
 
     private JsonRequestService requestService = mock(JsonRequestService.class);
-    private KillmailParser sut = new KillmailParser(requestService);
+    private AdmService admService = mock(AdmService.class);
+    private KillmailParser sut = new KillmailParser(requestService, admService);
 
     @Before
     public void setUp() throws Exception {
         when(requestService.getPlayerGroupNames(1)).thenReturn(Optional.of(new JsonNode("[{\"alliance_id\": 1, \"alliance_name\": \"Goons\"}]")));
         when(requestService.getPlayerGroupNames(2)).thenReturn(Optional.of(new JsonNode("[{\"alliance_id\": 2, \"alliance_name\": \"Red Alliance\"}]")));
+        when(admService.getAdm(anyLong())).thenReturn(6);
     }
 
     @Test
@@ -49,7 +52,7 @@ public class KillmailParserTest {
         assertEquals("2017-08-05 21:23:25", killmail.getKillTime());
         assertEquals(5, killmail.getAttackerIds().size());
         assertEquals(2721466267L, killmail.getTotalValue());
-        assertEquals(40, killmail.getPoints());
+        assertEquals(6, killmail.getPoints());
         assertEquals(false, killmail.isNpc());
         assertEquals(123L, killmail.getVictimId());
         assertEquals("Goons", killmail.getVictimGroupName());
@@ -66,7 +69,7 @@ public class KillmailParserTest {
         assertEquals("2017-03-05 21:23:23", killmail.getKillTime());
         assertEquals(3, killmail.getAttackerIds().size());
         assertEquals(3L, killmail.getTotalValue());
-        assertEquals(3, killmail.getPoints());
+        assertEquals(1, killmail.getPoints());
         assertEquals(true, killmail.isNpc());
         assertEquals(456L, killmail.getVictimId());
         assertEquals("Goons", killmail.getVictimGroupName());
@@ -135,7 +138,7 @@ public class KillmailParserTest {
         assertEquals("2017-09-24 08:18:33", killmail.getKillTime());
         assertEquals(1, killmail.getAttackerIds().size());
         assertEquals(259230154L, killmail.getTotalValue());
-        assertEquals(50, killmail.getPoints());
+        assertEquals(7, killmail.getPoints());
         assertEquals(false, killmail.isNpc());
         assertEquals(90013607L, killmail.getVictimId());
         assertEquals("Red Alliance", killmail.getVictimGroupName());
