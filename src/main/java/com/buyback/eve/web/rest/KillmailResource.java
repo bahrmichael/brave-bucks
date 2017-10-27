@@ -1,5 +1,6 @@
 package com.buyback.eve.web.rest;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
@@ -11,8 +12,10 @@ import com.buyback.eve.service.KillmailParser;
 import com.buyback.eve.service.KillmailPuller;
 import com.mashape.unirest.http.JsonNode;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,17 +56,41 @@ public class KillmailResource {
      */
     @PostMapping("/public/killmail/{link}")
     public ResponseEntity addKillmail(@PathVariable("link") String link) {
-//        log.info("Adding Killmail manually. ID={}", killmailId);
-//
-//        Optional<Killmail> existingKill = killmailRepository.findByKillId(killmailId);
-//        if (!existingKill.isPresent()) {
-//            Optional<JsonNode> jsonNode = jsonRequestService.getKillmail(killmailId);
-//            if (jsonNode.isPresent()) {
-//                Killmail killmail = killmailParser.parseKillmail(jsonNode.get().getArray().getJSONObject(0));
-//                killmailPuller.filterAndSaveKillmails(Collections.singletonList(killmail));
-//            }
-//        }
-        return ResponseEntity.ok().build();
+        Long killId = Long.valueOf(link.split("/kill/")[0].replace("/", ""));
+        Optional<JsonNode> optional = jsonRequestService.getKillmail(killId);
+        if (optional.isPresent()) {
+            JSONObject obj = optional.get().getObject();
+            Killmail killmail = killmailParser.parseKillmail(obj);
+            if (null == killmail) {
+                log.info("{} was a structure or failed to be parsed.", link);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This looks like a structure, which we don't count.");
+            } else {
+                boolean notInFleet = killmailPuller.isNotInFleet(killmail);
+                if (!notInFleet) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("There were more than 20 attackers on the killmail.");
+                }
+                boolean inBraveSystem = killmailPuller.isInBraveSystem(killmail);
+                if (!inBraveSystem) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The killmail is not from one of the systems of the Hunting Area.");
+                }
+                boolean victimNotBrave = killmailPuller.isVictimNotBrave(killmail);
+                if (!victimNotBrave) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The victim is from Brave Collective. Bad Awox!");
+                }
+                boolean notAnEmptyPod = killmailPuller.isNotAnEmptyPod(killmail);
+                if (!notAnEmptyPod) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The killmail is an empty pos. We don't count that.");
+                }
+                boolean isTooOld = LocalDateTime.parse(killmail.getKillTime()).isBefore(LocalDateTime.now().minusDays(2));
+                if (isTooOld) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The killmail is too old to be counted. The maximum age is 2 days.");
+                }
+                killmailRepository.save(killmail);
+                return ResponseEntity.ok().build();
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("The server has a hiccup, please try again later. DM Rihan Shazih if the issue persists.");
+        }
     }
 
     @PostMapping("/killmail/long-pull")

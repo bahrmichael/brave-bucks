@@ -86,16 +86,16 @@ public class KillmailPuller {
         killmailRepository.save(filtered);
     }
 
-    boolean isNotInFleet(final Killmail killmail) {
-        return killmail.getAttackerIds().size() <= 20;
+    public boolean isNotInFleet(final Killmail killmail) {
+        return killmail.getAttackerIds().size() < 20;
     }
 
-    boolean isNotAnEmptyPod(final Killmail killmail) {
+    public boolean isNotAnEmptyPod(final Killmail killmail) {
         // Capsules are valued 10k
         return killmail.getTotalValue() != 10_000L;
     }
 
-    boolean isInBraveSystem(final Killmail killmail) {
+    public boolean isInBraveSystem(final Killmail killmail) {
         return systems.contains(killmail.getSolarSystemId());
     }
 
@@ -103,7 +103,7 @@ public class KillmailPuller {
         this.systems = systems;
     }
 
-    boolean isVictimNotBrave(final Killmail killmail) {
+    public boolean isVictimNotBrave(final Killmail killmail) {
         return !killmail.getVictimGroupName().equals("Brave Collective");
     }
 }
