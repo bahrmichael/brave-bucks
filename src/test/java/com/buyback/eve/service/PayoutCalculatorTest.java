@@ -3,20 +3,16 @@ package com.buyback.eve.service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.List;
 
 import com.buyback.eve.domain.Donation;
 import com.buyback.eve.domain.Killmail;
-import com.buyback.eve.domain.Transaction;
 import com.buyback.eve.domain.User;
-import com.buyback.eve.domain.enumeration.TransactionType;
 import com.buyback.eve.repository.DonationRepository;
 import com.buyback.eve.repository.KillmailRepository;
 import com.buyback.eve.repository.TransactionRepository;
 import com.buyback.eve.repository.UserRepository;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -36,7 +32,7 @@ public class PayoutCalculatorTest {
     private UserRepository userRepo = mock(UserRepository.class);
     private DonationRepository donationRepo = mock(DonationRepository.class);
     private TransactionRepository transactionRepo = mock(TransactionRepository.class);
-    private PayoutCalculator sut = new PayoutCalculator(killmailRepo, userRepo, donationRepo, transactionRepo);
+    private PayoutCalculator sut = new PayoutCalculator(killmailRepo, userRepo, donationRepo, transactionRepo, null);
 
     @Test
     public void calculatePayouts() throws Exception {

@@ -80,6 +80,11 @@ public class SolarSystemResource {
                                                                                  "The system could not be found. Is there a typo?")).body(null);
     }
 
+    @GetMapping("/public/solar-systems")
+    public ResponseEntity<List<SolarSystem>> getSystems() {
+        return ResponseEntity.ok(solarSystemRepository.findAll());
+    }
+
     /**
      * GET  /solar-systems : get all the solarSystems.
      *

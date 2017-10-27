@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -27,9 +28,12 @@ import com.codahale.metrics.annotation.Timed;
 import static com.buyback.eve.domain.enumeration.TransactionType.KILL;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import io.github.jhipster.config.JHipsterConstants;
 
 @Service
 public class PayoutCalculator {
@@ -39,21 +43,27 @@ public class PayoutCalculator {
     private final UserRepository userRepository;
     private final DonationRepository donationRepository;
     private final TransactionRepository transactionRepository;
+    private final Environment env;
 
     @Autowired
     public PayoutCalculator(final KillmailRepository killmailRepository,
                             final UserRepository userRepository,
                             final DonationRepository donationRepository,
-                            final TransactionRepository transactionRepository) {
+                            final TransactionRepository transactionRepository,
+                            final Environment env) {
         this.killmailRepository = killmailRepository;
         this.userRepository = userRepository;
         this.donationRepository = donationRepository;
         this.transactionRepository = transactionRepository;
+        this.env = env;
     }
 
     @PostConstruct
     public void init() {
-        calculatePayouts();
+        // dev only
+        if (Arrays.asList(env.getActiveProfiles()).contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)) {
+            calculatePayouts();
+        }
     }
 
     @Async

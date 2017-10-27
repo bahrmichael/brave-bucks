@@ -59,7 +59,7 @@ currentAccount: any;
             (res: ResponseWrapper) => this.onError(res.json)
         );
         this.payoutService.getTotalValue().subscribe(
-            data => this.allAccounts = +data.text()
+            (data) => this.allAccounts = +data.text()
         );
     }
     loadPage(page: number) {
@@ -121,6 +121,7 @@ currentAccount: any;
         // this.page = pagingParams.page;
         this.payouts = data;
     }
+
     private onError(error) {
         this.alertService.error(error.message, null, null);
     }

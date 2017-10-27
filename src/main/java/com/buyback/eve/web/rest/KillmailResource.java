@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * REST controller for executing appraisal requests.
  */
 @RestController
-@RequestMapping("/api/killmail")
+@RequestMapping("/api/")
 public class KillmailResource {
 
     private final Logger log = LoggerFactory.getLogger(KillmailResource.class);
@@ -51,22 +51,22 @@ public class KillmailResource {
      * @param killmailId
      * @return
      */
-    @PostMapping("/{killmailId}")
-    public ResponseEntity addKillmail(@PathVariable("killmailId") Long killmailId) {
-        log.info("Adding Killmail manually. ID={}", killmailId);
-
-        Optional<Killmail> existingKill = killmailRepository.findByKillId(killmailId);
-        if (!existingKill.isPresent()) {
-            Optional<JsonNode> jsonNode = jsonRequestService.getKillmail(killmailId);
-            if (jsonNode.isPresent()) {
-                Killmail killmail = killmailParser.parseKillmail(jsonNode.get().getArray().getJSONObject(0));
-                killmailPuller.filterAndSaveKillmails(Collections.singletonList(killmail));
-            }
-        }
+    @PostMapping("/public/killmail/{link}")
+    public ResponseEntity addKillmail(@PathVariable("link") String link) {
+//        log.info("Adding Killmail manually. ID={}", killmailId);
+//
+//        Optional<Killmail> existingKill = killmailRepository.findByKillId(killmailId);
+//        if (!existingKill.isPresent()) {
+//            Optional<JsonNode> jsonNode = jsonRequestService.getKillmail(killmailId);
+//            if (jsonNode.isPresent()) {
+//                Killmail killmail = killmailParser.parseKillmail(jsonNode.get().getArray().getJSONObject(0));
+//                killmailPuller.filterAndSaveKillmails(Collections.singletonList(killmail));
+//            }
+//        }
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/long-pull")
+    @PostMapping("/killmail/long-pull")
     public ResponseEntity longPull() {
         if (lastLongPullInvocation.isBefore(fiveMinutesAgo())) {
             lastLongPullInvocation = LocalDateTime.now();

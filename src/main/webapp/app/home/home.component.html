@@ -15,7 +15,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        To get BraveBucks, your killmail must not be from a fleet fight (max. 20 attackers), not an awox and in one of the circled systems on the right. Empty pods are not counted. We may expand to Impass soon ;)
+                        To get BraveBucks, your killmail must not be from a fleet fight (max. 20 attackers), not an awox and in one of the circled systems on the right. Empty pods are not counted. Check Hunting Area for the systems that we check.
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -55,7 +55,11 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <img src="../../content/images/map.png"/>
+                        The following solar systems are currently available.
+                        <ul>
+                            <li *ngFor="let system of systems">{{system.systemName}}</li>
+                        </ul>
+                        <!--<img src="../../content/images/map.png"/>-->
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -166,7 +170,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <h3>Payouts</h3>
-                    <span *ngIf="monthAvailable">Available this month: {{monthAvailable | number:'1.0-0'}} ISK</span>
+                    <span *ngIf="monthAvailable">Available this month: {{monthAvailable | number:'1.0-0'}} ISK. BraveBucks are converted to ISK during downtime.</span>
                     <div *ngIf="payoutRequested" class="alert alert-success">Payout requested!</div>
                     <div class="input-group">
                         <div class="progress" style="width: 100%;">

@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit {
     account: Account;
     potentialPayout: number;
     killmails: any[];
+    systems: any[];
     payoutThreshold = 100000000;
     isFirstLogin: boolean;
     payoutRequested: boolean;
@@ -69,6 +70,9 @@ export class HomeComponent implements OnInit {
         this.http.get('/api/killmails').subscribe((data) => {
             this.killmails = data.json();
         })
+        this.http.get('/api/public/solar-systems').subscribe((data) => {
+            this.systems = data.json();
+        });
     }
 
     getBarWidth(payout: number) {
