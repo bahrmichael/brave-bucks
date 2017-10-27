@@ -20,7 +20,7 @@ import de.flapdoodle.embed.process.collections.Collections;
 public class KillmailParserTest {
 
     private JsonRequestService requestService = mock(JsonRequestService.class);
-    private KillmailParser sut = new KillmailParser(requestService);
+    private KillmailParser sut = new KillmailParser(requestService, admService);
 
     @Before
     public void setUp() throws Exception {
