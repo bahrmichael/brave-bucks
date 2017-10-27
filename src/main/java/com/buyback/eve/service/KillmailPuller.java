@@ -68,8 +68,8 @@ public class KillmailPuller {
                       .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId(), duration)
                       .ifPresent(jsonBody -> {
                           final JSONArray array = jsonBody.getArray();
-                          log.info("Adding {} killmails for characterId {}", array.length(), user.getCharacterId());
                           if (array.length() > 0) {
+                              log.info("Adding {} killmails for characterId {}", array.length(), user.getCharacterId());
                               final List<Killmail> killmails = killmailParser.parseKillmails(array);
                               filterAndSaveKillmails(killmails);
                           }
