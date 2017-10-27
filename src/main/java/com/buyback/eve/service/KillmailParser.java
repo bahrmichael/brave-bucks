@@ -54,9 +54,14 @@ public class KillmailParser {
     public void setAttackers(final JSONObject object, final Killmail result) {
         JSONArray attackers = object.getJSONArray("attackers");
         for (int i = 0; i < attackers.length(); i++) {
-            long attackerId = attackers.getJSONObject(i).getLong("character_id");
+            JSONObject attacker = attackers.getJSONObject(i);
+            if (!attacker.has("character_id")) {
+                // probably a rat
+                continue;
+            }
+            long attackerId = attacker.getLong("character_id");
             result.addAttackerId(attackerId);
-            boolean finalBlow = attackers.getJSONObject(i).getBoolean("final_blow");
+            boolean finalBlow = attacker.getBoolean("final_blow");
             if (finalBlow) {
                 result.setFinalBlowAttackerId(attackerId);
             }

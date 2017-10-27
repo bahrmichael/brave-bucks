@@ -79,11 +79,11 @@ public class PlayerStatsResource {
         return ResponseEntity.ok(killmailRepository.findByAttackerId(oneByLogin.get().getCharacterId(),
                                                                      new PageRequest(0, 10, Direction.DESC, "killTime"))
                                                    .stream()
-                                                   .map(this::createMailDto)
+                                                   .map(PlayerStatsResource::createMailDto)
                                                    .collect(Collectors.toList()));
     }
 
-    private KillmailDto createMailDto(final Killmail mail) {
+    public static KillmailDto createMailDto(final Killmail mail) {
         final KillmailDto dto = new KillmailDto();
         dto.setKillmailId(mail.getKillId());
         dto.setKillTime(Instant.parse(mail.getKillTime()));

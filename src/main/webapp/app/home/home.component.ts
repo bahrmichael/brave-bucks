@@ -20,6 +20,10 @@ export class HomeComponent implements OnInit {
     isFirstLogin: boolean;
     payoutRequested: boolean;
     monthAvailable: number;
+    killmailAddedManually: boolean;
+    killmailFailedMessage: string;
+    killmailAlreadyExists: boolean;
+    killmailAddedText: string;
 
     constructor(
         private principal: Principal,
@@ -59,6 +63,29 @@ export class HomeComponent implements OnInit {
     isAuthenticated() {
         return this.principal.isAuthenticated();
     }
+
+    submitKillmail(link: string) {
+        this.killmailAddedManually = false;
+        this.killmailFailedMessage = null;
+        this.killmailAlreadyExists = false;
+        this.killmailAddedText = null;
+        const killId = link.split('/kill/')[1].replace('/', '');
+        this.http.post('/api/killmail/' + killId, null).subscribe((data) => {
+            if (data.status === 201) {
+                this.killmails.unshift(data.json());
+            } else {
+                this.killmailAddedText = data.text();
+            }
+            this.killmailAddedManually = true;
+        }, (err) => {
+            if (err.status === 409) {
+                this.killmailAlreadyExists = true;
+            } else {
+                this.killmailFailedMessage = err.text();
+            }
+        });
+    }
+
 
     getData() {
         this.http.get('/api/stats/month-available').subscribe((data) => {
