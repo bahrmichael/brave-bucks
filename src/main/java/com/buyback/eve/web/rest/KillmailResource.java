@@ -13,6 +13,7 @@ import com.buyback.eve.security.SecurityUtils;
 import com.buyback.eve.service.JsonRequestService;
 import com.buyback.eve.service.KillmailParser;
 import com.buyback.eve.service.KillmailPuller;
+import com.codahale.metrics.annotation.Timed;
 import com.mashape.unirest.http.JsonNode;
 
 import org.json.JSONArray;
@@ -61,6 +62,7 @@ public class KillmailResource {
      * @return
      */
     @PostMapping("/killmail/{killId}")
+    @Timed
     public ResponseEntity addKillmail(@PathVariable("killId") Long killId) {
         if (killmailRepository.findByKillId(killId).isPresent()) {
             // killmail already exists
@@ -121,6 +123,7 @@ public class KillmailResource {
     }
 
     @PostMapping("/killmail/long-pull")
+    @Timed
     public ResponseEntity longPull() {
         if (lastLongPullInvocation.isBefore(fiveMinutesAgo())) {
             lastLongPullInvocation = LocalDateTime.now();

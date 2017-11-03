@@ -11,6 +11,7 @@ import com.buyback.eve.domain.SolarSystem;
 import com.buyback.eve.repository.KillmailRepository;
 import com.buyback.eve.repository.SolarSystemRepository;
 import com.buyback.eve.repository.UserRepository;
+import com.codahale.metrics.annotation.Timed;
 
 import org.json.JSONArray;
 import org.slf4j.Logger;
@@ -51,6 +52,7 @@ public class KillmailPuller {
 
     @Async
     @Scheduled(cron = "0 */10 * * * *")
+    @Timed
     public void pullKillmails() {
         pullKillmails(HOUR);
     }

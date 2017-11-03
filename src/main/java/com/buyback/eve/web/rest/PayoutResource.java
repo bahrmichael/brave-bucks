@@ -60,7 +60,6 @@ public class PayoutResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/payouts")
-    @Timed
     @Secured(AuthoritiesConstants.MANAGER)
     public ResponseEntity<Payout> createPayout(@RequestBody final Payout payout) throws URISyntaxException {
         log.debug("REST request to save Payout : {}", payout);
@@ -108,7 +107,6 @@ public class PayoutResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/payouts")
-    @Timed
     @Secured(AuthoritiesConstants.MANAGER)
     public ResponseEntity<Payout> updatePayout(@RequestBody final Payout payout) throws URISyntaxException {
         log.debug("REST request to update Payout : {}", payout);
@@ -149,7 +147,6 @@ public class PayoutResource {
      * @return the ResponseEntity with status 200 (OK) and the list of payouts in body
      */
     @GetMapping("/payouts")
-    @Timed
     @Secured(AuthoritiesConstants.MANAGER)
     public ResponseEntity<List<Payout>> getAllPayouts(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Payouts");
@@ -159,7 +156,6 @@ public class PayoutResource {
     }
 
     @GetMapping("/payouts/total")
-    @Timed
     @Secured(AuthoritiesConstants.MANAGER)
     public ResponseEntity<Double> getTotalPayouts() {
         final double sum = transactionRepository.findAll().parallelStream().mapToDouble(Transaction::getAmount).sum();
@@ -173,7 +169,6 @@ public class PayoutResource {
      * @return the ResponseEntity with status 200 (OK) and with body the payout, or with status 404 (Not Found)
      */
     @GetMapping("/payouts/{id}")
-    @Timed
     @Secured(AuthoritiesConstants.MANAGER)
     public ResponseEntity<Payout> getPayout(@PathVariable String id) {
         log.debug("REST request to get Payout : {}", id);
@@ -188,7 +183,6 @@ public class PayoutResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/payouts/{id}")
-    @Timed
     @Secured(AuthoritiesConstants.MANAGER)
     public ResponseEntity<Void> deletePayout(@PathVariable String id) {
         log.debug("REST request to delete Payout : {}", id);

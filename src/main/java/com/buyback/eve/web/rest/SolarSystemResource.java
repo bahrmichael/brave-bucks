@@ -55,7 +55,6 @@ public class SolarSystemResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/solar-systems")
-    @Timed
     public ResponseEntity<SolarSystem> createSolarSystem(@RequestBody SolarSystem solarSystem) throws URISyntaxException {
         log.debug("REST request to save SolarSystem : {}", solarSystem);
         if (solarSystem.getId() != null) {
@@ -92,7 +91,6 @@ public class SolarSystemResource {
      * @return the ResponseEntity with status 200 (OK) and the list of solarSystems in body
      */
     @GetMapping("/solar-systems")
-    @Timed
     public ResponseEntity<List<SolarSystem>> getAllSolarSystems(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of SolarSystems");
         Page<SolarSystem> page = solarSystemRepository.findAll(pageable);
@@ -107,7 +105,6 @@ public class SolarSystemResource {
      * @return the ResponseEntity with status 200 (OK) and with body the solarSystem, or with status 404 (Not Found)
      */
     @GetMapping("/solar-systems/{id}")
-    @Timed
     public ResponseEntity<SolarSystem> getSolarSystem(@PathVariable String id) {
         log.debug("REST request to get SolarSystem : {}", id);
         SolarSystem solarSystem = solarSystemRepository.findOne(id);
@@ -120,7 +117,6 @@ public class SolarSystemResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/solar-systems/{id}")
-    @Timed
     public ResponseEntity<Void> deleteSolarSystem(@PathVariable String id) {
         log.debug("REST request to delete SolarSystem : {}", id);
         solarSystemRepository.delete(id);

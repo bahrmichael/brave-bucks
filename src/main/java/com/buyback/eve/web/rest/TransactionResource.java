@@ -49,7 +49,6 @@ public class TransactionResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/transactions")
-    @Timed
     @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) throws URISyntaxException {
         log.debug("REST request to save Transaction : {}", transaction);
@@ -72,7 +71,6 @@ public class TransactionResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/transactions")
-    @Timed
     @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Transaction> updateTransaction(@RequestBody Transaction transaction) throws URISyntaxException {
         log.debug("REST request to update Transaction : {}", transaction);
@@ -92,7 +90,6 @@ public class TransactionResource {
      * @return the ResponseEntity with status 200 (OK) and the list of transactions in body
      */
     @GetMapping("/transactions")
-    @Timed
     @Secured(AuthoritiesConstants.MANAGER)
     public ResponseEntity<List<Transaction>> getAllTransactions(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Transactions");
@@ -108,7 +105,6 @@ public class TransactionResource {
      * @return the ResponseEntity with status 200 (OK) and with body the transaction, or with status 404 (Not Found)
      */
     @GetMapping("/transactions/{id}")
-    @Timed
     @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Transaction> getTransaction(@PathVariable String id) {
         log.debug("REST request to get Transaction : {}", id);

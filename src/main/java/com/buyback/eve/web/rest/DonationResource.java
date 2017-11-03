@@ -48,7 +48,6 @@ public class DonationResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/donations")
-    @Timed
     public ResponseEntity<Donation> createDonation(@RequestBody Donation donation) throws URISyntaxException {
         log.debug("REST request to save Donation : {}", donation);
         if (donation.getId() != null) {
@@ -79,7 +78,6 @@ public class DonationResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/donations")
-    @Timed
     public ResponseEntity<Donation> updateDonation(@RequestBody Donation donation) throws URISyntaxException {
         log.debug("REST request to update Donation : {}", donation);
         if (donation.getId() == null) {
@@ -101,7 +99,6 @@ public class DonationResource {
      * @return the ResponseEntity with status 200 (OK) and the list of donations in body
      */
     @GetMapping("/donations")
-    @Timed
     public ResponseEntity<List<Donation>> getAllDonations(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Donations");
         Page<Donation> page = donationRepository.findAll(pageable);
@@ -116,7 +113,6 @@ public class DonationResource {
      * @return the ResponseEntity with status 200 (OK) and with body the donation, or with status 404 (Not Found)
      */
     @GetMapping("/donations/{id}")
-    @Timed
     public ResponseEntity<Donation> getDonation(@PathVariable String id) {
         log.debug("REST request to get Donation : {}", id);
         Donation donation = donationRepository.findOne(id);
@@ -130,7 +126,6 @@ public class DonationResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/donations/{id}")
-    @Timed
     public ResponseEntity<Void> deleteDonation(@PathVariable String id) {
         log.debug("REST request to delete Donation : {}", id);
         donationRepository.delete(id);
