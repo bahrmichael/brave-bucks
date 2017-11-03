@@ -1,6 +1,6 @@
 <div class="row">
-    <div class="col-md-3" style="text-align: center">
-        <img class="img-fluid img-rounded" src="https://crossingzebras.com/wp-content/uploads/2015/04/catch_Join.png"></img>
+    <div class="col-md-3">
+        <img class="img-fluid img-rounded d-none d-sm-block" src="https://crossingzebras.com/wp-content/uploads/2015/04/catch_Join.png"></img>
     </div>
     <div class="col-md-9">
 
@@ -15,7 +15,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        To get BraveBucks, your killmail must not be from a fleet fight (max. 20 attackers), not an awox and in one of the circled systems on the right. Empty pods are not counted. Check Hunting Area for the systems that we check.
+                        To get BraveBucks, your killmail must not be from a fleet fight (max. 20 attackers), not an awox and in one of the circled systems on the right. Empty pods are not counted. Check Hunting Area for the systems that we track.
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -35,7 +35,14 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        What determines how many BraveBucks you get per kill? Currently we pull the points from zkill, add ADM bonus points and sqrt it. ADM bonus points are calculated with the formula 'points * (6 - ADM)'.
+                        BraveBucks are based on a monthly budget, which currently for example is 5 bil. Every day of the month gets the same share (~160mil in that case). Every day during downtime we do two things: First we take all the kills that were tracked and do some points calculation (see below) so that every player ends up with a number of points for that day (may be 0 if you didn't get on any legitimate killmails, we will soon show the points for each killmail on the recent defense kills section). Secondly we spread the isk for that day over the points that were gathered that day. So if one player got 60 points, and one other player 40, they will get 90 and 64 mil each. That ISK is added to your bar during DT. Once you reach 100mil isk, you can request a payout.
+                        <br/>
+                        Points calculation is super simple: <i>sqrt(zKillPoints * (6 - ADM))</i>
+                        <br/>
+                        <ul>
+                            <li>sqrt to keep the points balanced, many killmails only have one point, some have 50</li>
+                            <li>6 - ADM: systems with an ADM of 6 are not rewarded, from there the lower the better</li>
+                        </ul>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -55,7 +62,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        The following solar systems are currently available.
+                        The following solar systems are currently available. Feel free to request more systems on the <a target="_blank" href="https://forums.bravecollective.com/viewtopic.php?f=34&t=4195">forums</a>.
                         <ul>
                             <li *ngFor="let system of systems">{{system.systemName}}</li>
                         </ul>
@@ -134,8 +141,8 @@
                        to defend with the current sovereignty system.</p>
                     </div>
                 <div class="col-md-6">
-                    <p>Once you logged in, this website will track your PvP activity from <a target="_blank" href="https://zkillboard.com">zkillboard</a>. Based on this data we give you BraveBucks for brave defenses,
-                       last hits and all the things that boost fast local responses. Once you reach a certain number of BraveBucks, we give you ISK. No bamboozles.</p>
+                    <p>Once you logged in, this website will track your PvP activity from <a target="_blank" href="https://zkillboard.com">zkillboard</a>. Based on this data we give you points for brave defenses,
+                       last hits and all the things that boost fast local responses. Every day during downtime, we transfer the points to ISK. Once you reach 100mil ISK, you can request a payout.</p>
                 </div>
             </div>
             <div class="row">
@@ -170,12 +177,12 @@
             <div class="row">
                 <div class="col-md-12">
                     <h3>Payouts</h3>
-                    <span *ngIf="monthAvailable">Available this month: {{monthAvailable | number:'1.0-0'}} ISK. BraveBucks are converted to ISK during downtime.</span>
+                    <span *ngIf="monthAvailable">Available this month: {{monthAvailable | number:'1.0-0'}} ISK. Killmails are converted to ISK during downtime.</span>
                     <div *ngIf="payoutRequested" class="alert alert-success">Payout requested!</div>
                     <div class="input-group">
                         <div class="progress" style="width: 100%;">
                             <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="height: 40px" [style.width]="getBarWidth(potentialPayout)+'%'">
-                                <span *ngIf="potentialPayout >= payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
+                                <div *ngIf="potentialPayout >= payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</div>
                             </div>
                             <span *ngIf="potentialPayout < payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem; padding-left: 10px">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
                         </div>
@@ -259,7 +266,7 @@
                     </span>
                     </div>
                     <div class="alert alert-success" *ngIf="killmailAddedManually">Killmail added! {{killmailAddedText}}</div>
-                    <div class="alert alert-warn" *ngIf="killmailAlreadyExists">This killmail alrady exists. Please refresh your browser!</div>
+                    <div class="alert alert-warn" *ngIf="killmailAlreadyExists">This killmail already exists. Please refresh your browser!</div>
                     <div class="alert alert-danger" *ngIf="killmailFailedMessage">{{killmailFailedMessage}}</div>
                 </div>
             </div>
@@ -275,7 +282,7 @@
                            <th>Victim Alliance</th>
                         </tr>
                         <tr *ngFor="let killmail of killmails">
-                            <td><img src="https://image.eveonline.com/Type/{{killmail.shipTypeId}}_32.png" /> <a target="_blank" href="https://zkillboard.com/kill/{{killmail.killmailId}}">{{killmail.killmailId}}</a></td>
+                            <td><a target="_blank" href="https://zkillboard.com/kill/{{killmail.killmailId}}"><img src="https://image.eveonline.com/Type/{{killmail.shipTypeId}}_32.png" /><span class="d-none d-sm-inline-block"> {{killmail.killmailId}}</span></a></td>
                             <td>{{killmail.killTime | date:'dd.MM.yy HH:mm'}}</td>
                             <td>{{killmail.victimAlliance}}</td>
                         </tr>

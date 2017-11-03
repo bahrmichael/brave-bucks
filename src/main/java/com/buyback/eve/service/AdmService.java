@@ -1,11 +1,15 @@
 package com.buyback.eve.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
+import com.buyback.eve.domain.SolarSystem;
+import com.buyback.eve.repository.SolarSystemRepository;
 import com.mashape.unirest.http.JsonNode;
 
 import org.json.JSONArray;
@@ -28,10 +32,13 @@ public class AdmService {
     private static final Logger LOG = LoggerFactory.getLogger(AdmService.class);
 
     private final JsonRequestService service;
+    private final SolarSystemRepository solarSystemRepository;
     private final Map<Long, Integer> systemAdms = new HashMap<>();
 
-    public AdmService(final JsonRequestService service) {
+    public AdmService(final JsonRequestService service,
+                      final SolarSystemRepository solarSystemRepository) {
         this.service = service;
+        this.solarSystemRepository = solarSystemRepository;
     }
 
     public Integer getAdm(final long systemId) {
@@ -48,6 +55,8 @@ public class AdmService {
 
     @Scheduled(cron = "0 15 * * * *")
     public void update() {
+        Collection<Long> systemIds = new ArrayList<>();
+        solarSystemRepository.findAll().stream().mapToLong(SolarSystem::getSystemId).forEach(systemIds::add);
         final Optional<JsonNode> optional = service.getAdms();
         optional.ifPresent(jsonNode -> {
             final JSONArray array = jsonNode.getArray();
@@ -58,11 +67,14 @@ public class AdmService {
                 if (jsonObject.has("vulnerability_occupancy_level")) {
                     adm = jsonObject.getInt("vulnerability_occupancy_level");
                 } else {
-                    LOG.warn("Could not load ADM for {}", solarSystemId);
+                    if (systemIds.contains(solarSystemId)) {
+                        LOG.warn("Could not load ADM for hunting area system {}", solarSystemId);
+                    }
                     adm = 5;
                 }
                 systemAdms.put(solarSystemId, adm);
             }
         });
+        LOG.info("ADM update complete.");
     }
 }

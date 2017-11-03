@@ -86,7 +86,6 @@ export class HomeComponent implements OnInit {
         });
     }
 
-
     getData() {
         this.http.get('/api/stats/month-available').subscribe((data) => {
             this.monthAvailable = +data.text();
