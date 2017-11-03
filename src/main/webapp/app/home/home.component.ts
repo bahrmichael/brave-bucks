@@ -112,4 +112,11 @@ export class HomeComponent implements OnInit {
         localStorage.setItem('brave-nukem-first-login', 'done');
         this.isFirstLogin = false;
     }
+
+    getDotlanLink(region: string) {
+        const systemNames = [];
+        this.systems.forEach(s => systemNames.push(s.systemName));
+        return "http://evemaps.dotlan.net/map/" + region + '/' + systemNames.join();
+    }
+
 }

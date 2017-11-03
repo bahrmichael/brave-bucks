@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 
 import com.buyback.eve.domain.SolarSystem;
 import com.buyback.eve.repository.SolarSystemRepository;
+import com.codahale.metrics.annotation.Timed;
 import com.mashape.unirest.http.JsonNode;
 
 import org.json.JSONArray;
@@ -53,7 +54,8 @@ public class AdmService {
         update();
     }
 
-    @Scheduled(cron = "0 15 * * * *")
+    @Scheduled(cron = "0 30 */3 * * *")
+    @Timed
     public void update() {
         Collection<Long> systemIds = new ArrayList<>();
         solarSystemRepository.findAll().stream().mapToLong(SolarSystem::getSystemId).forEach(systemIds::add);
