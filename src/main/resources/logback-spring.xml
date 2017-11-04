@@ -6,7 +6,7 @@
 <!-- The FILE and ASYNC appenders are here as examples for a production configuration -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>theBuyback.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>braveBucks.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>90</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -20,7 +20,7 @@
         <appender-ref ref="FILE"/>
     </appender>
 
-    <logger name="com.buyback.eve" level="#logback.loglevel#"/>
+    <logger name="com.bravebucks.eve" level="#logback.loglevel#"/>
 
     <logger name="io.github.jhipster" level="#logback.loglevel#"/>
 

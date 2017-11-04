@@ -2,14 +2,14 @@ import { NgModule, LOCALE_ID } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import {
-    ThebuybackSharedLibsModule,
+    BraveBucksSharedLibsModule,
     JhiAlertComponent,
     JhiAlertErrorComponent
 } from './';
 
 @NgModule({
     imports: [
-        ThebuybackSharedLibsModule
+        BraveBucksSharedLibsModule
     ],
     declarations: [
         JhiAlertComponent,
@@ -23,9 +23,9 @@ import {
         },
     ],
     exports: [
-        ThebuybackSharedLibsModule,
+        BraveBucksSharedLibsModule,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ]
 })
-export class ThebuybackSharedCommonModule {}
+export class BraveBucksSharedCommonModule {}

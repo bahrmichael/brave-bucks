@@ -4,8 +4,8 @@ if(status.errmsg === 'no replset config has been received') {
 }
 for (var i = 1; i <= param; i++) {
     if(i!==1)
-        rs.add(folder+"_thebuyback-mongodb-node_" + i + ":27017");
+        rs.add(folder+"_braveBucks-mongodb-node_" + i + ":27017");
 }
 cfg = rs.conf();
-cfg.members[0].host = folder+"_thebuyback-mongodb-node_1:27017";
+cfg.members[0].host = folder+"_braveBucks-mongodb-node_1:27017";
 rs.reconfig(cfg);

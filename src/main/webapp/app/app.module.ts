@@ -4,11 +4,11 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Ng2Webstorage } from 'ng2-webstorage';
 
-import { ThebuybackSharedModule, UserRouteAccessService } from './shared';
-import { ThebuybackHomeModule } from './home/home.module';
-import { ThebuybackAdminModule } from './admin/admin.module';
-import { ThebuybackAccountModule } from './account/account.module';
-import { ThebuybackEntityModule } from './entities/entity.module';
+import { BraveBucksSharedModule, UserRouteAccessService } from './shared';
+import { BraveBucksHomeModule } from './home/home.module';
+import { BraveBucksAdminModule } from './admin/admin.module';
+import { BraveBucksAccountModule } from './account/account.module';
+import { BraveBucksEntityModule } from './entities/entity.module';
 
 import { customHttpProvider } from './blocks/interceptor/http.provider';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
@@ -25,19 +25,19 @@ import {
     ErrorComponent
 } from './layouts';
 import {SsoComponent} from "./layouts/callback/sso.component";
-import {ThebuybackTheBuybackModule} from "./the-buyback/the-buyback.module";
+import {BraveBucksTheBuybackModule} from "./the-buyback/the-buyback.module";
 
 @NgModule({
     imports: [
         BrowserModule,
         LayoutRoutingModule,
         Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-'}),
-        ThebuybackSharedModule,
-        ThebuybackHomeModule,
-        ThebuybackAdminModule,
-        ThebuybackAccountModule,
-        ThebuybackEntityModule,
-        ThebuybackTheBuybackModule
+        BraveBucksSharedModule,
+        BraveBucksHomeModule,
+        BraveBucksAdminModule,
+        BraveBucksAccountModule,
+        BraveBucksEntityModule,
+        BraveBucksTheBuybackModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [
@@ -56,4 +56,4 @@ import {ThebuybackTheBuybackModule} from "./the-buyback/the-buyback.module";
     ],
     bootstrap: [ JhiMainComponent ]
 })
-export class ThebuybackAppModule {}
+export class BraveBucksAppModule {}

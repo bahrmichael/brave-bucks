@@ -9,11 +9,11 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.buyback.eve</groupId>
-    <artifactId>thebuyback</artifactId>
+    <groupId>com.bravebucks.eve</groupId>
+    <artifactId>braveBucks</artifactId>
     <version>1.0.4</version>
     <packaging>war</packaging>
-    <name>TheBuyback</name>
+    <name>BraveBucks</name>
 
     <properties>
         <argLine>-Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
@@ -464,7 +464,7 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>${docker-maven-plugin.version}</version>
                 <configuration>
-                    <imageName>thebuyback</imageName>
+                    <imageName>braveBucks</imageName>
                     <dockerDirectory>src/main/docker</dockerDirectory>
                     <resources>
                         <resource>

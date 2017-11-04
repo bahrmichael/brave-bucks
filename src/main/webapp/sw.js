@@ -1,5 +1,5 @@
-var dataCacheName = 'Thebuyback-v1';
-var cacheName = 'Thebuyback-1';
+var dataCacheName = 'BraveBucks-v1';
+var cacheName = 'BraveBucks-1';
 var filesToCache = [
     '/',
     '/index.html'

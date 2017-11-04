@@ -2,8 +2,8 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 import {
-    ThebuybackSharedLibsModule,
-    ThebuybackSharedCommonModule,
+    BraveBucksSharedLibsModule,
+    BraveBucksSharedCommonModule,
     CSRFService,
     AuthServerProvider,
     AccountService,
@@ -17,8 +17,8 @@ import {
 
 @NgModule({
     imports: [
-        ThebuybackSharedLibsModule,
-        ThebuybackSharedCommonModule
+        BraveBucksSharedLibsModule,
+        BraveBucksSharedCommonModule
     ],
     declarations: [
         HasAnyAuthorityDirective
@@ -36,11 +36,11 @@ import {
     ],
     entryComponents: [],
     exports: [
-        ThebuybackSharedCommonModule,
+        BraveBucksSharedCommonModule,
         HasAnyAuthorityDirective,
         DatePipe
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
 })
-export class ThebuybackSharedModule {}
+export class BraveBucksSharedModule {}

@@ -1,7 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { ThebuybackSharedModule } from '../../shared';
+import { BraveBucksSharedModule } from '../../shared';
 import {
     TransactionService,
     TransactionPopupService,
@@ -22,7 +22,7 @@ const ENTITY_STATES = [
 
 @NgModule({
     imports: [
-        ThebuybackSharedModule,
+        BraveBucksSharedModule,
         RouterModule.forRoot(ENTITY_STATES, { useHash: true })
     ],
     declarations: [
@@ -46,4 +46,4 @@ const ENTITY_STATES = [
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class ThebuybackTransactionModule {}
+export class BraveBucksTransactionModule {}

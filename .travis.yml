@@ -19,6 +19,6 @@ before_deploy:
 deploy:
 - provider: script
   skip_cleanup: true
-  script: rsync --quiet $TRAVIS_BUILD_DIR/target/thebuyback*.war bucks@178.62.6.67:~ && ssh-agent -k
+  script: rsync --quiet $TRAVIS_BUILD_DIR/target/braveBucks*.war bucks@178.62.6.67:~ && ssh-agent -k
   on:
     tags: true

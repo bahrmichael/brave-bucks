@@ -5,7 +5,7 @@ import { DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Rx';
 import { JhiDateUtils, JhiDataUtils, JhiEventManager } from 'ng-jhipster';
-import { ThebuybackTestModule } from '../../../test.module';
+import { BraveBucksTestModule } from '../../../test.module';
 import { MockActivatedRoute } from '../../../helpers/mock-route.service';
 import { DonationDetailComponent } from '../../../../../../main/webapp/app/entities/donation/donation-detail.component';
 import { DonationService } from '../../../../../../main/webapp/app/entities/donation/donation.service';
@@ -20,7 +20,7 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                imports: [ThebuybackTestModule],
+                imports: [BraveBucksTestModule],
                 declarations: [DonationDetailComponent],
                 providers: [
                     JhiDateUtils,

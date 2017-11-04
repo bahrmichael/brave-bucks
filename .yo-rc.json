@@ -1,11 +1,11 @@
 {
   "generator-jhipster": {
     "promptValues": {
-      "packageName": "com.buyback.eve"
+      "packageName": "com.bravebucks.eve"
     },
     "jhipsterVersion": "4.7.0",
-    "baseName": "thebuyback",
-    "packageName": "com.buyback.eve",
+    "baseName": "braveBucks",
+    "packageName": "com.bravebucks.eve",
     "packageFolder": "com/buyback/eve",
     "serverPort": "8080",
     "authenticationType": "jwt",

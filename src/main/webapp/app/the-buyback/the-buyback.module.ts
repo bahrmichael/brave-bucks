@@ -1,13 +1,13 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { ThebuybackSharedModule } from '../shared';
+import { BraveBucksSharedModule } from '../shared';
 
 import { TheBuyback_ROUTE, TheBuybackComponent } from './';
 
 @NgModule({
     imports: [
-        ThebuybackSharedModule,
+        BraveBucksSharedModule,
         RouterModule.forRoot([ TheBuyback_ROUTE ], { useHash: true })
     ],
     declarations: [
@@ -19,4 +19,4 @@ import { TheBuyback_ROUTE, TheBuybackComponent } from './';
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class ThebuybackTheBuybackModule {}
+export class BraveBucksTheBuybackModule {}

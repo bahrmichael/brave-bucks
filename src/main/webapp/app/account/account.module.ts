@@ -1,7 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { ThebuybackSharedModule } from '../shared';
+import { BraveBucksSharedModule } from '../shared';
 
 import {
     SettingsComponent,
@@ -10,7 +10,7 @@ import {
 
 @NgModule({
     imports: [
-        ThebuybackSharedModule,
+        BraveBucksSharedModule,
         RouterModule.forRoot(accountState, { useHash: true })
     ],
     declarations: [
@@ -20,4 +20,4 @@ import {
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class ThebuybackAccountModule {}
+export class BraveBucksAccountModule {}
