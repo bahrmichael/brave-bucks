@@ -82,10 +82,15 @@ public class KillmailPuller {
         List<Killmail> filtered = killmails.stream()
                                            .filter(this::isVictimNotBrave)
                                            .filter(this::isInBraveSystem)
-                                           .filter(this::isNotAnEmptyPod)
                                            .filter(this::isNotInFleet)
+                                           .filter(this::isNotAnEmptyPod)
+                                           .filter(this::doesNotExist)
                                            .collect(toList());
         killmailRepository.save(filtered);
+    }
+
+    private boolean doesNotExist(final Killmail killmail) {
+        return !killmailRepository.findByKillId(killmail.getKillId()).isPresent();
     }
 
     public boolean isNotInFleet(final Killmail killmail) {
