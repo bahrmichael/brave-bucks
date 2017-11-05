@@ -117,10 +117,12 @@ public class KillmailPullerTest {
     @Test
     public void filterAndSaveKillmails() throws Exception {
         when(killmailRepo.save(anyList())).thenReturn(null);
+        when(killmailRepo.findByKillId(2L)).thenReturn(Optional.empty());
 
         final Killmail killmail = new Killmail();
         killmail.setVictimGroupName("test");
         killmail.setSolarSystemId(1L);
+        killmail.setKillId(2L);
         final List<Killmail> killmails = singletonList(killmail);
 
         sut.setSystems(singletonList(1L));
