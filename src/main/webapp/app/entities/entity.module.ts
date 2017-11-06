@@ -4,6 +4,7 @@ import { BraveBucksTransactionModule } from './transaction/transaction.module';
 import { BraveBucksPayoutModule } from './payout/payout.module';
 import { BraveBucksSolarSystemModule } from './solar-system/solar-system.module';
 import { BraveBucksDonationModule } from './donation/donation.module';
+import { BraveBucksAdRequestModule } from './ad-request/ad-request.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -12,6 +13,7 @@ import { BraveBucksDonationModule } from './donation/donation.module';
         BraveBucksPayoutModule,
         BraveBucksSolarSystemModule,
         BraveBucksDonationModule,
+        BraveBucksAdRequestModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

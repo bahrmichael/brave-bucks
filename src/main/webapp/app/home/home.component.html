@@ -177,21 +177,21 @@
                 </div>
             </div>
             <br/>
-            <div class="row">
+            <div class="row" *ngIf="ad">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            Featured
+                            Sponsored
                         </div>
                         <div class="card-body">
-                            <h4 class="card-title">The Buyback</h4>
-                            <p class="card-text">The Buyback will buy loot and everything in any Brave citadel for 90% Jita buy.</p>
-                            <a href="#" class="btn btn-primary" routerLink="the-buyback">That's awesome. I want ISK!</a>
+                            <h4 class="card-title">{{ad.service}}</h4>
+                            <p class="card-text">{{ad.description}}</p>
+                            <a href="{{ad.link}}" class="btn btn-primary" target="_blank">Visit Service</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <br/>
+            <br *ngIf="ad"/>
             <div class="row">
                 <div class="col-md-12">
                     <h3>Payouts</h3>
