@@ -1,0 +1,47 @@
+<div class="row">
+    <div class="col-md-12">
+        <h1>Request Your Ad</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="alert alert-warning">Read this carefully. If you fail to follow the rules, you may be blocked from requesting further ads.</div>
+        <p><b>Stay classy!</b></p>
+        <p>Advertisement spots cost 1 bil ISK and last 1 month. When the ad has been requested (green success message), you must send 1 bil ISK to the corporation Brave Holdings [B-BRV] with the message "BraveBucks: SERVICE MONTH". Replace SERVICE and MONTH with the appropriate values.</p>
+        <p>The description should be 2-3 sentences and does not allow line breaks. No essays!</p>
+        <p>Your link must use https. You may omit the link which will disable the "Visit Service" button.</p>
+        <p>Your request should be place 2 weeks before the requested month starts.</p>
+        <p>Questions? Ask Rihan Shazih on Slack.</p>
+    </div>
+    <div class="col-md-6">
+        <form name="requestForm" role="form" novalidate (ngSubmit)="submit()" #editForm="ngForm">
+            <div class="form-group">
+                <label class="form-control-label" for="field_service">Service</label>
+                <input type="text" class="form-control" name="service" id="field_service"
+                       [(ngModel)]="adRequest.service" required />
+            </div>
+            <div class="form-group">
+                <label class="form-control-label" for="field_month">Month (Required Format: 20XX-MM)</label>
+                <input type="text" class="form-control" name="month" id="field_month"
+                       [(ngModel)]="adRequest.month" required pattern="20[0-9]{2}-[0-1][0-2]" />
+            </div>
+            <div class="form-group">
+                <label class="form-control-label" for="field_description">Description</label>
+                <input type="text" class="form-control" name="description" id="field_description"
+                       [(ngModel)]="adRequest.description" required />
+            </div>
+            <div class="form-group">
+                <label class="form-control-label" for="field_link">Link</label>
+                <input type="text" class="form-control" name="link" id="field_link"
+                       [(ngModel)]="adRequest.link" pattern="https.+"/>
+            </div>
+
+            <button type="submit" [disabled]="requestForm.form.invalid || isSaving" class="btn btn-primary">
+                <span>Submit</span>
+            </button>
+
+            <div *ngIf="isSuccessful" class="alert alert-success">Your ad has been submitted.</div>
+            <div *ngIf="errorText" class="alert alert-danger">{{errorText}}</div>
+        </form>
+    </div>
+</div>
