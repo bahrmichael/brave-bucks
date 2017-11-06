@@ -121,7 +121,7 @@ public class AdRequestResourceIntTest {
         List<AdRequest> adRequestList = adRequestRepository.findAll();
         assertThat(adRequestList).hasSize(databaseSizeBeforeCreate + 1);
         AdRequest testAdRequest = adRequestList.get(adRequestList.size() - 1);
-        assertThat(testAdRequest.getRequester()).isEqualTo(DEFAULT_REQUESTER);
+        assertThat(testAdRequest.getRequester()).isEqualTo(null);
         assertThat(testAdRequest.getService()).isEqualTo(DEFAULT_SERVICE);
         assertThat(testAdRequest.getMonth()).isEqualTo(DEFAULT_MONTH);
         assertThat(testAdRequest.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);

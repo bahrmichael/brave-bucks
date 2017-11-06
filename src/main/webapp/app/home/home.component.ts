@@ -89,7 +89,7 @@ export class HomeComponent implements OnInit {
     }
 
     getData() {
-        this.http.get('/api/public/sponsored/active').subscribe(
+        this.http.get('/api/ad-requests/active').subscribe(
             (data) => this.ad = data.json()
         );
         this.http.get('/api/stats/month-available').subscribe((data) => {
@@ -120,7 +120,7 @@ export class HomeComponent implements OnInit {
 
     getDotlanLink(region: string) {
         const systemNames = [];
-        this.systems.forEach(s => systemNames.push(s.systemName));
+        this.systems.forEach((s) => systemNames.push(s.systemName));
         return "http://evemaps.dotlan.net/map/" + region + '/' + systemNames.join();
     }
 
