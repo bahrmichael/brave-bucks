@@ -15,6 +15,7 @@ import com.bravebucks.eve.repository.KillmailRepository;
 import com.bravebucks.eve.repository.PayoutRepository;
 import com.bravebucks.eve.repository.TransactionRepository;
 import com.bravebucks.eve.repository.UserRepository;
+import com.bravebucks.eve.security.AuthoritiesConstants;
 import com.bravebucks.eve.security.SecurityUtils;
 import com.bravebucks.eve.web.dto.KillmailDto;
 import static com.bravebucks.eve.domain.enumeration.PayoutStatus.REQUESTED;
@@ -22,12 +23,14 @@ import static com.bravebucks.eve.domain.enumeration.PayoutStatus.REQUESTED;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
+@Secured(AuthoritiesConstants.USER)
 public class PlayerStatsResource {
 
     private final KillmailRepository killmailRepository;

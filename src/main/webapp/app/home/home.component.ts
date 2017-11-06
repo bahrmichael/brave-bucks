@@ -96,7 +96,7 @@ export class HomeComponent implements OnInit {
         this.http.get('/api/killmails').subscribe((data) => {
             this.killmails = data.json();
         })
-        this.http.get('/api/public/solar-systems').subscribe((data) => {
+        this.http.get('/api/solar-systems/plain').subscribe((data) => {
             this.systems = data.json();
         });
     }

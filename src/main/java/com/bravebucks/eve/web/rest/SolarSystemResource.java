@@ -1,5 +1,6 @@
 package com.bravebucks.eve.web.rest;
 
+import com.bravebucks.eve.security.AuthoritiesConstants;
 import com.bravebucks.eve.service.JsonRequestService;
 import com.bravebucks.eve.domain.SolarSystem;
 
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -53,6 +56,7 @@ public class SolarSystemResource {
      * @return the ResponseEntity with status 201 (Created) and with body the new solarSystem, or with status 400 (Bad Request) if the solarSystem has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
+    @Secured(AuthoritiesConstants.MANAGER)
     @PostMapping("/solar-systems")
     public ResponseEntity<SolarSystem> createSolarSystem(@RequestBody SolarSystem solarSystem) throws URISyntaxException {
         log.debug("REST request to save SolarSystem : {}", solarSystem);
@@ -78,7 +82,8 @@ public class SolarSystemResource {
                                                                                  "The system could not be found. Is there a typo?")).body(null);
     }
 
-    @GetMapping("/public/solar-systems")
+    @Secured(AuthoritiesConstants.USER)
+    @GetMapping("/solar-systems/plain")
     public ResponseEntity<List<SolarSystem>> getSystems() {
         return ResponseEntity.ok(solarSystemRepository.findAll());
     }
@@ -89,6 +94,7 @@ public class SolarSystemResource {
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of solarSystems in body
      */
+    @Secured(AuthoritiesConstants.MANAGER)
     @GetMapping("/solar-systems")
     public ResponseEntity<List<SolarSystem>> getAllSolarSystems(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of SolarSystems");
@@ -103,6 +109,7 @@ public class SolarSystemResource {
      * @param id the id of the solarSystem to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the solarSystem, or with status 404 (Not Found)
      */
+    @Secured(AuthoritiesConstants.MANAGER)
     @GetMapping("/solar-systems/{id}")
     public ResponseEntity<SolarSystem> getSolarSystem(@PathVariable String id) {
         log.debug("REST request to get SolarSystem : {}", id);
@@ -115,6 +122,7 @@ public class SolarSystemResource {
      * @param id the id of the solarSystem to delete
      * @return the ResponseEntity with status 200 (OK)
      */
+    @Secured(AuthoritiesConstants.MANAGER)
     @DeleteMapping("/solar-systems/{id}")
     public ResponseEntity<Void> deleteSolarSystem(@PathVariable String id) {
         log.debug("REST request to delete SolarSystem : {}", id);

@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.bravebucks.eve.domain.Killmail;
 import com.bravebucks.eve.domain.User;
 import com.bravebucks.eve.repository.UserRepository;
+import com.bravebucks.eve.security.AuthoritiesConstants;
 import com.bravebucks.eve.security.SecurityUtils;
 import com.bravebucks.eve.service.JsonRequestService;
 import com.bravebucks.eve.service.KillmailParser;
@@ -21,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -119,18 +121,6 @@ public class KillmailResource {
             }
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("The server has a hiccup, please try again later. DM Rihan Shazih if the issue persists.");
-        }
-    }
-
-    @PostMapping("/killmail/long-pull")
-    @Timed
-    public ResponseEntity longPull() {
-        if (lastLongPullInvocation.isBefore(fiveMinutesAgo())) {
-            lastLongPullInvocation = LocalDateTime.now();
-            killmailPuller.longPull();
-            return ResponseEntity.status(200).build();
-        } else {
-            return ResponseEntity.status(420).build();
         }
     }
 
