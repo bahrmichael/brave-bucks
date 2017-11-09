@@ -77,6 +77,7 @@ public class AdRequestResource {
         }
 
         adRequest.setRequester(SecurityUtils.getCurrentUserLogin());
+        adRequest.setAdStatus(AdStatus.REQUESTED);
 
         AdRequest result = adRequestRepository.save(adRequest);
         return ResponseEntity.created(new URI("/api/ad-requests/" + result.getId()))
