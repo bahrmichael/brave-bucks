@@ -6,7 +6,7 @@
     "jhipsterVersion": "4.7.0",
     "baseName": "braveBucks",
     "packageName": "com.bravebucks.eve",
-    "packageFolder": "com/buyback/eve",
+    "packageFolder": "com/bravebucks/eve",
     "serverPort": "8080",
     "authenticationType": "jwt",
     "hibernateCache": "no",
