@@ -7,10 +7,10 @@
     <div class="col-md-6">
         <div class="alert alert-warning">Read this carefully. If you fail to follow the rules, you may be blocked from requesting further ads.</div>
         <p><b>Stay classy!</b></p>
-        <p>Advertisement spots cost 1 bil ISK and last 1 month. When the ad has been requested (green success message), you must send 1 bil ISK to the corporation Brave Holdings [B-BRV] with the message "BraveBucks: SERVICE MONTH". Replace SERVICE and MONTH with the appropriate values.</p>
-        <p>The description should be 2-3 sentences and does not allow line breaks. No essays!</p>
+        <p>Advertisement spots cost 250 mil ISK and last one month. Up to five slots per month will be rotated randomly. When the ad has been requested (green success message), you must send 250 mil ISK to the corporation Brave Holdings [B-BRV] with the message "BraveBucks: SERVICE MONTH". Replace SERVICE and MONTH with the appropriate values.</p>
+        <p>The description should be 2-3 sentences and does not allow line breaks or pictures. No essays!</p>
         <img src="../../content/images/template.png" />
-        <p>Your link must use https. You may omit the link which will disable the "Visit Service" button.</p>
+        <p>Your link must use https. You may omit the link which will disable the "Visit" button.</p>
         <p>Your request should be placed 2 weeks before the requested month starts.</p>
         <p>Questions? Ask Rihan Shazih on Slack.</p>
     </div>
@@ -46,7 +46,7 @@
                 <span>Submit</span>
             </button>
 
-            <div *ngIf="isSuccessful" class="alert alert-success">Your ad has been submitted. Please pay 1 bil ISK to Brave Holdings [B-BRV].</div>
+            <div *ngIf="isSuccessful" class="alert alert-success">Your ad has been submitted. Please pay 250 mil ISK to Brave Holdings [B-BRV].</div>
             <div *ngIf="errorText" class="alert alert-danger">{{errorText}}</div>
         </form>
     </div>

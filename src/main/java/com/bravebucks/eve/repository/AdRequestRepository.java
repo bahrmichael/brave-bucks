@@ -16,9 +16,9 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 @Repository
 public interface AdRequestRepository extends MongoRepository<AdRequest, String> {
 
-    AdRequest findByAdStatus(AdStatus status);
+    List<AdRequest> findByAdStatus(AdStatus status);
 
-    Optional<AdRequest> findByMonth(String month);
+    List<AdRequest> findByMonth(String month);
 
-    Optional<AdRequest> findByServiceAndAdStatusNotIn(String service, List<AdStatus> adStatuses);
+    Optional<AdRequest> findByServiceAndMonth(String service, String month);
 }

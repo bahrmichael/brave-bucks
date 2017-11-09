@@ -66,13 +66,14 @@ public class AdRequestResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new adRequest cannot already have an ID")).body(null);
         }
 
-        Optional<AdRequest> optional = adRequestRepository.findByMonth(adRequest.getMonth());
-        if (optional.isPresent()) {
-            return ResponseEntity.status(409).body("This month is already taken. Please choose another one.");
+        List<AdRequest> existingAds = adRequestRepository.findByMonth(adRequest.getMonth());
+        if (existingAds.size() >= 5) {
+            return ResponseEntity.status(409).body("This month is already booked out. Please choose another one.");
         }
-        optional = adRequestRepository.findByServiceAndAdStatusNotIn(adRequest.getService(), Arrays.asList(AdStatus.COMPLETED, AdStatus.DECLINED));
+
+        Optional<AdRequest> optional = adRequestRepository.findByServiceAndMonth(adRequest.getService(), adRequest.getMonth());
         if (optional.isPresent()) {
-            return ResponseEntity.status(409).body("There is already an ad requested or active for this service. Please try again later.");
+            return ResponseEntity.status(409).body("There is already an ad requested for this service and month. Please choose another month.");
         }
 
         adRequest.setRequester(SecurityUtils.getCurrentUserLogin());
@@ -112,7 +113,7 @@ public class AdRequestResource {
         LocalDate now = LocalDate.now();
         for (int i = 1; i <= 12; i++) {
             String month = now.plusMonths(i).getYear() + "-" + now.plusMonths(i).getMonthValue();
-            if (!adRequestRepository.findByMonth(month).isPresent()) {
+            if (adRequestRepository.findByMonth(month).size() < 5) {
                 availableMonths.add(month);
             }
         }
@@ -122,8 +123,12 @@ public class AdRequestResource {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/ad-requests/active")
     public ResponseEntity<AdRequest> getCurrentAd() {
-        AdRequest activeAd = adRequestRepository.findByAdStatus(AdStatus.ACTIVE);
-        return ResponseEntity.ok(activeAd);
+        Optional<AdRequest> activeAd = adRequestRepository.findByAdStatus(AdStatus.ACTIVE).stream().findAny();
+        if (activeAd.isPresent()) {
+            return ResponseEntity.ok(activeAd.get());
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     /**
