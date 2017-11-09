@@ -7,10 +7,10 @@
     <div class="col-md-6">
         <div class="alert alert-warning">Read this carefully. If you fail to follow the rules, you may be blocked from requesting further ads.</div>
         <p><b>Stay classy!</b></p>
-        <p>Advertisement spots cost 250 mil ISK and last one month. Up to five slots per month will be rotated randomly. When the ad has been requested (green success message), you must send 250 mil ISK to the corporation Brave Holdings [B-BRV] with the message "BraveBucks: SERVICE MONTH". Replace SERVICE and MONTH with the appropriate values.</p>
+        <p>Basic advertisement spots cost 250 mil ISK. Advanced advertisement spots (which may include a link) cost 500 mil ISK. All ads last one month. Up to five slots per month will be rotated randomly. When the ad has been requested (green success message), you must send 250 or 500 mil ISK to the corporation Brave Holdings [B-BRV] with the message "BraveBucks: SERVICE MONTH". Replace SERVICE and MONTH with the appropriate values.</p>
         <p>The description should be 2-3 sentences and does not allow line breaks or pictures. No essays!</p>
-        <img src="../../content/images/template.png" width="100px"/>
-        <p>Your link must use https. You may omit the link which will disable the "Visit" button.</p>
+        <p><img src="../../content/images/template.png" style="width: 100%"/></p>
+        <p>If you provide a link, it must use https. You may omit the link which will disable the "Visit" button.</p>
         <p>Your request should be placed 2 weeks before the requested month starts.</p>
         <p>Questions? Ask Rihan Shazih on Slack.</p>
     </div>
@@ -19,7 +19,7 @@
             The next year is booked out. Please check back later for new or reopened months.
         </div>
 
-        <form *ngIf="availableMonthsLoaded && availableMonths.length > 0" name="requestForm" role="form" novalidate (ngSubmit)="submit()" #editForm="ngForm">
+        <form *ngIf="availableMonthsLoaded && availableMonths.length > 0" name="requestForm" role="form" novalidate (ngSubmit)="submit()" #requestForm="ngForm">
             <div class="form-group">
                 <label class="form-control-label" for="field_service">Service</label>
                 <input type="text" class="form-control" name="service" id="field_service"
@@ -37,7 +37,7 @@
                        [(ngModel)]="adRequest.description" required />
             </div>
             <div class="form-group">
-                <label class="form-control-label" for="field_link">Link</label>
+                <label class="form-control-label" for="field_link">Link<br/><small>With a link the ad costs 500 mil ISK instead of 250 mil ISK. Links must use https.</small></label>
                 <input type="text" class="form-control" name="link" id="field_link"
                        [(ngModel)]="adRequest.link" pattern="https.+"/>
             </div>
@@ -46,7 +46,7 @@
                 <span>Submit</span>
             </button>
 
-            <div *ngIf="isSuccessful" class="alert alert-success">Your ad has been submitted. Please pay 250 mil ISK to Brave Holdings [B-BRV].</div>
+            <div *ngIf="isSuccessful" class="alert alert-success">Your ad has been submitted. Please pay <span *ngIf="!submittedAdvancedAd">250</span><span *ngIf="submittedAdvancedAd">500</span> mil ISK to Brave Holdings [B-BRV].</div>
             <div *ngIf="errorText" class="alert alert-danger">{{errorText}}</div>
         </form>
     </div>

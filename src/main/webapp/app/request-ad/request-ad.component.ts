@@ -13,7 +13,7 @@ export class RequestAdComponent implements OnInit {
     adRequest: AdRequest;
     availableMonths: string[];
     availableMonthsLoaded: boolean;
-    requestForm: any;
+    submittedAdvancedAd: boolean;
 
     constructor(
         private http: Http
@@ -38,10 +38,14 @@ export class RequestAdComponent implements OnInit {
         this.isSaving = true;
         this.isSuccessful = false;
         this.errorText = null;
+        this.submittedAdvancedAd = false;
         this.http.post('/api/ad-requests', this.adRequest).subscribe(
             (data) => {
                 this.isSuccessful = true;
                 this.isSaving = false;
+                if (this.adRequest.link) {
+                    this.submittedAdvancedAd = true;
+                }
                 this.adRequest = new AdRequest();
                 this.loadMonths();
             }, (err) => {
