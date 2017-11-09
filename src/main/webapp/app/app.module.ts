@@ -25,7 +25,7 @@ import {
     ErrorComponent
 } from './layouts';
 import {SsoComponent} from "./layouts/callback/sso.component";
-import {BraveBucksTheBuybackModule} from "./the-buyback/the-buyback.module";
+import {BraveBucksRequestAdModule} from "./request-ad/request-ad.module";
 
 @NgModule({
     imports: [
@@ -37,7 +37,7 @@ import {BraveBucksTheBuybackModule} from "./the-buyback/the-buyback.module";
         BraveBucksAdminModule,
         BraveBucksAccountModule,
         BraveBucksEntityModule,
-        BraveBucksTheBuybackModule
+        BraveBucksRequestAdModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [
