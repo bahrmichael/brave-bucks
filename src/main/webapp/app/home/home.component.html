@@ -114,7 +114,7 @@
                     <div class="card mb-3">
                         <img class="card-img-top" src="../../content/images/intro3.png" width="50%" >
                         <div class="card-body">
-                            <h4 class="card-title">3. Get Killmails</h4>
+                            <h4 class="card-title">3. Collect Killmails</h4>
                             <p class="card-text">Tackle, ewar, deeps or plain whoring. Do what you can do best!</p>
                             <p class="card-text"><small class="text-muted">Disclaimer: Fleet kills (>20 attackers) don't count.</small></p>
                         </div>
@@ -177,21 +177,22 @@
                 </div>
             </div>
             <br/>
-            <div class="row">
+            <div class="row" *ngIf="ad">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            Featured
+                            Sponsored
+                            <a href="#" routerLink="request-ad" class="pull-right">Request Your Ad</a>
                         </div>
                         <div class="card-body">
-                            <h4 class="card-title">The Buyback</h4>
-                            <p class="card-text">The Buyback will buy loot and everything in any Brave citadel for 90% Jita buy.</p>
-                            <a href="#" class="btn btn-primary" routerLink="the-buyback">That's awesome. I want ISK!</a>
+                            <h4 class="card-title">{{ad.service}}</h4>
+                            <p class="card-text">{{ad.description}}</p>
+                            <a *ngIf="ad.link" href="{{ad.link}}" class="btn btn-primary" target="_blank">Visit</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <br/>
+            <br *ngIf="ad"/>
             <div class="row">
                 <div class="col-md-12">
                     <h3>Payouts</h3>

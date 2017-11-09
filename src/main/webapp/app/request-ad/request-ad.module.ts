@@ -3,15 +3,15 @@ import { RouterModule } from '@angular/router';
 
 import { BraveBucksSharedModule } from '../shared';
 
-import { TheBuyback_ROUTE, TheBuybackComponent } from './';
+import { RequestAd_ROUTE, RequestAdComponent } from './';
 
 @NgModule({
     imports: [
         BraveBucksSharedModule,
-        RouterModule.forRoot([ TheBuyback_ROUTE ], { useHash: true })
+        RouterModule.forRoot([ RequestAd_ROUTE ], { useHash: true })
     ],
     declarations: [
-        TheBuybackComponent,
+        RequestAdComponent,
     ],
     entryComponents: [
     ],
@@ -19,4 +19,4 @@ import { TheBuyback_ROUTE, TheBuybackComponent } from './';
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class BraveBucksTheBuybackModule {}
+export class BraveBucksRequestAdModule {}

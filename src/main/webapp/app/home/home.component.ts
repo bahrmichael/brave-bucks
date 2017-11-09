@@ -3,6 +3,7 @@ import { JhiEventManager } from 'ng-jhipster';
 
 import { Account, Principal } from '../shared';
 import {Http} from "@angular/http";
+import {AdRequest} from "../entities/ad-request/ad-request.model";
 
 @Component({
     selector: 'jhi-home',
@@ -24,6 +25,7 @@ export class HomeComponent implements OnInit {
     killmailFailedMessage: string;
     killmailAlreadyExists: boolean;
     killmailAddedText: string;
+    ad: AdRequest;
 
     constructor(
         private principal: Principal,
@@ -87,6 +89,9 @@ export class HomeComponent implements OnInit {
     }
 
     getData() {
+        this.http.get('/api/ad-requests/active').subscribe(
+            (data) => this.ad = data.json()
+        );
         this.http.get('/api/stats/month-available').subscribe((data) => {
             this.monthAvailable = +data.text();
         });
@@ -115,7 +120,7 @@ export class HomeComponent implements OnInit {
 
     getDotlanLink(region: string) {
         const systemNames = [];
-        this.systems.forEach(s => systemNames.push(s.systemName));
+        this.systems.forEach((s) => systemNames.push(s.systemName));
         return "http://evemaps.dotlan.net/map/" + region + '/' + systemNames.join();
     }
 
