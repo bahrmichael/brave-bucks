@@ -19,4 +19,6 @@ public interface PayoutRepository extends MongoRepository<Payout, String> {
     Optional<Payout> findOneByUser(String user);
 
     List<Payout> findAllByUserAndStatus(String user, PayoutStatus status);
+
+    int countByStatus(PayoutStatus status);
 }

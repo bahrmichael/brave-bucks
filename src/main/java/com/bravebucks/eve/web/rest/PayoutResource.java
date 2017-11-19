@@ -28,7 +28,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -76,6 +78,47 @@ public class PayoutResource {
         return ResponseEntity.created(new URI("/api/payouts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId()))
             .body(result);
+    }
+
+    @GetMapping("/payouts/pending")
+    @Timed
+    @Secured(AuthoritiesConstants.MANAGER)
+    public ResponseEntity<Integer> countPendingPayouts() {
+        return ResponseEntity.ok(payoutRepository.countByStatus(PayoutStatus.REQUESTED));
+    }
+
+    @GetMapping("/payouts/large")
+    @Timed
+    @Secured(AuthoritiesConstants.MANAGER)
+    public ResponseEntity<Integer> countLargePayouts() {
+        final int count = extractAccountValues().entrySet().stream()
+                             .filter(stringDoubleEntry -> stringDoubleEntry.getValue() >= 100_000_000)
+                             .mapToInt(value -> 1).sum();
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/payouts/small")
+    @Timed
+    @Secured(AuthoritiesConstants.MANAGER)
+    public ResponseEntity<Integer> countSmallPayouts() {
+        final int count = extractAccountValues().entrySet().stream()
+                                                .filter(entry -> entry.getValue() >= 50_000_000
+                                                       && entry.getValue() < 100_000_000)
+                                                .mapToInt(value -> 1).sum();
+        return ResponseEntity.ok(count);
+    }
+
+    private Map<String, Double> extractAccountValues() {
+        Map<String, Double> map = new HashMap<>();
+        transactionRepository.findAll().forEach(transaction -> {
+            String user = transaction.getUser();
+            Double amount = transaction.getAmount();
+            if (map.containsKey(user)) {
+                amount += map.get(user);
+            }
+            map.put(user, amount);
+        });
+        return map;
     }
 
     @PutMapping("/payouts/trigger")

@@ -26,6 +26,10 @@ export class HomeComponent implements OnInit {
     killmailAlreadyExists: boolean;
     killmailAddedText: string;
     ad: AdRequest;
+    pendingAds = 0;
+    countPending = 0;
+    largeValues = 0;
+    smallValues = 0;
 
     constructor(
         private principal: Principal,
@@ -39,6 +43,10 @@ export class HomeComponent implements OnInit {
         this.principal.identity().then((account) => {
             this.account = account;
             this.getData();
+            console.log(this.account.authorities);
+            if (this.account.authorities.indexOf('ROLE_MANAGER') !== -1) {
+                this.loadManagerData();
+            }
         });
         this.registerAuthenticationSuccess();
     }
@@ -50,6 +58,21 @@ export class HomeComponent implements OnInit {
                 this.getData();
             });
         });
+    }
+
+    loadManagerData() {
+        this.http.get('/api/ad-requests/pending').subscribe(
+            (data) => this.pendingAds = +data.text()
+        );
+        this.http.get('/api/payouts/pending').subscribe(
+            (data) => this.countPending = +data.text()
+        );
+        this.http.get('/api/payouts/large').subscribe(
+            (data) => this.largeValues = +data.text()
+        );
+        this.http.get('/api/payouts/small').subscribe(
+            (data) => this.smallValues = +data.text()
+        );
     }
 
     requestPayout() {

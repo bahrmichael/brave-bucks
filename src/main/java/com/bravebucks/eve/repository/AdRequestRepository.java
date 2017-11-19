@@ -21,4 +21,6 @@ public interface AdRequestRepository extends MongoRepository<AdRequest, String> 
     List<AdRequest> findByMonth(String month);
 
     Optional<AdRequest> findByServiceAndMonth(String service, String month);
+
+    int countByAdStatus(AdStatus status);
 }

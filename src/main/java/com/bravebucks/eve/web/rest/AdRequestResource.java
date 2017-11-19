@@ -4,16 +4,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import com.bravebucks.eve.domain.AdRequest;
 import com.bravebucks.eve.domain.enumeration.AdStatus;
 import com.bravebucks.eve.repository.AdRequestRepository;
+import com.bravebucks.eve.security.AuthoritiesConstants;
 import com.bravebucks.eve.security.SecurityUtils;
 import com.bravebucks.eve.web.rest.util.HeaderUtil;
 import com.bravebucks.eve.web.rest.util.PaginationUtil;
+import com.codahale.metrics.annotation.Timed;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +51,13 @@ public class AdRequestResource {
     private final AdRequestRepository adRequestRepository;
     public AdRequestResource(AdRequestRepository adRequestRepository) {
         this.adRequestRepository = adRequestRepository;
+    }
+
+    @GetMapping("/ad-requests/pending")
+    @Timed
+    @Secured(AuthoritiesConstants.MANAGER)
+    public ResponseEntity<Integer> countPendingPayouts() {
+        return ResponseEntity.ok(adRequestRepository.countByAdStatus(AdStatus.REQUESTED));
     }
 
     /**

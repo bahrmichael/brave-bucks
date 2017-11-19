@@ -1,6 +1,14 @@
 <div class="row">
     <div class="col-md-3">
         <img class="img-fluid img-rounded d-none d-sm-block" src="https://crossingzebras.com/wp-content/uploads/2015/04/catch_Join.png"></img>
+        <div *ngIf="isAuthenticated()">
+            <div *jhiHasAnyAuthority="'ROLE_MANAGER'">
+                <p><b *ngIf="countPending > 0">{{countPending}} pending payout(s).</b><br/>
+                    {{largeValues}} account(s) more than 100mil.<br/>
+                    {{smallValues}} account(s) between 50 and 100mil.<br/>
+                    <b *ngIf="pendingAds > 0">{{pendingAds}} pending ad request(s).</b></p>
+            </div>
+        </div>
     </div>
     <div class="col-md-9">
 
@@ -65,7 +73,7 @@
                         Maps (hunting systems are circled black):
                         <ul>
                             <li>
-                                <a target="_blank" href="{{getDotlanLink('Catch')}}">Catch</a>
+                                <a *ngIf="systems" target="_blank" href="{{getDotlanLink('Catch')}}">Catch</a>
                             </li>
                         </ul>
                         List of systems:
@@ -152,7 +160,7 @@
                     Maps (hunting systems are circled black):
                     <ul>
                         <li>
-                            <a target="_blank" href="{{getDotlanLink('Catch')}}">Catch</a>
+                            <a *ngIf="systems" target="_blank" href="{{getDotlanLink('Catch')}}">Catch</a>
                         </li>
                     </ul>
                 </div>
