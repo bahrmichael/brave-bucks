@@ -11,7 +11,7 @@
 
     <groupId>com.bravebucks.eve</groupId>
     <artifactId>braveBucks</artifactId>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
     <packaging>war</packaging>
     <name>BraveBucks</name>
 
