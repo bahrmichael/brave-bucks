@@ -87,7 +87,7 @@ public class SolarSystemResource {
 
     @Secured(AuthoritiesConstants.USER)
     @GetMapping("/solar-systems/region/{region}")
-    public ResponseEntity<List<SolarSystem>> getSystems(@PathParam("region") final Region region) {
+    public ResponseEntity<List<SolarSystem>> getSystems(@PathVariable("region") final Region region) {
         return ResponseEntity.ok(solarSystemRepository.findByRegion(region));
     }
 
