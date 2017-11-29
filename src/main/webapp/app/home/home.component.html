@@ -73,12 +73,16 @@
                         Maps (hunting systems are circled black):
                         <ul>
                             <li>
-                                <a *ngIf="systems" target="_blank" href="{{getDotlanLink('Catch')}}">Catch</a>
+                                <a *ngIf="systemsCatch" target="_blank" href="{{getDotlanLink('Catch')}}">Catch</a>
+                            </li>
+                            <li>
+                                <a *ngIf="systemsImpass" target="_blank" href="{{getDotlanLink('Impass')}}">Impass</a>
                             </li>
                         </ul>
                         List of systems:
                         <ul>
-                            <li *ngFor="let system of systems">{{system.systemName}}</li>
+                            <li *ngFor="let system of systemsCatch">{{system.systemName}}</li>
+                            <li *ngFor="let system of systemsImpass">{{system.systemName}}</li>
                         </ul>
                         Feel free to request more systems on the <a target="_blank" href="https://forums.bravecollective.com/viewtopic.php?f=34&t=4195">forums</a>.
                     </div>
@@ -160,7 +164,10 @@
                     Maps (hunting systems are circled black):
                     <ul>
                         <li>
-                            <a *ngIf="systems" target="_blank" href="{{getDotlanLink('Catch')}}">Catch</a>
+                            <a *ngIf="systemsCatch" target="_blank" href="{{getDotlanLink('Catch')}}">Catch</a>
+                        </li>
+                        <li>
+                            <a *ngIf="systemsImpass" target="_blank" href="{{getDotlanLink('Impass')}}">Catch</a>
                         </li>
                     </ul>
                 </div>

@@ -1,5 +1,6 @@
 package com.bravebucks.eve.web.rest;
 
+import com.bravebucks.eve.domain.enumeration.Region;
 import com.bravebucks.eve.security.AuthoritiesConstants;
 import com.bravebucks.eve.service.JsonRequestService;
 import com.bravebucks.eve.domain.SolarSystem;
@@ -29,6 +30,8 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
+
+import javax.websocket.server.PathParam;
 
 /**
  * REST controller for managing SolarSystem.
@@ -83,9 +86,9 @@ public class SolarSystemResource {
     }
 
     @Secured(AuthoritiesConstants.USER)
-    @GetMapping("/solar-systems/plain")
-    public ResponseEntity<List<SolarSystem>> getSystems() {
-        return ResponseEntity.ok(solarSystemRepository.findAll());
+    @GetMapping("/solar-systems/region/{region}")
+    public ResponseEntity<List<SolarSystem>> getSystems(@PathParam("region") final Region region) {
+        return ResponseEntity.ok(solarSystemRepository.findByRegion(region));
     }
 
     /**

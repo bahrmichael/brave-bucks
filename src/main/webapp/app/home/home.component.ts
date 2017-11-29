@@ -4,6 +4,7 @@ import { JhiEventManager } from 'ng-jhipster';
 import { Account, Principal } from '../shared';
 import {Http} from "@angular/http";
 import {AdRequest} from "../entities/ad-request/ad-request.model";
+import {SolarSystem} from "../entities/solar-system/solar-system.model";
 
 @Component({
     selector: 'jhi-home',
@@ -16,7 +17,8 @@ export class HomeComponent implements OnInit {
     account: Account;
     potentialPayout: number;
     killmails: any[];
-    systems: any[];
+    systemsCatch: SolarSystem[];
+    systemsImpass: SolarSystem[];
     payoutThreshold = 100000000;
     isFirstLogin: boolean;
     payoutRequested: boolean;
@@ -124,8 +126,11 @@ export class HomeComponent implements OnInit {
         this.http.get('/api/killmails').subscribe((data) => {
             this.killmails = data.json();
         })
-        this.http.get('/api/solar-systems/plain').subscribe((data) => {
-            this.systems = data.json();
+        this.http.get('/api/solar-systems/region/CATCH').subscribe((data) => {
+            this.systemsCatch = data.json();
+        });
+        this.http.get('/api/solar-systems/region/IMPASS').subscribe((data) => {
+            this.systemsImpass = data.json();
         });
     }
 
@@ -143,7 +148,11 @@ export class HomeComponent implements OnInit {
 
     getDotlanLink(region: string) {
         const systemNames = [];
-        this.systems.forEach((s) => systemNames.push(s.systemName));
+        if (region === 'Catch') {
+            this.systemsCatch.forEach((s) => systemNames.push(s.systemName));
+        } else {
+            this.systemsImpass.forEach((s) => systemNames.push(s.systemName));
+        }
         return "http://evemaps.dotlan.net/map/" + region + '/' + systemNames.join();
     }
 

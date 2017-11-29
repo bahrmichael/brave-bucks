@@ -6,6 +6,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.bravebucks.eve.domain.enumeration.Region;
+
 /**
  * A SolarSystem.
  */
@@ -21,6 +23,9 @@ public class SolarSystem implements Serializable {
 
     @Field("system_name")
     private String systemName;
+
+    @Field("region")
+    private Region region;
 
     // jhipster-needle-entity-add-field - Jhipster will add fields here, do not remove
     public String getId() {
@@ -56,6 +61,19 @@ public class SolarSystem implements Serializable {
     public void setSystemName(String systemName) {
         this.systemName = systemName;
     }
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public SolarSystem region(Region region) {
+        this.region = region;
+        return this;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
     // jhipster-needle-entity-add-getters-setters - Jhipster will add getters and setters here, do not remove
 
     @Override
@@ -84,6 +102,7 @@ public class SolarSystem implements Serializable {
             "id=" + getId() +
             ", systemId='" + getSystemId() + "'" +
             ", systemName='" + getSystemName() + "'" +
+            ", region='" + getRegion() + "'" +
             "}";
     }
 }
