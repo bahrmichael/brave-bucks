@@ -20,13 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-/**
- * AdmService
- *
- * Created on 06.10.2017
- *
- * Copyright (C) 2017 Volkswagen AG, All rights reserved.
- */
 @Service
 public class AdmService {
 

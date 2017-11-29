@@ -19,13 +19,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
 
-/**
- * PayoutCalculatorTest
- *
- * Created on 21.10.2017
- *
- * Copyright (C) 2017 Volkswagen AG, All rights reserved.
- */
 public class PayoutCalculatorTest {
 
     private KillmailRepository killmailRepo = mock(KillmailRepository.class);
