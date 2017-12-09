@@ -27,7 +27,7 @@ spring:
     data:
         mongodb:
             uri: mongodb://localhost:27017
-            database: thebuyback
+            database: bravebucks
     messages:
         cache-seconds: 1
     thymeleaf:

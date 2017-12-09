@@ -142,3 +142,6 @@ Desktop.ini
 .eslintcache
 
 application-prod.yml
+depoy_rsa
+secrets.tar
+copyDB.sh

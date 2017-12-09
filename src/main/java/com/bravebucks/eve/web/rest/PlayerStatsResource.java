@@ -2,6 +2,7 @@ package com.bravebucks.eve.web.rest;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,10 +19,13 @@ import com.bravebucks.eve.repository.UserRepository;
 import com.bravebucks.eve.security.AuthoritiesConstants;
 import com.bravebucks.eve.security.SecurityUtils;
 import com.bravebucks.eve.web.dto.KillmailDto;
+import com.codahale.metrics.annotation.Timed;
 import static com.bravebucks.eve.domain.enumeration.PayoutStatus.REQUESTED;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +36,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 @Secured(AuthoritiesConstants.USER)
 public class PlayerStatsResource {
+
+    private final Logger log = LoggerFactory.getLogger(PlayerStatsResource.class);
 
     private final KillmailRepository killmailRepository;
     private final UserRepository userRepository;
@@ -63,26 +69,33 @@ public class PlayerStatsResource {
     }
 
     @GetMapping(path = "/stats/potentialPayout")
+    @Timed
     public ResponseEntity<Double> getPotentialPayout() {
-        double transactions = 0 + transactionRepository.findAllByUser(SecurityUtils.getCurrentUserLogin()).stream()
+        final String user = SecurityUtils.getCurrentUserLogin();
+        double transactions = 0 + transactionRepository.findAllByUser(user).stream()
                                                        .mapToDouble(Transaction::getAmount).sum();
-        double payouts = 0 + payoutRepository.findAllByUserAndStatus(SecurityUtils.getCurrentUserLogin(), REQUESTED)
+        double pendingPayouts = 0 + payoutRepository.findAllByUserAndStatus(user, REQUESTED)
                           .stream().mapToDouble(Payout::getAmount).sum();
-        final double sum = transactions - payouts;
+        final double sum = transactions - pendingPayouts;
+        log.info("Potential Payout for {} is {}.", user, (int) sum);
         return ResponseEntity.ok(sum);
     }
 
     @GetMapping(path = "/killmails")
+    @Timed
     public ResponseEntity getKillmails() {
-        final Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+        final String user = SecurityUtils.getCurrentUserLogin();
+        final Optional<User> oneByLogin = userRepository.findOneByLogin(user);
         if (!oneByLogin.isPresent()) {
             return ResponseEntity.badRequest().body("Could not resolve user.");
         }
-        return ResponseEntity.ok(killmailRepository.findByAttackerId(oneByLogin.get().getCharacterId(),
-                                                                     new PageRequest(0, 10, Direction.DESC, "killTime"))
-                                                   .stream()
-                                                   .map(PlayerStatsResource::createMailDto)
-                                                   .collect(Collectors.toList()));
+        final PageRequest pageRequest = new PageRequest(0, 10, Sort.Direction.DESC, "killTime");
+        final List<KillmailDto> result = killmailRepository.findByAttackerId(oneByLogin.get().getCharacterId(), pageRequest)
+                                                      .stream()
+                                                      .map(PlayerStatsResource::createMailDto)
+                                                      .collect(Collectors.toList());
+        log.info("Returning {} killmails for {}.", result.size(), user);
+        return ResponseEntity.ok(result);
     }
 
     public static KillmailDto createMailDto(final Killmail mail) {
