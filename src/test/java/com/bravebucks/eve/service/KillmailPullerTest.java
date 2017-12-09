@@ -108,14 +108,14 @@ public class KillmailPullerTest {
     }
 
     @Test
-    public void isNotInFleet() throws Exception {
+    public void isNotInFleet() {
         final Killmail killmail = new Killmail();
         killmail.setAttackerIds(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L));
         assertTrue(sut.isNotInFleet(killmail));
     }
 
     @Test
-    public void filterAndSaveKillmails() throws Exception {
+    public void filterAndSaveKillmails() {
         when(killmailRepo.save(anyList())).thenReturn(null);
         when(killmailRepo.findByKillId(2L)).thenReturn(Optional.empty());
 
@@ -126,9 +126,9 @@ public class KillmailPullerTest {
         final List<Killmail> killmails = singletonList(killmail);
 
         sut.setSystems(singletonList(1L));
-        sut.filterAndSaveKillmails(killmails);
+        sut.filterKillmails(killmails);
 
-        verify(killmailRepo).save(anyList());
+        verify(killmailRepo, never()).save(anyList());
     }
 
     @Test
@@ -165,15 +165,16 @@ public class KillmailPullerTest {
     }
 
     @Test
-    public void pullKillmails_requestReturnsSomething_doesSave() throws Exception {
+    public void pullKillmails_requestReturnsSomething_doesSave() {
         User user = new User();
         user.setCharacterId(2L);
         when(userRepo.findAll()).thenReturn(singletonList(user));
         when(requestService.getKillmails(2L, 1L)).thenReturn(Optional.of(new JsonNode("[{}]")));
-        doNothing().when(sut).filterAndSaveKillmails(emptyList());
+        when(sut.filterKillmails(emptyList())).thenReturn(emptyList());
+        when(killmailRepo.save(anyList())).thenReturn(null);
 
         sut.pullKillmails(1L);
 
-        verify(sut).filterAndSaveKillmails(emptyList());
+        verify(sut).filterKillmails(emptyList());
     }
 }

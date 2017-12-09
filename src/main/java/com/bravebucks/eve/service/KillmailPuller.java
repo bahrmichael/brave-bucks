@@ -71,22 +71,22 @@ public class KillmailPuller {
                       .ifPresent(jsonBody -> {
                           final JSONArray array = jsonBody.getArray();
                           if (array.length() > 0) {
-                              log.info("Adding {} killmails for characterId {}", array.length(), user.getCharacterId());
                               final List<Killmail> killmails = killmailParser.parseKillmails(array);
-                              filterAndSaveKillmails(killmails);
+                              List<Killmail> filtered = filterKillmails(killmails);
+                              log.info("Processing {} killmails for characterId {}", filtered.size(), user.getCharacterId());
+                              killmailRepository.save(filtered);
                           }
         }));
     }
 
-    public void filterAndSaveKillmails(final List<Killmail> killmails) {
-        List<Killmail> filtered = killmails.stream()
-                                           .filter(this::isVictimNotBrave)
-                                           .filter(this::isInBraveSystem)
-                                           .filter(this::isNotInFleet)
-                                           .filter(this::isNotAnEmptyPod)
-                                           .filter(this::doesNotExist)
-                                           .collect(toList());
-        killmailRepository.save(filtered);
+    public List<Killmail> filterKillmails(final List<Killmail> killmails) {
+        return killmails.stream()
+                       .filter(this::isVictimNotBrave)
+                       .filter(this::isInBraveSystem)
+                       .filter(this::isNotInFleet)
+                       .filter(this::isNotAnEmptyPod)
+                       .filter(this::doesNotExist)
+                       .collect(toList());
     }
 
     private boolean doesNotExist(final Killmail killmail) {
