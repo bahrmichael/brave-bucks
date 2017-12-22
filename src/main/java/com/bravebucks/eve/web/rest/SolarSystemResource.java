@@ -72,8 +72,8 @@ public class SolarSystemResource {
         Optional<JsonNode> optional = jsonRequestService.searchSolarSystem(solarSystem.getSystemName());
         if (optional.isPresent()) {
             JSONObject object = optional.get().getObject();
-            if (object.has("solarsystem")) {
-                long systemId = object.getJSONArray("solarsystem").getLong(0);
+            if (object.has("solar_system")) {
+                long systemId = object.getJSONArray("solar_system").getLong(0);
                 solarSystem.setSystemId(systemId);
                 SolarSystem result = solarSystemRepository.save(solarSystem);
                 return ResponseEntity.created(new URI("/api/solar-systems/" + result.getId()))

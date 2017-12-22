@@ -31,7 +31,7 @@ public class JsonRequestService {
     }
 
     public Optional<JsonNode> searchSolarSystem(final String systemName) {
-        String url = "https://esi.tech.ccp.is/latest/search/?categories=solarsystem&datasource=tranquility"
+        String url = "https://esi.tech.ccp.is/v2/search/?categories=solar_system&datasource=tranquility"
                      + "&language=en-us&search=" + systemName + "&strict=true";
         GetRequest getRequest = get(url, null);
         return executeRequest(getRequest);
