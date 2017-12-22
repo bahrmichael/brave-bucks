@@ -1,6 +1,7 @@
 package com.bravebucks.eve.web.rest;
 
 import com.bravebucks.eve.domain.Transaction;
+import com.bravebucks.eve.repository.UserRepository;
 import com.bravebucks.eve.security.AuthoritiesConstants;
 import com.bravebucks.eve.service.TransactionService;
 import com.bravebucks.eve.web.rest.util.HeaderUtil;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,9 +37,12 @@ public class TransactionResource {
     private static final String ENTITY_NAME = "transaction";
 
     private final TransactionService transactionService;
+    private final UserRepository userRepository;
 
-    public TransactionResource(TransactionService transactionService) {
+    public TransactionResource(TransactionService transactionService,
+                               final UserRepository userRepository) {
         this.transactionService = transactionService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -48,11 +53,19 @@ public class TransactionResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/transactions")
-    @Secured(AuthoritiesConstants.ADMIN)
+    @Secured(AuthoritiesConstants.MANAGER)
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) throws URISyntaxException {
         log.debug("REST request to save Transaction : {}", transaction);
         if (transaction.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new transaction cannot already have an ID")).body(null);
+        }
+
+        if (!userRepository.findOneByLogin(transaction.getUser()).isPresent()) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "usernotfound", "The user could not be found. Did you match case?")).body(null);
+        }
+
+        if (null == transaction.getInstant()) {
+            transaction.setInstant(Instant.now());
         }
         Transaction result = transactionService.save(transaction);
         return ResponseEntity.created(new URI("/api/transactions/" + result.getId()))

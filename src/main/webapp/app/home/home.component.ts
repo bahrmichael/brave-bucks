@@ -45,7 +45,6 @@ export class HomeComponent implements OnInit {
         this.principal.identity().then((account) => {
             this.account = account;
             this.getData();
-            console.log(this.account.authorities);
             if (this.account.authorities.indexOf('ROLE_MANAGER') !== -1) {
                 this.loadManagerData();
             }

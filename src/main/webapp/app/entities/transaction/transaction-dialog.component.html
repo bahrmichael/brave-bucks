@@ -1,7 +1,7 @@
 <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
 
     <div class="modal-header">
-        <h4 class="modal-title" id="myTransactionLabel">Create or edit a Transaction</h4>
+        <h4 class="modal-title" id="myTransactionLabel">Transaction</h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 (click)="clear()">&times;</button>
     </div>
@@ -17,7 +17,7 @@
             <input type="text" class="form-control" name="user" id="field_user"
                 [(ngModel)]="transaction.user"  />
         </div>
-        <div class="form-group">
+        <div class="form-group" *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <label class="form-control-label" for="field_instant">Instant</label>
             <div class="d-flex">
                 <input id="field_instant" type="datetime-local" class="form-control" name="instant" [(ngModel)]="transaction.instant"
@@ -29,12 +29,13 @@
             <input type="number" class="form-control" name="amount" id="field_amount"
                 [(ngModel)]="transaction.amount"  />
         </div>
-        <div class="form-group">
+        <div class="form-group" *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <label class="form-control-label" for="field_type">Type</label>
             <select class="form-control" name="type" [(ngModel)]="transaction.type" id="field_type" >
                 <option value="SRP">SRP</option>
                 <option value="PAYOUT">PAYOUT</option>
                 <option value="KILL">KILL</option>
+                <option value="KILL">PRIZE</option>
             </select>
         </div>
 

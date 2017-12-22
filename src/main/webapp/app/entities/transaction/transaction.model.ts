@@ -1,9 +1,10 @@
 import { BaseEntity } from './../../shared';
 
-const enum TransactionType {
+export const enum TransactionType {
     'SRP',
     'PAYOUT',
-    'KILL'
+    'KILL',
+    'PRIZE'
 }
 
 export class Transaction implements BaseEntity {

@@ -1,10 +1,12 @@
 package com.bravebucks.eve.web.rest;
 
 import com.bravebucks.eve.domain.Transaction;
+import com.bravebucks.eve.domain.User;
 import com.bravebucks.eve.domain.enumeration.TransactionType;
 import com.bravebucks.eve.BraveBucksApp;
 
 import com.bravebucks.eve.repository.TransactionRepository;
+import com.bravebucks.eve.repository.UserRepository;
 import com.bravebucks.eve.service.TransactionService;
 import com.bravebucks.eve.web.rest.errors.ExceptionTranslator;
 
@@ -29,6 +31,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -73,14 +76,21 @@ public class TransactionResourceIntTest {
 
     private Transaction transaction;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final TransactionResource transactionResource = new TransactionResource(transactionService);
+        final TransactionResource transactionResource = new TransactionResource(transactionService, userRepository);
         this.restTransactionMockMvc = MockMvcBuilders.standaloneSetup(transactionResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
+
+        final User user = new User();
+        user.setLogin(DEFAULT_USER);
+        userRepository.save(user);
     }
 
     /**

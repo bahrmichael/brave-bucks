@@ -7,6 +7,6 @@ export const RequestAd_ROUTE: Route = {
     component: RequestAdComponent,
     data: {
         authorities: ['ROLE_USER'],
-        pageTitle: 'Request Your Ad'
+        pageTitle: 'Submit an Ad'
     }
 };

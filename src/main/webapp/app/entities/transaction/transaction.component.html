@@ -1,6 +1,12 @@
 <div>
     <h2>
         <span>Transactions</span>
+        <button class="btn btn-primary float-right jh-create-entity create-payout" [routerLink]="['/', { outlets: { popup: ['transaction-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span >
+            Create new Prize Transaction
+            </span>
+        </button>
     </h2>
     <jhi-alert></jhi-alert>
     <div class="row">

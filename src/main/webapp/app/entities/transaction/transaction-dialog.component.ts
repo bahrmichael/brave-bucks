@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Rx';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { Transaction } from './transaction.model';
+import {Transaction, TransactionType} from './transaction.model';
 import { TransactionPopupService } from './transaction-popup.service';
 import { TransactionService } from './transaction.service';
 
@@ -36,6 +36,10 @@ export class TransactionDialogComponent implements OnInit {
     }
 
     save() {
+        if (!this.transaction.type) {
+            this.transaction.type = TransactionType.PRIZE;
+        }
+
         this.isSaving = true;
         if (this.transaction.id !== undefined) {
             this.subscribeToSaveResponse(
