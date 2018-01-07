@@ -2,6 +2,7 @@ package com.bravebucks.eve.service;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Collections;
 
 import com.bravebucks.eve.domain.Donation;
@@ -13,6 +14,8 @@ import com.bravebucks.eve.repository.KillmailRepository;
 import com.bravebucks.eve.repository.TransactionRepository;
 
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -28,7 +31,7 @@ public class PayoutCalculatorTest {
     private PayoutCalculator sut = new PayoutCalculator(killmailRepo, userRepo, donationRepo, transactionRepo, null);
 
     @Test
-    public void calculatePayouts() throws Exception {
+    public void calculatePayouts() {
         User user = new User();
         user.setCharacterId(1L);
         user.setLogin("test");
@@ -49,5 +52,16 @@ public class PayoutCalculatorTest {
 
         verify(killmailRepo).save(any(Killmail.class));
         verify(transactionRepo).save(anyList());
+    }
+
+    @Test
+    public void shouldHavePayoutsWith1DigitMonths() {
+        final Donation donation = new Donation();
+        donation.setCreated(LocalDate.of(2017, 12, 1).atStartOfDay().toInstant(ZoneOffset.UTC));
+        donation.amount(1000000.0);
+
+        int remainingWorth = (int) sut.getRemainingWorth(donation, LocalDate.of(2018, 1, 5));
+
+        assertEquals(32258, remainingWorth);
     }
 }

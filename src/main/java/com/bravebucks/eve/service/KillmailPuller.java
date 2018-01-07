@@ -1,6 +1,7 @@
 package com.bravebucks.eve.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import static java.util.stream.Collectors.toList;
 
@@ -16,9 +17,12 @@ import com.codahale.metrics.annotation.Timed;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import io.github.jhipster.config.JHipsterConstants;
 
 @Component
 public class KillmailPuller {
@@ -32,22 +36,27 @@ public class KillmailPuller {
     private final JsonRequestService jsonRequestService;
     private final SolarSystemRepository solarSystemRepository;
     private final KillmailParser killmailParser;
+    private final Environment env;
 
     public KillmailPuller(final KillmailRepository killmailRepository,
                           final UserRepository userRepository,
                           final JsonRequestService jsonRequestService,
                           final SolarSystemRepository solarSystemRepository,
-                          final KillmailParser killmailParser) {
+                          final KillmailParser killmailParser, final Environment env) {
         this.killmailRepository = killmailRepository;
         this.userRepository = userRepository;
         this.jsonRequestService = jsonRequestService;
         this.solarSystemRepository = solarSystemRepository;
         this.killmailParser = killmailParser;
+        this.env = env;
     }
 
     @PostConstruct
     public void init() {
-        pullKillmails();
+        // dev only
+        if (Arrays.asList(env.getActiveProfiles()).contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)) {
+            pullKillmails();
+        }
     }
 
     @Async

@@ -38,7 +38,7 @@ import io.github.jhipster.config.JHipsterConstants;
 @Service
 public class PayoutCalculator {
 
-    public static final long FINAL_BLOW_BONUS = 2;
+    private static final long FINAL_BLOW_BONUS = 2;
     private final KillmailRepository killmailRepository;
     private final UserRepository userRepository;
     private final DonationRepository donationRepository;
@@ -131,12 +131,11 @@ public class PayoutCalculator {
 
     private double getPayable() {
         final LocalDate now = LocalDate.now();
-        return donationRepository.findByMonth(now.getYear() + "-" + now.getMonthValue()).stream()
-                                 .mapToDouble(this::getRemainingWorth).sum();
-    }
-
-    private boolean isToday(final Transaction transaction) {
-        return transaction.getInstant().toEpochMilli() >= LocalDate.now().toEpochDay();
+        final String month = now.getYear() + "-" + String.format("%02d", now.getMonthValue());
+        return donationRepository.findByMonth(month)
+                                 .stream()
+                                 .mapToDouble(donation -> getRemainingWorth(donation, LocalDate.now()))
+                                 .sum();
     }
 
     private String getUserName(final Iterable<User> users, final Long userId) {
@@ -151,9 +150,9 @@ public class PayoutCalculator {
         return user;
     }
 
-    private double getRemainingWorth(final Donation donation) {
+    double getRemainingWorth(final Donation donation, final LocalDate date) {
         final Instant monthBorder = getMonthBorder();
-        final int monthLength = LocalDate.now().getMonth().maxLength();
+        final int monthLength = date.getMonth().maxLength();
         if (monthBorder.isAfter(donation.getCreated())) {
             return donation.getAmount() / monthLength;
         } else {

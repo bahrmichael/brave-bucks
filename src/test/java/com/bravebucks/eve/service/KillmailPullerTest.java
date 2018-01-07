@@ -17,6 +17,7 @@ import static com.bravebucks.eve.service.KillmailPuller.HOUR;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.core.env.Environment;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyList;
@@ -35,8 +36,9 @@ public class KillmailPullerTest {
     private JsonRequestService requestService = mock(JsonRequestService.class);
     private SolarSystemRepository solarSystemRepository = mock(SolarSystemRepository.class);
     private KillmailParser killmailParser = mock(KillmailParser.class);
+    private Environment env = mock(Environment.class);
     private KillmailPuller sut = Mockito.spy(new KillmailPuller(killmailRepo, userRepo, requestService, solarSystemRepository,
-                                                                killmailParser));
+                                                                killmailParser, env));
 
     @Test
     public void pullKillmails() throws Exception {
