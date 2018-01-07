@@ -48,13 +48,6 @@ public class KillmailPullerTest {
     }
 
     @Test
-    public void init() throws Exception {
-        doNothing().when(sut).pullKillmails(anyLong());
-        sut.init();
-        verify(sut).pullKillmails(HOUR);
-    }
-
-    @Test
     public void longPull() throws Exception {
         doNothing().when(sut).pullKillmails(anyLong());
         sut.longPull();
