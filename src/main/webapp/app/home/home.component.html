@@ -8,6 +8,18 @@
                     {{smallValues}} account(s) between 50 and 100mil.<br/>
                     <b *ngIf="pendingAds > 0">{{pendingAds}} pending ad request(s).</b></p>
             </div>
+            <br/>
+            <h3 *ngIf="highscore && highscore.length">Top 10 Hunters (30 days)</h3>
+            <table class="table table-condensed table-striped" *ngIf="highscore && highscore.length">
+                <tr>
+                    <th>Character</th>
+                    <th>ISK collected</th>
+                </tr>
+                <tr *ngFor="let entry of highscore">
+                    <td>{{entry.name}}</td>
+                    <td>{{entry.amount | number:'1.0-0'}} ISK</td>
+                </tr>
+            </table>
         </div>
     </div>
     <div class="col-md-9">

@@ -55,7 +55,7 @@ public class KillmailPuller {
     public void init() {
         // dev only
         if (Arrays.asList(env.getActiveProfiles()).contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)) {
-            pullKillmails();
+//            pullKillmails();
         }
     }
 

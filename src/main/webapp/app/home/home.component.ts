@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit {
     account: Account;
     potentialPayout: number;
     killmails: any[];
+    highscore: any[];
     systemsCatch: SolarSystem[];
     systemsImpass: SolarSystem[];
     payoutThreshold = 100000000;
@@ -121,6 +122,9 @@ export class HomeComponent implements OnInit {
         });
         this.http.get('/api/stats/potentialPayout').subscribe((data) => {
             this.potentialPayout = +data.text();
+        });
+        this.http.get('/api/stats/highscore').subscribe((data) => {
+            this.highscore = data.json();
         });
         this.http.get('/api/killmails').subscribe((data) => {
             this.killmails = data.json();
