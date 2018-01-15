@@ -36,10 +36,6 @@ export class TransactionDialogComponent implements OnInit {
     }
 
     save() {
-        if (!this.transaction.type) {
-            this.transaction.type = TransactionType.PRIZE;
-        }
-
         this.isSaving = true;
         if (this.transaction.id !== undefined) {
             this.subscribeToSaveResponse(

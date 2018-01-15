@@ -1,12 +1,12 @@
 <div>
     <h2>
         <span>Transactions</span>
-        <button class="btn btn-primary float-right jh-create-entity create-payout" [routerLink]="['/', { outlets: { popup: ['transaction-new'] } }]">
-            <span class="fa fa-plus"></span>
-            <span >
-            Create new Prize Transaction
-            </span>
-        </button>
+        <!--<button class="btn btn-primary float-right jh-create-entity create-payout" [routerLink]="['/', { outlets: { popup: ['transaction-new'] } }]">-->
+            <!--<span class="fa fa-plus"></span>-->
+            <!--<span >-->
+            <!--Create new Transaction-->
+            <!--</span>-->
+        <!--</button>-->
     </h2>
     <jhi-alert></jhi-alert>
     <div class="row">
@@ -51,12 +51,26 @@
             </tbody>
         </table>
     </div>
-        <div *ngIf="transactions && transactions.length">
-            <div class="row justify-content-center">
-                <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
-            </div>
-            <div class="row justify-content-center">
-                <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+    <div *ngIf="transactions && transactions.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h3>Award a prize</h3>
+        </div>
+        <div class="col-md-9">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Recipient" [(ngModel)]="prizeRecipient">
+                <input type="number" class="form-control" placeholder="Amount" [(ngModel)]="prizeAmount">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" (click)="submitPrize()">Add</button>
+                </div>
             </div>
         </div>
+    </div>
 </div>

@@ -29,6 +29,9 @@ currentAccount: any;
     previousPage: any;
     reverse: any;
 
+    prizeRecipient: string;
+    prizeAmount: number;
+
     constructor(
         private transactionService: TransactionService,
         private parseLinks: JhiParseLinks,
@@ -47,6 +50,18 @@ currentAccount: any;
             this.reverse = data['pagingParams'].ascending;
             this.predicate = data['pagingParams'].predicate;
         });
+    }
+
+    submitPrize() {
+        this.transactionService.addPrize(this.prizeRecipient, this.prizeAmount).subscribe(
+            (data) => {
+                this.prizeRecipient = null;
+                this.prizeAmount = null;
+                this.eventManager.broadcast({ name: 'transactionListModification', content: 'OK'});
+            }, (err) => {
+                alert("Something broke. Please try again later.");
+            }
+        );
     }
 
     loadAll() {

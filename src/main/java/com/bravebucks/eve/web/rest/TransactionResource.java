@@ -73,6 +73,25 @@ public class TransactionResource {
             .body(result);
     }
 
+    @PostMapping("/transactions/prize")
+    @Secured(AuthoritiesConstants.MANAGER)
+    public ResponseEntity<Transaction> createPrizeTransaction(@RequestBody Transaction transaction) throws URISyntaxException {
+        log.debug("REST request to save Transaction : {}", transaction);
+        if (transaction.getId() != null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new transaction cannot already have an ID")).body(null);
+        }
+
+        if (!userRepository.findOneByLogin(transaction.getUser()).isPresent()) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "usernotfound", "The user could not be found. Did you match case?")).body(null);
+        }
+
+        transaction.setInstant(Instant.now());
+        Transaction result = transactionService.save(transaction);
+        return ResponseEntity.created(new URI("/api/transactions/" + result.getId()))
+                             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                             .body(result);
+    }
+
     /**
      * PUT  /transactions : Updates an existing transaction.
      *

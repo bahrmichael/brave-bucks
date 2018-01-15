@@ -3,7 +3,7 @@ import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { JhiDateUtils } from 'ng-jhipster';
 
-import { Transaction } from './transaction.model';
+import {Transaction, TransactionType} from './transaction.model';
 import { ResponseWrapper, createRequestOption } from '../../shared';
 
 @Injectable()
@@ -20,6 +20,14 @@ export class TransactionService {
             this.convertItemFromServer(jsonResponse);
             return jsonResponse;
         });
+    }
+
+    addPrize(recipient: string, amount: number) {
+        const transaction = new Transaction();
+        transaction.type = TransactionType.PRIZE;
+        transaction.amount = amount;
+        transaction.user = recipient;
+        return this.http.post(this.resourceUrl + '/prize/', transaction);
     }
 
     update(transaction: Transaction): Observable<Transaction> {

@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-3">
-        <img class="img-fluid img-rounded d-none d-sm-block" src="https://crossingzebras.com/wp-content/uploads/2015/04/catch_Join.png"></img>
+        <img class="img-fluid img-rounded d-none d-md-block" src="https://crossingzebras.com/wp-content/uploads/2015/04/catch_Join.png"></img>
         <div *ngIf="isAuthenticated()">
             <div *jhiHasAnyAuthority="'ROLE_MANAGER'">
                 <p><b *ngIf="countPending > 0">{{countPending}} pending payout(s).</b><br/>
@@ -9,17 +9,19 @@
                     <b *ngIf="pendingAds > 0">{{pendingAds}} pending ad request(s).</b></p>
             </div>
             <br/>
-            <h3 *ngIf="highscore && highscore.length">Top 10 Hunters (30 days)</h3>
-            <table class="table table-condensed table-striped" *ngIf="highscore && highscore.length">
-                <tr>
-                    <th>Character</th>
-                    <th>ISK collected</th>
-                </tr>
-                <tr *ngFor="let entry of highscore">
-                    <td>{{entry.name}}</td>
-                    <td>{{entry.amount | number:'1.0-0'}} ISK</td>
-                </tr>
-            </table>
+            <div class="d-none d-lg-block">
+                <h3 *ngIf="highscore && highscore.length">Top 10 Hunters</h3>
+                <table class="table table-condensed table-striped" *ngIf="highscore && highscore.length">
+                    <tr>
+                        <th>Character</th>
+                        <th>ISK (30 days)</th>
+                    </tr>
+                    <tr *ngFor="let entry of highscore">
+                        <td>{{entry.name}}</td>
+                        <td>{{entry.amount | number:'1.0-0'}} ISK</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
     <div class="col-md-9">
