@@ -103,7 +103,7 @@ public class KillmailPuller {
     }
 
     public boolean isNotInFleet(final Killmail killmail) {
-        return killmail.getAttackerIds().size() < 20;
+        return killmail.getAttackerIds().size() <= 20;
     }
 
     public boolean isNotAnEmptyPod(final Killmail killmail) {
