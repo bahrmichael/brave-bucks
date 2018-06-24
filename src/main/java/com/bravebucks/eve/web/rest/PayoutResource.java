@@ -180,6 +180,11 @@ public class PayoutResource {
     private void addTransactionIfPaid(final Payout result) {
         if (PayoutStatus.PAID == result.getStatus()) {
             transactionRepository.save(new Transaction(result.getUser(), -1 * result.getAmount(), TransactionType.PAYOUT));
+
+            // while avend is gone, rihan takes over payments and gets paid back through bux
+            if (SecurityUtils.getCurrentUserLogin().equals("Rihan Shazih")) {
+                transactionRepository.save(new Transaction("Rihan Shazih", result.getAmount(), TransactionType.PRIZE));
+            }
         }
     }
 
