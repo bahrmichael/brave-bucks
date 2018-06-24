@@ -182,7 +182,8 @@ public class PayoutResource {
             transactionRepository.save(new Transaction(result.getUser(), -1 * result.getAmount(), TransactionType.PAYOUT));
 
             // while avend is gone, rihan takes over payments and gets paid back through bux
-            if (SecurityUtils.getCurrentUserLogin().equals("Rihan Shazih")) {
+            final String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+            if (null != currentUserLogin && currentUserLogin.equals("Rihan Shazih")) {
                 transactionRepository.save(new Transaction("Rihan Shazih", result.getAmount(), TransactionType.PRIZE));
             }
         }
