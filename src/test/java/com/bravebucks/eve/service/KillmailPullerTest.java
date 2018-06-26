@@ -42,13 +42,6 @@ public class KillmailPullerTest {
                                                                 killmailParser, env));
 
     @Test
-    public void pullKillmails() throws Exception {
-        doNothing().when(sut).pullKillmails(anyLong());
-        sut.pullKillmails();
-        verify(sut).pullKillmails(HOUR);
-    }
-
-    @Test
     public void longPull() throws Exception {
         doNothing().when(sut).pullKillmails(anyLong());
         sut.longPull();

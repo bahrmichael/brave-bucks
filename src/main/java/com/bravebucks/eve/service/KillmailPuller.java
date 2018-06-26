@@ -65,14 +65,12 @@ public class KillmailPuller {
     @Scheduled(cron = "0 */10 * * * *")
     @Timed
     public void pullKillmails() {
-        final long duration;
         if (isFirstPull) {
-            duration = HOUR * 24 * 7L;
+            longPull();
             isFirstPull = false;
         } else {
-            duration = HOUR;
+            pullKillmails(HOUR);
         }
-        pullKillmails(duration);
     }
 
     public void longPull() {
