@@ -59,11 +59,20 @@ public class KillmailPuller {
         }
     }
 
+    private boolean isFirstPull = true;
+
     @Async
     @Scheduled(cron = "0 */10 * * * *")
     @Timed
     public void pullKillmails() {
-        pullKillmails(HOUR);
+        final long duration;
+        if (isFirstPull) {
+            duration = HOUR * 24 * 7L;
+            isFirstPull = false;
+        } else {
+            duration = HOUR;
+        }
+        pullKillmails(duration);
     }
 
     public void longPull() {

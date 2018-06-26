@@ -26,8 +26,8 @@ public class KillmailParserTest {
 
     @Before
     public void setUp() throws Exception {
-        when(requestService.getPlayerGroupNames(1)).thenReturn(Optional.of(new JsonNode("[{\"alliance_id\": 1, \"alliance_name\": \"Goons\"}]")));
-        when(requestService.getPlayerGroupNames(2)).thenReturn(Optional.of(new JsonNode("[{\"alliance_id\": 2, \"alliance_name\": \"Red Alliance\"}]")));
+        when(requestService.getPlayerGroupNames(1)).thenReturn(Optional.of(new JsonNode("[{\"id\": 1, \"name\": \"Goons\"}]")));
+        when(requestService.getPlayerGroupNames(2)).thenReturn(Optional.of(new JsonNode("[{\"id\": 2, \"name\": \"Red Alliance\"}]")));
         when(admService.getAdm(anyLong())).thenReturn(6);
     }
 

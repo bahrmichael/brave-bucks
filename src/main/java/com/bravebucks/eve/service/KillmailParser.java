@@ -96,8 +96,8 @@ public class KillmailParser {
                 final JSONArray array = playerGroupNames.get().getArray();
                 for (int i = 0; i < array.length(); i++) {
                     final JSONObject jsonObject = array.getJSONObject(i);
-                    if (jsonObject.getLong("alliance_id") == groupId) {
-                        result.setVictimGroupName(jsonObject.getString("alliance_name"));
+                    if (jsonObject.getLong("id") == groupId) {
+                        result.setVictimGroupName(jsonObject.getString("name"));
                         break;
                     }
                 }

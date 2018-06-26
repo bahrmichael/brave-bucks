@@ -1,8 +1,12 @@
 package com.bravebucks.eve.service;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import static java.util.Collections.singletonList;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
@@ -11,6 +15,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.BaseRequest;
 import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.body.MultipartBody;
+import com.mashape.unirest.request.body.RequestBodyEntity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,9 +56,9 @@ public class JsonRequestService {
     }
 
     public Optional<JsonNode> getPlayerGroupNames(final long allianceId) {
-        String url = "https://esi.tech.ccp.is/v1/alliances/names/?alliance_ids=" + allianceId + "&datasource=tranquility";
-        GetRequest getRequest = get(url, null);
-        return executeRequest(getRequest);
+        String url = "https://esi.tech.ccp.is/v2/universe/names/";
+        final RequestBodyEntity request = Unirest.post(url).headers(defaultHeaders).body(singletonList(allianceId));
+        return executeRequest(request);
     }
 
     public Optional<JsonNode> getAccessToken(final String clientId, final String clientSecret, final String code) {
