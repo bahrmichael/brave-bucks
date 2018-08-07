@@ -8,6 +8,7 @@ import java.util.Collections;
 import com.bravebucks.eve.domain.Donation;
 import com.bravebucks.eve.domain.User;
 import com.bravebucks.eve.repository.DonationRepository;
+import com.bravebucks.eve.repository.RattingEntryRepository;
 import com.bravebucks.eve.repository.UserRepository;
 import com.bravebucks.eve.domain.Killmail;
 import com.bravebucks.eve.repository.KillmailRepository;
@@ -15,7 +16,6 @@ import com.bravebucks.eve.repository.TransactionRepository;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -28,7 +28,9 @@ public class PayoutCalculatorTest {
     private UserRepository userRepo = mock(UserRepository.class);
     private DonationRepository donationRepo = mock(DonationRepository.class);
     private TransactionRepository transactionRepo = mock(TransactionRepository.class);
-    private PayoutCalculator sut = new PayoutCalculator(killmailRepo, userRepo, donationRepo, transactionRepo, null);
+    private RattingEntryRepository rattingEntryRepository = mock(RattingEntryRepository.class);
+    private PayoutCalculator sut = new PayoutCalculator(killmailRepo, userRepo, transactionRepo,
+                                                        rattingEntryRepository, null);
 
     @Test
     public void calculatePayouts() {
@@ -50,7 +52,7 @@ public class PayoutCalculatorTest {
 
         sut.calculatePayouts();
 
-        verify(killmailRepo).save(any(Killmail.class));
+        verify(killmailRepo).save(anyList());
         verify(transactionRepo).save(anyList());
     }
 

@@ -9,5 +9,8 @@ public class EnvironmentTestConfiguration implements ApplicationContextInitializ
         System.setProperty("SSO_URL", "nothingForTest");
         System.setProperty("CLIENT_ID", "nothingForTest");
         System.setProperty("CLIENT_SECRET", "nothingForTest");
+        System.setProperty("WALLET_URL", "nothingForTest");
+        System.setProperty("WALLET_CLIENT_ID", "nothingForTest");
+        System.setProperty("WALLET_CLIENT_SECRET", "nothingForTest");
     }
 }

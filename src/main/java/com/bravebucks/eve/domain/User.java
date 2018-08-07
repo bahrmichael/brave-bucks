@@ -1,7 +1,9 @@
 package com.bravebucks.eve.domain;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -36,6 +38,17 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     @JsonIgnore
     private Set<Authority> authorities = new HashSet<>();
+
+    @JsonIgnore
+    private Map<Integer, String> walletReadRefreshTokens = new HashMap<>();
+
+    public Map<Integer, String> getWalletReadRefreshTokens() {
+        return walletReadRefreshTokens;
+    }
+
+    public void setWalletReadRefreshTokens(final Map<Integer, String> walletReadRefreshTokens) {
+        this.walletReadRefreshTokens = walletReadRefreshTokens;
+    }
 
     public String getId() {
         return id;

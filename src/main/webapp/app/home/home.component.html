@@ -1,6 +1,7 @@
 <div class="row">
     <div class="col-md-3">
-        <img class="img-fluid img-rounded d-none d-md-block" src="https://crossingzebras.com/wp-content/uploads/2015/04/catch_Join.png"></img>
+        <img class="img-fluid img-rounded d-none d-md-block"
+             src="https://crossingzebras.com/wp-content/uploads/2015/04/catch_Join.png" />
         <div *ngIf="isAuthenticated()">
             <div *jhiHasAnyAuthority="'ROLE_MANAGER'">
                 <p><b *ngIf="countPending > 0">{{countPending}} pending payout(s).</b><br/>
@@ -57,7 +58,14 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        BraveBucks are based on a monthly budget, which currently for example is 5 bil. Every day of the month gets the same share (~160mil in that case). Every day during downtime we do two things: First we take all the kills that were tracked and do some points calculation (see below) so that every player ends up with a number of points for that day (may be 0 if you didn't get on any legitimate killmails, we will soon show the points for each killmail on the recent defense kills section). Secondly we spread the isk for that day over the points that were gathered that day. So if one player got 60 points, and one other player 40, they will get 90 and 64 mil each. That ISK is added to your bar during DT. Once you reach 100mil isk, you can request a payout.
+                        BraveBucks are based on a monthly budget, which currently is 7 bil ISK. Every day of the month
+                        gets the same share (~220mil in that case). Every day during downtime we do two things: First
+                        we take all the kills that were tracked and do some points calculation (see below) so that
+                        every player ends up with a number of points for that day (may be 0 if you didn't get on any
+                        legitimate killmails, we will soon show the points for each killmail on the recent defense
+                        kills section). Secondly we spread the isk for that day over the points that were gathered that
+                        day. So if one player got 60 points, and one other player 40, they will get 90 and 64 mil each.
+                        That ISK is added to your bar during DT. Once you reach 100mil isk, you can request a payout.
                         <br/>
                         Points calculation is super simple: <i>sqrt(zKillPoints * (6 - ADM))</i>
                         <br/>
@@ -158,11 +166,22 @@
         <div *ngIf="isAuthenticated()">
             <div *ngIf="isFirstLogin" class="alert alert-success">
                 <div class="row">
-                    <div class="col-md-10">
-                        You have been added to the tracker that will pull from <a target="_blank" href="https://zkillboard.com">zkillboard</a> every 10 minutes.
+                    <div class="col-md-8">
+                        You have been added to the tracker that will pull from <a target="_blank" href="https://zkillboard.com">zkillboard</a> every 30 minutes. Note that kills may take up to 2 hours to appear.
                     </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-success" (click)="setFirstLogin()">Got it!</button>
+                    <div class="col-md-4">
+                        <button class="btn btn-success float-right" (click)="setFirstLogin()">Got it!</button>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="showWalletInfo" class="alert alert-info">
+                <div class="row">
+                    <div class="col-md-8">
+                        Gain additional rewards for ratting in low ADM systems! Help the war effort by making danker ticks and letting us read those ticks.<br/>
+                        <b>Beta warning: Until the beta is over, no payouts will happen and existing data may be wiped.</b>
+                    </div>
+                    <div class="col-md-4">
+                        <a class="btn btn-primary float-right" href="{{walletUrl}}">Grant wallet read access</a>
                     </div>
                 </div>
             </div>
@@ -175,7 +194,7 @@
                 <div class="col-md-6">
                     <p>Once you logged in, this website will track your PvP activity from <a target="_blank" href="https://zkillboard.com">zkillboard</a>. Based on this data we give you points for brave defenses,
                        last hits and all the things that boost fast local responses. Every day during downtime, we transfer the points to ISK. Once you reach 100mil ISK, you can request a payout.</p>
-                    Maps (hunting systems are circled black):
+                       Maps (hunting systems are circled black):
                     <ul>
                         <li>
                             <a *ngIf="systemsCatch" target="_blank" href="{{getDotlanLink('Catch')}}">Catch</a>
@@ -188,13 +207,13 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#criteriaModal">
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#criteriaModal">
                         Killmail Criterias
                     </button>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#calcModal">
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#calcModal">
                         Bucks Calculation
                     </button>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#huntModal">
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#huntModal">
                         Hunting Area
                     </button>
                 </div>
@@ -234,67 +253,6 @@
                     <br/>
                 </div>
             </div>
-            <!--<div class="row">-->
-                <!--<div *ngIf="pools" class="col-md-6">-->
-                    <!--<h4>Hunter Pool</h4>-->
-                    <!--<table class="table table-condensed table-striped table-bordered">-->
-                        <!--<tr>-->
-                            <!--<td width="50%">Next Month (WIP)</td>-->
-                            <!--<td>{{pools[0] | number:'1.0-0'}} ISK</td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td><b>This Month</b></td>-->
-                            <!--<td>{{pools[1] | number:'1.0-0'}} ISK</td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td>Last Month</td>-->
-                            <!--<td>{{pools[2] | number:'1.0-0'}} ISK</td>-->
-                        <!--</tr>-->
-                    <!--</table>-->
-                <!--</div>-->
-                <!--<div *ngIf="myStats" class="col-md-6">-->
-                    <!--<h4>Your Stats</h4>-->
-                    <!--<table class="table table-condensed table-striped">-->
-                        <!--<tr>-->
-                            <!--<td width="50%">BraveBucks Today</td>-->
-                            <!--<td>{{myStats['coins']}}</td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td>Defense Kills</td>-->
-                            <!--<td>{{myStats['defenseKills']}}</td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td>Final Blows</td>-->
-                            <!--<td>{{myStats['finalBlows']}}</td>-->
-                        <!--</tr>-->
-                    <!--</table>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="row">-->
-                <!--<div class="col-md-6">-->
-                    <!--<div class="alert alert-warning">-->
-                        <!--We need your help! If you like our work and the space we live in, please consider donating-->
-                        <!--to encourage more local PvP and content. DM Rihan Shazih on Slack.-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div class="col-md-6" style="color: lightgrey">-->
-                    <!--<h4>Recent Payouts</h4>-->
-                    <!--<table class="table table-condensed table-striped">-->
-                        <!--<tr>-->
-                            <!--<td width="50%">11.05.2017</td>-->
-                            <!--<td>127,148,217 ISK</td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td>28.04.2017</td>-->
-                            <!--<td>12,845,184 ISK</td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td>10.04.2017</td>-->
-                            <!--<td>8,283,453 ISK</td>-->
-                        <!--</tr>-->
-                    <!--</table>-->
-                <!--</div>-->
-            <!--</div>-->
             <div class="row">
                 <div class="col-md-6">
                     <h3>Your Recent Defense Kills</h3>

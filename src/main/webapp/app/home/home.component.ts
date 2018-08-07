@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { Account, Principal } from '../shared';
+import {Account, ConfigService, Principal} from '../shared';
 import {Http} from "@angular/http";
 import {AdRequest} from "../entities/ad-request/ad-request.model";
 import {SolarSystem} from "../entities/solar-system/solar-system.model";
@@ -33,22 +33,29 @@ export class HomeComponent implements OnInit {
     countPending = 0;
     largeValues = 0;
     smallValues = 0;
+    showWalletInfo: boolean;
+    walletUrl: string;
 
     constructor(
         private principal: Principal,
         private eventManager: JhiEventManager,
-        private http: Http
+        private http: Http,
+        private configService: ConfigService
     ) {
-        this.isFirstLogin = localStorage.getItem('brave-nukem-first-login') === null;
+        this.isFirstLogin = localStorage.getItem('brave-bucks-first-login') === null;
+        this.showWalletInfo = localStorage.getItem('brave-bucks-hide-wallet-info') === null;
     }
 
     ngOnInit() {
         this.principal.identity().then((account) => {
             this.account = account;
             this.getData();
-            if (this.account.authorities.indexOf('ROLE_MANAGER') !== -1) {
+            if (account.authorities.indexOf('ROLE_MANAGER') !== -1) {
                 this.loadManagerData();
             }
+
+            this.configService.getWalletUrl().subscribe((data) => this.walletUrl = data + "-" + account.id);
+            // todo: write hide-wallet-info cookie
         });
         this.registerAuthenticationSuccess();
     }
@@ -145,7 +152,7 @@ export class HomeComponent implements OnInit {
     }
 
     setFirstLogin() {
-        localStorage.setItem('brave-nukem-first-login', 'done');
+        localStorage.setItem('brave-bucks-first-login', 'done');
         this.isFirstLogin = false;
     }
 

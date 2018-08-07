@@ -6,7 +6,6 @@ before_install:
 language: java
 script:
 - mvn clean package -Pprod
-- bash <(curl -s https://codecov.io/bash)
 cache:
   directories:
   - $HOME/.m2

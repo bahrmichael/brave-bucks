@@ -11,14 +11,18 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.*;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
+import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 @ComponentScan
 @EnableAutoConfiguration(exclude = {MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class})
@@ -28,9 +32,11 @@ public class BraveBucksApp {
     private static final Logger log = LoggerFactory.getLogger(BraveBucksApp.class);
 
     private final Environment env;
+    private final DelayService delayService;
 
-    public BraveBucksApp(Environment env) {
+    public BraveBucksApp(Environment env, final DelayService delayService) {
         this.env = env;
+        this.delayService = delayService;
     }
 
     /**
@@ -51,6 +57,16 @@ public class BraveBucksApp {
             log.error("You have misconfigured your application! It should not " +
                 "run with both the 'dev' and 'cloud' profiles at the same time.");
         }
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        final OkHttp3ClientHttpRequestFactory requestFactory = new OkHttp3ClientHttpRequestFactory();
+        requestFactory.setReadTimeout(15_000);
+        final RestTemplate restTemplate = new RestTemplate(requestFactory);
+        restTemplate.setInterceptors(Collections.singletonList(new XEsiInterceptor()));
+        restTemplate.setErrorHandler(new MyResponseErrorHandler(delayService));
+        return restTemplate;
     }
 
     /**

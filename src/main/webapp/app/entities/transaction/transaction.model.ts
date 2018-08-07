@@ -4,7 +4,8 @@ export const enum TransactionType {
     'SRP',
     'PAYOUT',
     'KILL',
-    'PRIZE'
+    'PRIZE',
+    'RATTING'
 }
 
 export class Transaction implements BaseEntity {

@@ -1,5 +1,6 @@
 package com.bravebucks.eve.web.rest;
 
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,29 +8,38 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bravebucks.eve.domain.User;
+import com.bravebucks.eve.domain.esi.AuthVerificationResponse;
+import com.bravebucks.eve.domain.esi.CharacterDetailsResponse;
 import com.bravebucks.eve.repository.UserRepository;
-import com.bravebucks.eve.security.jwt.JWTConfigurer;
 import com.bravebucks.eve.security.jwt.TokenProvider;
-import com.bravebucks.eve.service.JsonRequestService;
 import com.bravebucks.eve.service.UserService;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.json.JSONObject;
+import static com.bravebucks.eve.security.jwt.JWTConfigurer.AUTHORIZATION_HEADER;
+
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Controller to authenticate users.
@@ -46,29 +56,52 @@ public class UserJWTController {
     @Value("${CLIENT_SECRET}")
     private String clientSecret;
 
+    @Value("${WALLET_CLIENT_ID}")
+    private String walletClientId;
+
+    @Value("${WALLET_CLIENT_SECRET}")
+    private String walletClientSecret;
+
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
     private final UserService userService;
-    private final JsonRequestService requestService;
+    private final RestTemplate restTemplate;
 
     public UserJWTController(TokenProvider tokenProvider, UserRepository userRepository, UserService userService,
-                             final JsonRequestService requestService) {
+                             final RestTemplate restTemplate) {
         this.tokenProvider = tokenProvider;
         this.userRepository = userRepository;
         this.userService = userService;
-        this.requestService = requestService;
+        this.restTemplate = restTemplate;
     }
 
     @GetMapping("/authenticate/sso")
     @Timed
     public ResponseEntity authorize(@RequestParam("code") String code, @RequestParam("state") String state, HttpServletResponse response) {
 
-        CharacterDetails characterDetails = getCharacterDetails(clientId, clientSecret, code);
-        if (null == characterDetails) {
-            return new ResponseEntity<>("AuthenticationException", HttpStatus.UNAUTHORIZED);
-        }
+        User user;
+        if (state.startsWith("wallet")) {
+            final String[] split = state.split("-");
+            if (split.length != 2) {
+                // todo: return error
+                return ResponseEntity.badRequest().build();
+            }
 
-        User user = createIfNotExists(characterDetails);
+            String targetUserId = split[1];
+
+            final AuthVerificationResponse authResponse = verifyAuthentication(code, state, walletClientId, walletClientSecret);
+            final CharacterDetailsResponse charDetails = getCharacterDetails(authResponse.getAccessToken());
+            user = userRepository.findOne(targetUserId);
+            user.getWalletReadRefreshTokens().put(charDetails.getCharacterId(), authResponse.getRefreshToken());
+            userRepository.save(user);
+        } else {
+            final AuthVerificationResponse authResponse = verifyAuthentication(code, state, clientId, clientSecret);
+            final CharacterDetailsResponse charDetails = getCharacterDetails(authResponse.getAccessToken());
+            if (null == charDetails) {
+                return new ResponseEntity<>("AuthenticationException", HttpStatus.UNAUTHORIZED);
+            }
+            user = createIfNotExists(charDetails);
+        }
 
         try {
             List<SimpleGrantedAuthority> authorities = user.getAuthorities().stream().map(
@@ -76,7 +109,7 @@ public class UserJWTController {
             Authentication authentication = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getLogin(), authorities);
             String jwt = tokenProvider.createToken(authentication, true);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            response.addHeader(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
+            response.addHeader(AUTHORIZATION_HEADER, "Bearer " + jwt);
             return ResponseEntity.ok(new JWTToken(jwt));
         } catch (AuthenticationException ae) {
             log.trace("Authentication exception trace: {}", ae);
@@ -85,43 +118,40 @@ public class UserJWTController {
         }
     }
 
-    User createIfNotExists(final CharacterDetails characterDetails) {
-        return userRepository.findOneByLogin(characterDetails.getName())
-                             .orElseGet(() -> userService.createUser(characterDetails.getName(), characterDetails.getId()));
+    private CharacterDetailsResponse getCharacterDetails(final String accessToken) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(AUTHORIZATION_HEADER, "Bearer " + accessToken);
+
+        final HttpEntity<Void> request = new HttpEntity<>(null, headers);
+        return restTemplate.exchange("https://login.eveonline.com/oauth/verify", HttpMethod.GET, request, CharacterDetailsResponse.class).getBody();
     }
 
-    CharacterDetails getCharacterDetails(final String clientId, final String clientSecret, final String code) {
-        final CharacterDetails[] characterDetails = {null};
-        requestService.getAccessToken(clientId, clientSecret, code).ifPresent(response -> {
-            JSONObject object = response.getObject();
-            String accessToken = object.getString("access_token");
-            requestService.getUserDetails(accessToken).ifPresent(detailsResponse -> {
-                JSONObject details = detailsResponse.getObject();
-                String characterName = details.getString("CharacterName");
-                Long characterId = details.getLong("CharacterID");
-                characterDetails[0] = new CharacterDetails(characterName, characterId);
-            });
-        });
-        return characterDetails[0];
+    private AuthVerificationResponse verifyAuthentication(final String code, final String state, final String clientId, final String clientSecret) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        headers.add("Authorization", getBasicAuth(clientId, clientSecret));
+
+        final MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("grant_type", "authorization_code");
+        map.add("code", code);
+
+        final HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        return restTemplate.postForObject("https://login.eveonline.com/oauth/token", request, AuthVerificationResponse.class);
     }
 
-    static class CharacterDetails {
-        private final String name;
-        private final Long id;
-
-        CharacterDetails(final String name, final Long id) {
-            this.name = name;
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Long getId() {
-            return id;
-        }
+    public static String getBasicAuth(final String clientId, final String clientSecret) {
+        final String auth = clientId + ":" + clientSecret;
+        final byte[] encodedAuth = Base64.encodeBase64(
+            auth.getBytes(Charset.forName("UTF-8")));
+        return "Basic " + new String(encodedAuth);
     }
+
+    User createIfNotExists(final CharacterDetailsResponse characterDetails) {
+        return userRepository.findOneByLogin(characterDetails.getCharacterName())
+                             .orElseGet(() -> userService.createUser(characterDetails.getCharacterName(), characterDetails.getCharacterId()));
+    }
+
 
     /**
      * Object to return as body in JWT Authentication.

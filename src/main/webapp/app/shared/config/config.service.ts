@@ -13,4 +13,10 @@ export class ConfigService {
         });
     }
 
+    getWalletUrl(): Observable<string> {
+        return this.http.get('api/config/walleturl').map((res: any) => {
+            return res.text();
+        });
+    }
+
 }

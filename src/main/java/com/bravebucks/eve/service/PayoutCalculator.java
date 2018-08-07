@@ -9,23 +9,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-
-import static java.util.stream.Collectors.toList;
 
 import javax.annotation.PostConstruct;
 
-import com.bravebucks.eve.domain.Transaction;
-import com.bravebucks.eve.domain.User;
 import com.bravebucks.eve.domain.Donation;
 import com.bravebucks.eve.domain.Killmail;
-import com.bravebucks.eve.repository.DonationRepository;
+import com.bravebucks.eve.domain.RattingEntry;
+import com.bravebucks.eve.domain.Transaction;
+import com.bravebucks.eve.domain.User;
 import com.bravebucks.eve.repository.KillmailRepository;
+import com.bravebucks.eve.repository.RattingEntryRepository;
 import com.bravebucks.eve.repository.TransactionRepository;
 import com.bravebucks.eve.repository.UserRepository;
 import com.codahale.metrics.annotation.Timed;
-
 import static com.bravebucks.eve.domain.enumeration.TransactionType.KILL;
+import static com.bravebucks.eve.domain.enumeration.TransactionType.RATTING;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -39,21 +39,23 @@ import io.github.jhipster.config.JHipsterConstants;
 public class PayoutCalculator {
 
     private static final long FINAL_BLOW_BONUS = 2;
+    private static final long KILL_BUDGET = 9_000_000_000L;
+    private static final long RATTING_BUDGET = 5_000_000_000L;
     private final KillmailRepository killmailRepository;
     private final UserRepository userRepository;
-    private final DonationRepository donationRepository;
     private final TransactionRepository transactionRepository;
+    private final RattingEntryRepository rattingEntryRepository;
     private final Environment env;
 
     @Autowired
     public PayoutCalculator(final KillmailRepository killmailRepository,
                             final UserRepository userRepository,
-                            final DonationRepository donationRepository,
                             final TransactionRepository transactionRepository,
+                            final RattingEntryRepository rattingEntryRepository,
                             final Environment env) {
         this.killmailRepository = killmailRepository;
         this.userRepository = userRepository;
-        this.donationRepository = donationRepository;
+        this.rattingEntryRepository = rattingEntryRepository;
         this.transactionRepository = transactionRepository;
         this.env = env;
     }
@@ -70,26 +72,47 @@ public class PayoutCalculator {
     @Timed
     @Scheduled(cron = "0 0 11 * * *")
     public void calculatePayouts() {
-        final List<User> users = userRepository.findAll().stream()
-                                               .filter(user -> user.getCharacterId() != null)
-                                               .collect(toList());
+        final List<User> users = userRepository.findAllByCharacterIdNotNull();
         final List<Long> userIds = new ArrayList<>();
         users.stream().mapToLong(User::getCharacterId).forEach(userIds::add);
 
         final List<Killmail> pendingKillmails = killmailRepository.findPending();
-        final Collection<Transaction> transactions = getTransactions(users, userIds, pendingKillmails);
+        final Collection<Transaction> transactions = getKillmailTransactions(users, userIds, pendingKillmails);
+        pendingKillmails.forEach(km -> km.setPayoutCalculated(true));
 
+//        final List<User> rattingUsers = users.stream().filter(user -> user.getWalletReadRefreshTokens() != null).collect(toList());
+//        final List<RattingEntry> pendingRattingEntries = rattingEntryRepository.findByProcessed(false);
+//        pendingRattingEntries.forEach(e -> e.setProcessed(true));
+//        transactions.addAll(getRattingTransactions(rattingUsers, pendingRattingEntries));
+//
+//        rattingEntryRepository.save(pendingRattingEntries);
+        killmailRepository.save(pendingKillmails);
         transactionRepository.save(transactions);
-        pendingKillmails.forEach(km -> {
-            km.setPayoutCalculated(true);
-            killmailRepository.save(km);
-        });
     }
 
-    private Collection<Transaction> getTransactions(final List<User> users, final List<Long> userIds,
-                                                    final List<Killmail> pendingKillmails) {
+    private List<Transaction> getRattingTransactions(final List<User> rattingUsers,
+                                                     final List<RattingEntry> pendingRattingEntries) {
+        final List<Transaction> transactions = new ArrayList<>();
+        final long totalPoints = getTotalRattingPoints(pendingRattingEntries, rattingUsers);
+
+        for (User user : rattingUsers) {
+            final long pointsForUser = getRattingPointsForUser(pendingRattingEntries, user);
+            if (pointsForUser == 0 || totalPoints == 0) {
+                continue;
+            }
+
+            final double factor = (double) pointsForUser / totalPoints;
+            final double userPayable = RATTING_BUDGET * factor;
+            final String userName = getUserName(rattingUsers, user.getCharacterId());
+            transactions.add(new Transaction(userName, userPayable, RATTING));
+        }
+
+        return transactions;
+    }
+
+    private Collection<Transaction> getKillmailTransactions(final List<User> users, final List<Long> userIds,
+                                                            final List<Killmail> pendingKillmails) {
         final long totalPoints = getTotalPoints(pendingKillmails, userIds);
-        final double todayPayable = getPayable();
 
         final Collection<Transaction> transactions = new ArrayList<>();
 
@@ -99,15 +122,35 @@ public class PayoutCalculator {
                 continue;
             }
             final double factor = (double) pointsForUser / totalPoints;
-            final double userPayable = todayPayable * factor;
+            final double userPayable = KILL_BUDGET * factor;
             final String user = getUserName(users, userId);
             transactions.add(new Transaction(user, userPayable, KILL));
         }
         return transactions;
     }
 
+    private long getTotalRattingPoints(final List<RattingEntry> pendingRattingEntries, final List<User> rattingUsers) {
+        return rattingUsers.stream().mapToLong(user -> getRattingPointsForUser(pendingRattingEntries, user)).sum();
+    }
+
     private long getTotalPoints(final Iterable<Killmail> killmails, final Collection<Long> userIds) {
-        return userIds.parallelStream().mapToLong(id -> getPointsForUser(killmails, id)).sum();
+        return userIds.stream().mapToLong(id -> getPointsForUser(killmails, id)).sum();
+    }
+
+    private long getRattingPointsForUser(final List<RattingEntry> pendingRattingEntries,
+                                         final User user) {
+        List<Integer> characterIds = new ArrayList<>();
+        for (Map.Entry<Integer, String> entry : user.getWalletReadRefreshTokens().entrySet()) {
+            characterIds.add(entry.getKey());
+        }
+
+        long sum = 0;
+        for (RattingEntry pendingRattingEntry : pendingRattingEntries) {
+            if (characterIds.contains(pendingRattingEntry.getCharacterId())) {
+                sum += pendingRattingEntry.getKillCount();
+            }
+        }
+        return sum;
     }
 
     private long getPointsForUser(final Iterable<Killmail> killmails, final Long userId) {
@@ -127,15 +170,6 @@ public class PayoutCalculator {
         }
 
         return sum;
-    }
-
-    private double getPayable() {
-        final LocalDate now = LocalDate.now();
-        final String month = now.getYear() + "-" + String.format("%02d", now.getMonthValue());
-        return donationRepository.findByMonth(month)
-                                 .stream()
-                                 .mapToDouble(donation -> getRemainingWorth(donation, LocalDate.now()))
-                                 .sum();
     }
 
     private String getUserName(final Iterable<User> users, final Long userId) {

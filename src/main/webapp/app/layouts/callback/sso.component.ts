@@ -30,6 +30,10 @@ export class SsoComponent implements OnInit {
                                                                name: 'authenticationSuccess', content: 'Sending Authentication Success'
                                                            });
 
+                               if (state.startsWith('wallet-')) {
+                                   localStorage.setItem('brave-bucks-hide-wallet-info', 'yes');
+                               }
+
                                // // previousState was set in the authExpiredInterceptor before being redirected to
                                // login modal. // since login is succesful, go to stored previousState and clear
                                // previousState

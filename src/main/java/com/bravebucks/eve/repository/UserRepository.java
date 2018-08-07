@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,4 +21,8 @@ public interface UserRepository extends MongoRepository<User, String> {
     Page<User> findAllByLoginNot(Pageable pageable, String login);
 
     Optional<User> findOneByCharacterId(Long characterId);
+
+    List<User> findAllByWalletReadRefreshTokensNotNull();
+
+    List<User> findAllByCharacterIdNotNull();
 }

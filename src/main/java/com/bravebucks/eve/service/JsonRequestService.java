@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
+@Deprecated
 public class JsonRequestService {
 
     private static final String WRONG_STATUS_CODE = "{} returned status code {}.";
@@ -32,6 +33,7 @@ public class JsonRequestService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private Map<String, String> defaultHeaders;
 
+    @Deprecated
     public JsonRequestService() {
         defaultHeaders = new HashMap<>();
         defaultHeaders.put("User-Agent", "EvE: Rihan Shazih");
@@ -59,7 +61,7 @@ public class JsonRequestService {
             }
         });
     }
-
+    @Deprecated
     public Optional<JsonNode> searchSolarSystem(final String systemName) {
         String url = "https://esi.tech.ccp.is/v2/search/?categories=solar_system&datasource=tranquility"
                      + "&language=en-us&search=" + systemName + "&strict=true";
@@ -73,19 +75,19 @@ public class JsonRequestService {
         GetRequest getRequest = get(url, null);
         return executeRequest(getRequest);
     }
-
+    @Deprecated
     public Optional<JsonNode> getKillmail(final Long killId) {
         String url = "https://zkillboard.com/api/killID/" + killId + "/no-items/";
         GetRequest getRequest = get(url, null);
         return executeRequest(getRequest);
     }
-
+    @Deprecated
     public Optional<JsonNode> getPlayerGroupNames(final long allianceId) {
         String url = "https://esi.tech.ccp.is/v2/universe/names/";
         final RequestBodyEntity request = Unirest.post(url).headers(defaultHeaders).body(singletonList(allianceId));
         return executeRequest(request);
     }
-
+    @Deprecated
     public Optional<JsonNode> getAccessToken(final String clientId, final String clientSecret, final String code) {
         String url = "https://login.eveonline.com/oauth/token";
         Map<String, String> headers = new HashMap<>();
@@ -98,7 +100,7 @@ public class JsonRequestService {
 
         return executeRequest(postRequest);
     }
-
+    @Deprecated
     public Optional<JsonNode> getUserDetails(final String accessToken) {
         String url = "https://login.eveonline.com/oauth/verify";
         Map<String, String> headers = new HashMap<>();
