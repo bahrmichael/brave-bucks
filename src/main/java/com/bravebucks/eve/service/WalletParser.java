@@ -90,7 +90,11 @@ public class WalletParser {
                         if ("bounty_prizes".equals(walletEntry.getRefType())
                             && rattingEntryRepository.countByJournalId(walletEntry.getId()) == 0) {
 
-                            final int killCount = walletEntry.getReason().split(",").length; // 10016: 1,10019: 2,22823: 1
+                            final String[] killSplit = walletEntry.getReason().split(",");
+                            int killCount = 0;
+                            for (String killCounter : killSplit) {
+                                killCount += Integer.parseInt(killCounter.split(": ")[1]);
+                            }
                             final Integer systemId = walletEntry.getContextId().intValue();
                             final Integer adm = admService.getAdm(systemId);
                             final Instant instant = Instant.parse(walletEntry.getDate());
