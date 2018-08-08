@@ -3,6 +3,8 @@ package com.bravebucks.eve.service;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.bravebucks.eve.DelayService;
 import com.bravebucks.eve.domain.RattingEntry;
@@ -10,6 +12,7 @@ import com.bravebucks.eve.domain.User;
 import com.bravebucks.eve.domain.esi.AccessTokenResponse;
 import com.bravebucks.eve.domain.esi.WalletResponse;
 import com.bravebucks.eve.repository.RattingEntryRepository;
+import com.bravebucks.eve.repository.SolarSystemRepository;
 import com.bravebucks.eve.repository.UserRepository;
 
 import static com.bravebucks.eve.web.rest.UserJWTController.getBasicAuth;
@@ -48,21 +51,27 @@ public class WalletParser {
     private final AdmService admService;
     private final RattingEntryRepository rattingEntryRepository;
     private final DelayService delayService;
+    private final SolarSystemRepository solarSystemRepository;
 
     public WalletParser(final RestTemplate restTemplate,
                         final UserRepository userRepository, final AdmService admService,
                         final RattingEntryRepository rattingEntryRepository,
-                        final DelayService delayService) {
+                        final DelayService delayService,
+                        final SolarSystemRepository solarSystemRepository) {
         this.restTemplate = restTemplate;
         this.userRepository = userRepository;
         this.admService = admService;
         this.rattingEntryRepository = rattingEntryRepository;
         this.delayService = delayService;
+        this.solarSystemRepository = solarSystemRepository;
     }
 
     @Async
     @Scheduled(cron = "0 */10 * * * *")
     public void collectNewJournalEntries() {
+        final Set<Integer> solarSystemIds = solarSystemRepository.findAllByTrackRatting(true).stream()
+                                                              .map(s -> s.getSystemId().intValue())
+                                                              .collect(Collectors.toSet());
         final List<User> users = userRepository.findAllByWalletReadRefreshTokensNotNull();
         for (final User user : users) {
             for (Map.Entry<Integer, String> entry : user.getWalletReadRefreshTokens().entrySet()) {
@@ -75,7 +84,6 @@ public class WalletParser {
 
                     final String accessToken = getAccessTokenWithRefreshToken(entry.getValue(), walletClientId, walletClientSecret);
                     final String walletUri = "https://esi.evetech.net/v4/characters/" + entry.getKey() + "/wallet/journal/";
-
 
                     final ResponseEntity<WalletResponse[]> walletResponse = restTemplate.exchange(walletUri, HttpMethod.GET,
                                                                                                   authorizedRequest(accessToken),
@@ -91,6 +99,9 @@ public class WalletParser {
                             && rattingEntryRepository.countByJournalId(walletEntry.getId()) == 0) {
 
                             final Integer systemId = walletEntry.getContextId().intValue();
+                            if (!solarSystemIds.contains(systemId)) {
+                                continue;
+                            }
                             final Integer adm = admService.getAdm(systemId);
                             if (adm >= 4) {
                                 continue;

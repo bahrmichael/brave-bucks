@@ -80,7 +80,9 @@ public class KillmailPuller {
 
     public void pullKillmails(final Long duration) {
         systems = new ArrayList<>();
-        solarSystemRepository.findAll().stream().mapToLong(SolarSystem::getSystemId).forEach(id -> systems.add(id));
+        solarSystemRepository.findAllByTrackPvp(true).stream()
+                             .mapToLong(SolarSystem::getSystemId)
+                             .forEach(id -> systems.add(id));
 
         userRepository.findAll().stream().filter(user -> user.getCharacterId() != null)
                       .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId(), duration)
