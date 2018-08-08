@@ -27,6 +27,12 @@ public class SolarSystem implements Serializable {
     @Field("region")
     private Region region;
 
+    @Field("track_pvp")
+    private Boolean trackPvp;
+
+    @Field("track_ratting")
+    private Boolean trackRatting;
+
     // jhipster-needle-entity-add-field - Jhipster will add fields here, do not remove
     public String getId() {
         return id;
@@ -34,6 +40,22 @@ public class SolarSystem implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Boolean getTrackPvp() {
+        return trackPvp;
+    }
+
+    public void setTrackPvp(final Boolean trackPvp) {
+        this.trackPvp = trackPvp;
+    }
+
+    public Boolean getTrackRatting() {
+        return trackRatting;
+    }
+
+    public void setTrackRatting(final Boolean trackRatting) {
+        this.trackRatting = trackRatting;
     }
 
     public Long getSystemId() {

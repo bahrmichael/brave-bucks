@@ -59,5 +59,15 @@ export const solarSystemPopupRoute: Routes = [
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'
-    }
+    },
+    {
+        path: 'solar-system/:id/edit',
+        component: SolarSystemPopupComponent,
+        data: {
+            authorities: ['ROLE_MANAGER'],
+            pageTitle: 'SolarSystems'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    },
 ];

@@ -11,6 +11,8 @@ export class SolarSystem implements BaseEntity {
         public systemId?: number,
         public systemName?: string,
         public region?: Region,
+        public trackPvp?: boolean,
+        public trackRatting?: boolean,
     ) {
     }
 }

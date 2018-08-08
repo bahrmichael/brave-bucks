@@ -18,6 +18,8 @@
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="systemName"><span>System Name</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="region"><span>Region</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="trackPvp"><span>Track Pvp</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="trackRatting"><span>Track Ratting</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
@@ -25,7 +27,16 @@
             <tr *ngFor="let solarSystem of solarSystems ;trackBy: trackId">
                 <td>{{solarSystem.systemName}}</td>
                 <td>{{solarSystem.region}}</td>
+                <td>{{solarSystem.trackPvp}}</td>
+                <td>{{solarSystem.trackRatting}}</td>
                 <td class="text-right">
+                    <button type="submit"
+                            [routerLink]="['/', { outlets: { popup: 'solar-system/'+ solarSystem.id + '/edit'} }]"
+                            replaceUrl="true"
+                            class="btn btn-primary btn-sm">
+                        <span class="fa fa-pencil"></span>
+                        <span class="hidden-md-down">Edit</span>
+                    </button>
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'solar-system/'+ solarSystem.id + '/delete'} }]"
