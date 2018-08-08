@@ -82,8 +82,8 @@ public class PayoutCalculator {
 
 //        final List<User> rattingUsers = users.stream().filter(user -> user.getWalletReadRefreshTokens() != null).collect(toList());
 //        final List<RattingEntry> pendingRattingEntries = rattingEntryRepository.findByProcessed(false);
-//        pendingRattingEntries.forEach(e -> e.setProcessed(true));
 //        transactions.addAll(getRattingTransactions(rattingUsers, pendingRattingEntries));
+//        pendingRattingEntries.forEach(e -> e.setProcessed(true));
 //
 //        rattingEntryRepository.save(pendingRattingEntries);
         killmailRepository.save(pendingKillmails);
@@ -146,7 +146,8 @@ public class PayoutCalculator {
 
         long sum = 0;
         for (RattingEntry pendingRattingEntry : pendingRattingEntries) {
-            if (characterIds.contains(pendingRattingEntry.getCharacterId())) {
+            if (characterIds.contains(pendingRattingEntry.getCharacterId())
+                    && pendingRattingEntry.getAdm() <= 3) {
                 sum += pendingRattingEntry.getKillCount();
             }
         }
