@@ -90,13 +90,17 @@ public class WalletParser {
                         if ("bounty_prizes".equals(walletEntry.getRefType())
                             && rattingEntryRepository.countByJournalId(walletEntry.getId()) == 0) {
 
+                            final Integer systemId = walletEntry.getContextId().intValue();
+                            final Integer adm = admService.getAdm(systemId);
+                            if (adm >= 4) {
+                                continue;
+                            }
+
                             final String[] killSplit = walletEntry.getReason().split(",");
                             int killCount = 0;
                             for (String killCounter : killSplit) {
                                 killCount += Integer.parseInt(killCounter.split(": ")[1]);
                             }
-                            final Integer systemId = walletEntry.getContextId().intValue();
-                            final Integer adm = admService.getAdm(systemId);
                             final Instant instant = Instant.parse(walletEntry.getDate());
 
                             final RattingEntry rattingEntry = new RattingEntry(walletEntry.getId(), user.getId(),
