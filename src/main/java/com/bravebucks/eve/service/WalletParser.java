@@ -73,7 +73,7 @@ public class WalletParser {
                                                                  .map(s -> s.getSystemId().intValue())
                                                                  .collect(Collectors.toSet());
 
-        final List<EveCharacter> characters = characterRepository.findByWalletRefreshTokenNotNull();
+        final List<EveCharacter> characters = characterRepository.findByWalletReadRefreshTokenNotNull();
 
         for (EveCharacter character : characters) {
             final String refreshToken = character.getWalletReadRefreshToken();
@@ -130,6 +130,11 @@ public class WalletParser {
             } catch (final HttpServerErrorException | HttpClientErrorException exception) {
                 log.info("No new transactions for {} (TQ status is {}): {}", characterId, exception.getStatusCode(),
                          exception.getMessage());
+                if ("invalid_token".equals(exception.getStatusText())) {
+                    character.setWalletReadRefreshToken(null);
+                    characterRepository.save(character);
+                    log.info("Deactivated tracking for {} due to invalid refresh token.", character.getId());
+                }
             }
         }
         final long end = System.currentTimeMillis();
