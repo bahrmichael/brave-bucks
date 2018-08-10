@@ -66,7 +66,7 @@ public class WalletParser {
     }
 
     @Async
-    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(cron = "0 */20 * * * *")
     public void collectNewJournalEntries() {
         final long start = System.currentTimeMillis();
         final Set<Integer> solarSystemIds = solarSystemRepository.findAllByTrackRatting(true).stream()
