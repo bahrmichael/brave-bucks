@@ -108,6 +108,7 @@ public class WalletParser {
                             continue;
                         }
                         final Integer adm = admService.getAdm(systemId);
+                        // this will let the adm get up to 3.9 before skipping the system
                         if (adm >= 4) {
                             continue;
                         }
