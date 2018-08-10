@@ -7,6 +7,7 @@ import java.util.Collections;
 
 import com.bravebucks.eve.domain.Donation;
 import com.bravebucks.eve.domain.User;
+import com.bravebucks.eve.repository.CharacterRepository;
 import com.bravebucks.eve.repository.DonationRepository;
 import com.bravebucks.eve.repository.RattingEntryRepository;
 import com.bravebucks.eve.repository.UserRepository;
@@ -29,8 +30,9 @@ public class PayoutCalculatorTest {
     private DonationRepository donationRepo = mock(DonationRepository.class);
     private TransactionRepository transactionRepo = mock(TransactionRepository.class);
     private RattingEntryRepository rattingEntryRepository = mock(RattingEntryRepository.class);
+    private CharacterRepository characterRepository = mock(CharacterRepository.class);
     private PayoutCalculator sut = new PayoutCalculator(killmailRepo, userRepo, transactionRepo,
-                                                        rattingEntryRepository, null);
+                                                        rattingEntryRepository, characterRepository, null);
 
     @Test
     public void calculatePayouts() {

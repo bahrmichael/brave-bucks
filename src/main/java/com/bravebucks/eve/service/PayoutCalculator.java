@@ -11,14 +11,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 import javax.annotation.PostConstruct;
 
 import com.bravebucks.eve.domain.Donation;
+import com.bravebucks.eve.domain.EveCharacter;
 import com.bravebucks.eve.domain.Killmail;
 import com.bravebucks.eve.domain.RattingEntry;
 import com.bravebucks.eve.domain.Transaction;
 import com.bravebucks.eve.domain.User;
+import com.bravebucks.eve.repository.CharacterRepository;
 import com.bravebucks.eve.repository.KillmailRepository;
 import com.bravebucks.eve.repository.RattingEntryRepository;
 import com.bravebucks.eve.repository.TransactionRepository;
@@ -45,6 +51,7 @@ public class PayoutCalculator {
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
     private final RattingEntryRepository rattingEntryRepository;
+    private final CharacterRepository characterRepository;
     private final Environment env;
 
     @Autowired
@@ -52,11 +59,13 @@ public class PayoutCalculator {
                             final UserRepository userRepository,
                             final TransactionRepository transactionRepository,
                             final RattingEntryRepository rattingEntryRepository,
+                            final CharacterRepository characterRepository,
                             final Environment env) {
         this.killmailRepository = killmailRepository;
         this.userRepository = userRepository;
         this.rattingEntryRepository = rattingEntryRepository;
         this.transactionRepository = transactionRepository;
+        this.characterRepository = characterRepository;
         this.env = env;
     }
 
@@ -80,12 +89,13 @@ public class PayoutCalculator {
         final Collection<Transaction> transactions = getKillmailTransactions(users, userIds, pendingKillmails);
         pendingKillmails.forEach(km -> km.setPayoutCalculated(true));
 
-//        final List<User> rattingUsers = users.stream().filter(user -> user.getWalletReadRefreshTokens() != null).collect(toList());
-//        final List<RattingEntry> pendingRattingEntries = rattingEntryRepository.findByProcessed(false);
-//        transactions.addAll(getRattingTransactions(rattingUsers, pendingRattingEntries));
-//        pendingRattingEntries.forEach(e -> e.setProcessed(true));
-//
-//        rattingEntryRepository.save(pendingRattingEntries);
+        final Set<String> rattingUserIds = characterRepository.findByWalletReadRefreshTokenNotNull().stream().map(EveCharacter::getOwningUser).collect(Collectors.toSet());
+        final List<User> rattingUsers = users.stream().filter(user -> rattingUserIds.contains(user.getId())).collect(toList());
+        final List<RattingEntry> pendingRattingEntries = rattingEntryRepository.findByProcessed(false);
+        transactions.addAll(getRattingTransactions(rattingUsers, pendingRattingEntries));
+        pendingRattingEntries.forEach(e -> e.setProcessed(true));
+
+        rattingEntryRepository.save(pendingRattingEntries);
         killmailRepository.save(pendingKillmails);
         transactionRepository.save(transactions);
     }
