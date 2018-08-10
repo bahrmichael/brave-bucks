@@ -113,6 +113,7 @@ public class PayoutCalculator {
     private Collection<Transaction> getKillmailTransactions(final List<User> users, final List<Long> userIds,
                                                             final List<Killmail> pendingKillmails) {
         final long totalPoints = getTotalPoints(pendingKillmails, userIds);
+        final long todayBudget = KILL_BUDGET / LocalDate.now().getMonth().maxLength();
 
         final Collection<Transaction> transactions = new ArrayList<>();
 
@@ -122,7 +123,7 @@ public class PayoutCalculator {
                 continue;
             }
             final double factor = (double) pointsForUser / totalPoints;
-            final double userPayable = KILL_BUDGET * factor;
+            final double userPayable = todayBudget * factor;
             final String user = getUserName(users, userId);
             transactions.add(new Transaction(user, userPayable, KILL));
         }
