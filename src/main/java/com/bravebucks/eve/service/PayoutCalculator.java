@@ -94,6 +94,7 @@ public class PayoutCalculator {
                                                      final List<RattingEntry> pendingRattingEntries) {
         final List<Transaction> transactions = new ArrayList<>();
         final long totalPoints = getTotalRattingPoints(pendingRattingEntries, rattingUsers);
+        final long todayBudget = KILL_BUDGET / LocalDate.now().getMonth().maxLength();
 
         for (User user : rattingUsers) {
             final long pointsForUser = getRattingPointsForUser(pendingRattingEntries, user);
@@ -102,7 +103,7 @@ public class PayoutCalculator {
             }
 
             final double factor = (double) pointsForUser / totalPoints;
-            final double userPayable = RATTING_BUDGET * factor;
+            final double userPayable = todayBudget * factor;
             final String userName = getUserName(rattingUsers, user.getCharacterId());
             transactions.add(new Transaction(userName, userPayable, RATTING));
         }
