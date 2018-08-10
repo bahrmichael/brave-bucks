@@ -42,10 +42,12 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @JsonIgnore
     private Map<Integer, String> walletReadRefreshTokens = new HashMap<>();
 
+    @Deprecated
     public Map<Integer, String> getWalletReadRefreshTokens() {
         return walletReadRefreshTokens;
     }
 
+    @Deprecated
     public void setWalletReadRefreshTokens(final Map<Integer, String> walletReadRefreshTokens) {
         this.walletReadRefreshTokens = walletReadRefreshTokens;
     }
