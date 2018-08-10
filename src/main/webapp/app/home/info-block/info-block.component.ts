@@ -13,6 +13,7 @@ export class InfoBlockComponent implements OnInit {
     systemsCatch: SolarSystem[];
     systemsImpass: SolarSystem[];
     walletUrl: string;
+    characterNames: string[];
 
     constructor(private configService: ConfigService, private principal: Principal, private http: Http) {
     }
@@ -27,6 +28,17 @@ export class InfoBlockComponent implements OnInit {
         });
         this.http.get('/api/solar-systems/region/IMPASS').subscribe((data) => {
             this.systemsImpass = data.json();
+        });
+        this.http.get('/api/characters').subscribe((data) => {
+            this.characterNames = data.json();
+        });
+    }
+
+    revokeCharacter(characterName: string) {
+        this.http.delete('/api/characters/' + characterName).subscribe((data) => {
+            this.http.get('/api/characters').subscribe((charNames) => {
+                this.characterNames = charNames.json();
+            });
         });
     }
 

@@ -1,3 +1,11 @@
+<style>
+    .content-box {
+        padding-left  : 30px;
+        padding-right : 30px;
+        padding-top   : 10px;
+    }
+</style>
+
 <div class="row">
     <div class="col-md-12">
         <p>We want <b>you</b> to make our space safer. Help the industry grow and the ratters raise the war chest by doing what you do best: <b>Shooting enemies and making dank ticks!</b></p>
@@ -34,7 +42,6 @@
                         <p>To see that you are ratting in the targeted systems, we need to track your wallet
                            journal. There we find information on how many rats you killed and where you did
                            that. The more rats you kill (in number of hulls, not ISK bounties), the better!</p>
-                        <p>Add your character(s): <a *ngIf="walletUrl" class="btn btn-primary" href="{{walletUrl}}">Grant wallet read access</a></P>
                         Maps (target systems are circled black):
                         <ul>
                             <li>
@@ -44,7 +51,17 @@
                                 <a *ngIf="systemsImpass" target="_blank" href="{{getDotlanLink('Impass', false, true)}}">Impass</a>
                             </li>
                         </ul>
-                        <div class="alert alert-warning">This is feature is still in the beta stage and unexpected things may happen. We will add an overview where you can revoke the read access.</div>
+                        <p>Add your character(s): <a *ngIf="walletUrl" class="btn btn-primary" href="{{walletUrl}}">Grant wallet read access</a></P>
+                        <table class="table table-condensed table-striped" *ngIf="characterNames && characterNames.length">
+                            <tr>
+                                <th>Tracked Characters</th>
+                                <th></th>
+                            </tr>
+                            <tr *ngFor="let c of characterNames">
+                                <td>{{c}}</td>
+                                <td><button (click)="revokeCharacter(c)" class="btn btn-danger">Revoke</button></td>
+                            </tr>
+                        </table>
                     </div>
                 </ng-template>
             </ngb-tab>

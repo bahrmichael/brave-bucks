@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.bravebucks.eve.domain.EveCharacter;
 import com.bravebucks.eve.domain.User;
 import com.bravebucks.eve.domain.esi.AuthVerificationResponse;
 import com.bravebucks.eve.domain.esi.CharacterDetailsResponse;
+import com.bravebucks.eve.repository.CharacterRepository;
 import com.bravebucks.eve.repository.UserRepository;
 import com.bravebucks.eve.security.jwt.TokenProvider;
 import com.bravebucks.eve.service.UserService;
@@ -66,13 +68,16 @@ public class UserJWTController {
     private final UserRepository userRepository;
     private final UserService userService;
     private final RestTemplate restTemplate;
+    private final CharacterRepository characterRepository;
 
     public UserJWTController(TokenProvider tokenProvider, UserRepository userRepository, UserService userService,
-                             final RestTemplate restTemplate) {
+                             final RestTemplate restTemplate,
+                             final CharacterRepository characterRepository) {
         this.tokenProvider = tokenProvider;
         this.userRepository = userRepository;
         this.userService = userService;
         this.restTemplate = restTemplate;
+        this.characterRepository = characterRepository;
     }
 
     @GetMapping("/authenticate/sso")
@@ -91,9 +96,11 @@ public class UserJWTController {
 
             final AuthVerificationResponse authResponse = verifyAuthentication(code, state, walletClientId, walletClientSecret);
             final CharacterDetailsResponse charDetails = getCharacterDetails(authResponse.getAccessToken());
+
+            final EveCharacter character = new EveCharacter(charDetails.getCharacterId(), charDetails.getCharacterName(),
+                                                    authResponse.getRefreshToken(), targetUserId);
+            characterRepository.save(character);
             user = userRepository.findOne(targetUserId);
-            user.getWalletReadRefreshTokens().put(charDetails.getCharacterId(), authResponse.getRefreshToken());
-            userRepository.save(user);
         } else {
             final AuthVerificationResponse authResponse = verifyAuthentication(code, state, clientId, clientSecret);
             final CharacterDetailsResponse charDetails = getCharacterDetails(authResponse.getAccessToken());

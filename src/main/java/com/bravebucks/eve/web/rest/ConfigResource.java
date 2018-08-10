@@ -20,7 +20,6 @@ public class ConfigResource {
         return SSO_URL;
     }
 
-
     @GetMapping(path = "/walleturl")
     public String getWalletUrl() {
         return WALLET_URL;
