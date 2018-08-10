@@ -108,7 +108,7 @@ public class WalletParser {
                             continue;
                         }
                         final Integer adm = admService.getAdm(systemId);
-                        if (adm >= 4) {
+                        if (adm > 4) {
                             continue;
                         }
 
