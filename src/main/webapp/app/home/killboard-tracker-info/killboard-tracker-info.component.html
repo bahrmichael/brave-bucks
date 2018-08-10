@@ -1,0 +1,12 @@
+<div *ngIf="isFirstLogin" class="alert alert-success">
+    <div class="row">
+        <div class="col-md-8">
+            You have been added to the tracker that will pull from
+            <a target="_blank" href="https://zkillboard.com">zkillboard</a>
+            every 30 minutes. Note that kills may take up to 2 hours to appear.
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-success float-right" (click)="setFirstLogin()">Got it!</button>
+        </div>
+    </div>
+</div>

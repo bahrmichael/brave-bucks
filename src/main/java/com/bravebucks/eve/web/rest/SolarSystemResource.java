@@ -8,6 +8,7 @@ import com.bravebucks.eve.domain.SolarSystem;
 import com.bravebucks.eve.repository.SolarSystemRepository;
 import com.bravebucks.eve.web.rest.util.HeaderUtil;
 import com.bravebucks.eve.web.rest.util.PaginationUtil;
+import com.codahale.metrics.annotation.Timed;
 import com.mashape.unirest.http.JsonNode;
 
 import io.github.jhipster.web.util.ResponseUtil;
@@ -22,7 +23,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -30,8 +30,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-
-import javax.websocket.server.PathParam;
 
 /**
  * REST controller for managing SolarSystem.
@@ -83,6 +81,28 @@ public class SolarSystemResource {
         }
         return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "notresolved",
                                                                                  "The system could not be found. Is there a typo?")).body(null);
+    }
+
+    /**
+     * PUT  /solar-systems : Updates an existing solarSystem.
+     *
+     * @param solarSystem the solarSystem to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated solarSystem,
+     * or with status 400 (Bad Request) if the solarSystem is not valid,
+     * or with status 500 (Internal Server Error) if the solarSystem couldn't be updated
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @Secured(AuthoritiesConstants.MANAGER)
+    @PutMapping("/solar-systems")
+    public ResponseEntity<SolarSystem> updateSolarSystem(@RequestBody SolarSystem solarSystem) throws URISyntaxException {
+        log.debug("REST request to update SolarSystem : {}", solarSystem);
+        if (solarSystem.getId() == null) {
+            return createSolarSystem(solarSystem);
+        }
+        SolarSystem result = solarSystemRepository.save(solarSystem);
+        return ResponseEntity.ok()
+                             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, solarSystem.getId()))
+                             .body(result);
     }
 
     @Secured(AuthoritiesConstants.USER)

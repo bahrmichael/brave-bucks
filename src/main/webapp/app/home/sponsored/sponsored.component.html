@@ -1,0 +1,16 @@
+<div class="row" *ngIf="ad">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                Sponsored
+                <a href="#" routerLink="request-ad" class="pull-right">Submit an Ad</a>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">{{ad.service}}</h4>
+                <p class="card-text">{{ad.description}}</p>
+                <a *ngIf="ad.link" href="{{ad.link}}" class="btn btn-primary" target="_blank">Visit</a>
+            </div>
+        </div>
+    </div>
+</div>
+<br *ngIf="ad"/>

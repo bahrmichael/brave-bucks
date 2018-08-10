@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-md-12">
+        <h2>Payouts</h2>
+        <span *ngIf="monthAvailable">Available this month: {{monthAvailable | number:'1.0-0'}} ISK. Killmails are converted to ISK during downtime.</span>
+        <div *ngIf="payoutRequested" class="alert alert-success">Payout requested!</div>
+        <div class="input-group">
+            <div class="progress" style="width: 100%;">
+                <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="height: 40px" [style.width]="getBarWidth(potentialPayout)+'%'">
+                    <div *ngIf="potentialPayout >= payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</div>
+                </div>
+                <span *ngIf="potentialPayout < payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem; padding-left: 10px">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>
+            </div>
+            <button *ngIf="potentialPayout >= payoutThreshold" class="btn btn-primary" (click)="requestPayout()">Request Payout</button>
+        </div>
+        <p *ngIf="potentialPayout < payoutThreshold" style="text-align: center">{{payoutThreshold - potentialPayout | number:'1.0-0'}} ISK until you can request a payout</p>
+        <br/>
+    </div>
+</div>

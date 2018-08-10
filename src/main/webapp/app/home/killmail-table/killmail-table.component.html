@@ -1,0 +1,37 @@
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>Your Recent Defense Kills</h2>
+    </div>
+    <div class="col-md-6">
+        <div class="input-group">
+            <input #killmailLink type="text" class="form-control" placeholder="Add a zkillboard.com link ..." aria-label="Add a zkillboard.com link..."
+                   pattern="https://zkillboard.com/kill/[0-9]+/">
+            <span class="input-group-btn">
+                        <button class="btn btn-secondary" type="button" (click)="submitKillmail(killmailLink.value)">Add!</button>
+                    </span>
+        </div>
+        <div class="alert alert-success" *ngIf="killmailAddedManually">Killmail added! {{killmailAddedText}}</div>
+        <div class="alert alert-warning" *ngIf="killmailAlreadyExists">This killmail already exists. Please refresh your browser!</div>
+        <div class="alert alert-danger" *ngIf="killmailFailedMessage">{{killmailFailedMessage}}</div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-info" *ngIf="!killmails || !killmails.length">
+            Undock and hunt to get your first kills! Be in standing fleet and mumble to find targets.
+        </div>
+        <table class="table table-condensed table-striped" *ngIf="killmails && killmails.length">
+            <tr>
+                <th>Killmail</th>
+                <th>Kill Time</th>
+                <th>Victim Alliance</th>
+            </tr>
+            <tr *ngFor="let killmail of killmails">
+                <td><a target="_blank" href="https://zkillboard.com/kill/{{killmail.killmailId}}"><img src="https://image.eveonline.com/Type/{{killmail.shipTypeId}}_32.png" /><span class="d-none d-sm-inline-block"> {{killmail.killmailId}}</span></a></td>
+                <td>{{killmail.killTime | date:'dd.MM.yy HH:mm'}}</td>
+                <td>{{killmail.victimAlliance}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
