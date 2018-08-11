@@ -76,20 +76,6 @@ public class PayoutCalculator {
     }
 
     @Async
-    @Scheduled(fixedDelay = 600_000L)
-    public void tempCalcRattings() {
-
-        final List<User> users = userRepository.findAllByCharacterIdNotNull();
-
-        final Set<String> rattingUserIds = characterRepository.findByWalletReadRefreshTokenNotNull().stream().map(EveCharacter::getOwningUser).collect(Collectors.toSet());
-        final List<User> rattingUsers = users.stream().filter(user -> rattingUserIds.contains(user.getId())).collect(toList());
-        final List<RattingEntry> pendingRattingEntries = rattingEntryRepository.findByProcessed(true);
-        final Collection<Transaction> transactions = getRattingTransactions(rattingUsers, pendingRattingEntries);
-
-        transactionRepository.save(transactions);
-    }
-
-    @Async
     @Timed
     @Scheduled(cron = "0 0 11 * * *")
     public void calculatePayouts() {
