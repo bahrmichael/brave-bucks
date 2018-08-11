@@ -9,11 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import static java.util.stream.Collectors.toList;
 
 import javax.annotation.PostConstruct;
@@ -78,6 +76,20 @@ public class PayoutCalculator {
     }
 
     @Async
+    @Scheduled(fixedDelay = 600_000L)
+    public void tempCalcRattings() {
+
+        final List<User> users = userRepository.findAllByCharacterIdNotNull();
+
+        final Set<String> rattingUserIds = characterRepository.findByWalletReadRefreshTokenNotNull().stream().map(EveCharacter::getOwningUser).collect(Collectors.toSet());
+        final List<User> rattingUsers = users.stream().filter(user -> rattingUserIds.contains(user.getId())).collect(toList());
+        final List<RattingEntry> pendingRattingEntries = rattingEntryRepository.findByProcessed(true);
+        final Collection<Transaction> transactions = getRattingTransactions(rattingUsers, pendingRattingEntries);
+
+        transactionRepository.save(transactions);
+    }
+
+    @Async
     @Timed
     @Scheduled(cron = "0 0 11 * * *")
     public void calculatePayouts() {
@@ -104,7 +116,7 @@ public class PayoutCalculator {
                                                      final List<RattingEntry> pendingRattingEntries) {
         final List<Transaction> transactions = new ArrayList<>();
         final long totalPoints = getTotalRattingPoints(pendingRattingEntries, rattingUsers);
-        final long todayBudget = KILL_BUDGET / LocalDate.now().getMonth().maxLength();
+        final long todayBudget = RATTING_BUDGET / LocalDate.now().getMonth().maxLength();
 
         for (User user : rattingUsers) {
             final long pointsForUser = getRattingPointsForUser(pendingRattingEntries, user);
@@ -151,10 +163,7 @@ public class PayoutCalculator {
 
     private long getRattingPointsForUser(final List<RattingEntry> pendingRattingEntries,
                                          final User user) {
-        List<Integer> characterIds = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry : user.getWalletReadRefreshTokens().entrySet()) {
-            characterIds.add(entry.getKey());
-        }
+        List<Integer> characterIds = characterRepository.findByOwningUser(user.getId()).stream().map(EveCharacter::getId).collect(toList());
 
         long sum = 0;
         for (RattingEntry pendingRattingEntry : pendingRattingEntries) {
