@@ -35,7 +35,10 @@ export class PayoutProgressComponent implements OnInit {
         this.http.put('/api/payouts/trigger', "").subscribe((data) => {
             this.potentialPayout = 0;
             this.payoutRequested = true;
-        }, (err) => console.log(err));
+        }, (err) => {
+            console.log(err);
+            alert("Payout failed. Are you still in the alliance?")
+        });
     }
 
 }

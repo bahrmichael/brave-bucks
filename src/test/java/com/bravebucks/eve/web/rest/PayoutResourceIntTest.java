@@ -82,7 +82,8 @@ public class PayoutResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final PayoutResource payoutResource = new PayoutResource(payoutRepository, transactionRepository);
+        final PayoutResource payoutResource = new PayoutResource(payoutRepository, transactionRepository,
+                                                                 userRepository);
         restPayoutMockMvc = MockMvcBuilders.standaloneSetup(payoutResource)
                                            .setCustomArgumentResolvers(pageableArgumentResolver)
                                            .setControllerAdvice(exceptionTranslator)

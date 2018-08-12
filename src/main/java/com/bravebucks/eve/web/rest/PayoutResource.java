@@ -1,9 +1,11 @@
 package com.bravebucks.eve.web.rest;
 
 import com.bravebucks.eve.domain.Transaction;
+import com.bravebucks.eve.domain.User;
 import com.bravebucks.eve.domain.enumeration.PayoutStatus;
 import com.bravebucks.eve.domain.enumeration.TransactionType;
 import com.bravebucks.eve.repository.TransactionRepository;
+import com.bravebucks.eve.repository.UserRepository;
 import com.bravebucks.eve.security.AuthoritiesConstants;
 import com.bravebucks.eve.security.SecurityUtils;
 import com.codahale.metrics.annotation.Timed;
@@ -31,7 +33,10 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+
+import static com.bravebucks.eve.domain.Constants.ALLIANCE_ID;
 
 /**
  * REST controller for managing Payout.
@@ -40,18 +45,21 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class PayoutResource {
 
-    public static final double PAYOUT_THRESHOLD = 100000000.0;
+    private static final double PAYOUT_THRESHOLD = 100000000.0;
     private final Logger log = LoggerFactory.getLogger(PayoutResource.class);
 
     private static final String ENTITY_NAME = "payout";
 
     private final PayoutRepository payoutRepository;
     private final TransactionRepository transactionRepository;
+    private final UserRepository userRepository;
 
     public PayoutResource(PayoutRepository payoutRepository,
-                          final TransactionRepository transactionRepository) {
+                          final TransactionRepository transactionRepository,
+                          final UserRepository userRepository) {
         this.payoutRepository = payoutRepository;
         this.transactionRepository = transactionRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -125,16 +133,22 @@ public class PayoutResource {
     @Timed
     @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<Payout> triggerPayoutRequest() {
-        double sum = transactionRepository.findAllByUser(SecurityUtils.getCurrentUserLogin()).stream()
+        final String login = SecurityUtils.getCurrentUserLogin();
+        final Optional<User> user = userRepository.findOneByLogin(login);
+        if (!user.isPresent() || user.get().getAllianceId() != ALLIANCE_ID) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        double sum = transactionRepository.findAllByUser(login).stream()
                                           .mapToDouble(Transaction::getAmount).sum();
-        sum -= payoutRepository.findAllByUserAndStatus(SecurityUtils.getCurrentUserLogin(), PayoutStatus.REQUESTED)
+        sum -= payoutRepository.findAllByUserAndStatus(login, PayoutStatus.REQUESTED)
                                .stream().mapToDouble(Payout::getAmount).sum();
 
         if (sum < PAYOUT_THRESHOLD) {
             return ResponseEntity.status(412).headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "thresholdnotreached", "Payouts can only be requested from " + PAYOUT_THRESHOLD + " ISK.")).body(null);
         }
 
-        final Payout payout = new Payout(SecurityUtils.getCurrentUserLogin(), sum, SecurityUtils.getCurrentUserLogin(), PayoutStatus.REQUESTED, null);
+        final Payout payout = new Payout(login, sum, login, PayoutStatus.REQUESTED, null);
         payoutRepository.save(payout);
 
         return ResponseEntity.ok().build();
