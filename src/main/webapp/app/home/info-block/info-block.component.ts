@@ -57,7 +57,11 @@ export class InfoBlockComponent implements OnInit {
                 }
             });
         }
-        return "http://evemaps.dotlan.net/map/" + region + '/' + systemNames.join();
+        let url = "http://evemaps.dotlan.net/map/" + region + '/' + systemNames.join();
+        if (isRatting) {
+            url += "#adm";
+        }
+        return url;
     }
 
 }
