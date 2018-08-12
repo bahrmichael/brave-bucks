@@ -1,0 +1,13 @@
+<div class="d-none d-lg-block">
+    <h3 *ngIf="highscore && highscore.length">Top 10 ADM Boosters</h3>
+    <table class="table table-condensed table-striped" *ngIf="highscore && highscore.length">
+        <tr>
+            <th>Character</th>
+            <th>ISK (30 days)</th>
+        </tr>
+        <tr *ngFor="let entry of highscore">
+            <td>{{entry.name}}</td>
+            <td>{{entry.amount | number:'1.0-0'}} ISK</td>
+        </tr>
+    </table>
+</div>

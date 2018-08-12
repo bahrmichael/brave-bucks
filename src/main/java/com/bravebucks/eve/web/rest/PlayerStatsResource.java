@@ -2,14 +2,15 @@ package com.bravebucks.eve.web.rest;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.bravebucks.eve.domain.Donation;
+import com.bravebucks.eve.domain.HighscoreEntry;
 import com.bravebucks.eve.domain.Killmail;
 import com.bravebucks.eve.domain.Payout;
 import com.bravebucks.eve.domain.Transaction;
@@ -22,7 +23,6 @@ import com.bravebucks.eve.repository.TransactionRepository;
 import com.bravebucks.eve.repository.UserRepository;
 import com.bravebucks.eve.security.AuthoritiesConstants;
 import com.bravebucks.eve.security.SecurityUtils;
-import com.bravebucks.eve.domain.HighscoreEntry;
 import com.bravebucks.eve.web.dto.KillmailDto;
 import com.codahale.metrics.annotation.Timed;
 import static com.bravebucks.eve.domain.enumeration.PayoutStatus.REQUESTED;
@@ -33,7 +33,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
@@ -43,6 +42,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
@@ -79,11 +79,14 @@ public class PlayerStatsResource {
         this.mongoTemplate = mongoTemplate;
     }
 
-    @GetMapping(path = "/stats/highscore")
-    public ResponseEntity<List<HighscoreEntry>> getHighscore() {
+    @GetMapping(path = "/stats/highscore/{type}")
+    public ResponseEntity<List<HighscoreEntry>> getHighscore(@PathVariable("type") final TransactionType type) {
+        if (!Arrays.asList(TransactionType.KILL, TransactionType.RATTING).contains(type)) {
+            return ResponseEntity.status(403).build();
+        }
         Date date = Date.from(Instant.now().minus(30, ChronoUnit.DAYS));
         final MatchOperation filterByInstant = match(new Criteria("instant").gte(date));
-        final MatchOperation filterByType = match(new Criteria("type").is(TransactionType.KILL.name()));
+        final MatchOperation filterByType = match(new Criteria("type").is(type.name()));
         final GroupOperation groupByStateAndSumPop = group("user").sum("amount").as("amount");
         final SortOperation sortByPopDesc = sort(new Sort(Sort.Direction.DESC, "amount"));
         final ProjectionOperation project = project().andExpression("_id").as("name")

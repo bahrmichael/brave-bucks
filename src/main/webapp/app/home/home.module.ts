@@ -13,6 +13,7 @@ import { KillboardTrackerInfoComponent } from './killboard-tracker-info/killboar
 import { WalletTrackerInfoComponent } from './wallet-tracker-info/wallet-tracker-info.component';
 import { PayoutProgressComponent } from './payout-progress/payout-progress.component';
 import { InfoBlockComponent } from './info-block/info-block.component';
+import {RatterHighscoreComponent} from "./ratter-highscore/ratter-highscore.component";
 
 @NgModule({
     imports: [
@@ -25,6 +26,7 @@ import { InfoBlockComponent } from './info-block/info-block.component';
         KillmailTableComponent,
         ManagerOverviewComponent,
         HunterHighscoreComponent,
+        RatterHighscoreComponent,
         IntroComponent,
         KillboardTrackerInfoComponent,
         WalletTrackerInfoComponent,
