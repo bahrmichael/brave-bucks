@@ -31,7 +31,7 @@ public class AllianceParser {
     }
 
     @Async
-    @Scheduled(cron = "0 0 9 * * *")
+    @Scheduled(cron = "0 30 9 * * *")
     @Timed
     public void updateAlliances() {
         userRepository.findAll().forEach(user -> {
