@@ -13,6 +13,7 @@ import com.bravebucks.eve.domain.SolarSystem;
 import com.bravebucks.eve.repository.KillmailRepository;
 import com.bravebucks.eve.repository.SolarSystemRepository;
 import com.mashape.unirest.http.JsonNode;
+import static com.bravebucks.eve.domain.Constants.ALLIANCE_ID;
 import static com.bravebucks.eve.service.KillmailPuller.HOUR;
 
 import org.junit.Test;
@@ -133,6 +134,7 @@ public class KillmailPullerTest {
     public void pullKillmails_requestReturnsNothing_doesNothing() throws Exception {
         User user = new User();
         user.setCharacterId(2L);
+        user.setAllianceId(ALLIANCE_ID);
         when(userRepo.findAll()).thenReturn(singletonList(user));
         when(requestService.getKillmails(2L, 1L)).thenReturn(Optional.empty());
 
@@ -145,6 +147,7 @@ public class KillmailPullerTest {
     public void pullKillmails_requestReturnsEmptyArray_doesntSaveAny() throws Exception {
         User user = new User();
         user.setCharacterId(2L);
+        user.setAllianceId(ALLIANCE_ID);
         when(userRepo.findAll()).thenReturn(singletonList(user));
         when(requestService.getKillmails(2L, 1L)).thenReturn(Optional.of(new JsonNode("[]")));
 
@@ -157,6 +160,7 @@ public class KillmailPullerTest {
     public void pullKillmails_requestReturnsSomething_doesSave() {
         User user = new User();
         user.setCharacterId(2L);
+        user.setAllianceId(ALLIANCE_ID);
         when(userRepo.findAll()).thenReturn(singletonList(user));
         when(requestService.getKillmails(2L, 1L)).thenReturn(Optional.of(new JsonNode("[{}]")));
         when(sut.filterKillmails(emptyList())).thenReturn(emptyList());
