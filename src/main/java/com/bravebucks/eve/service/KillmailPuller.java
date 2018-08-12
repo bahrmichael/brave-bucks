@@ -14,6 +14,8 @@ import com.bravebucks.eve.domain.SolarSystem;
 import com.bravebucks.eve.repository.KillmailRepository;
 import com.codahale.metrics.annotation.Timed;
 
+import static com.bravebucks.eve.domain.Constants.ALLIANCE_ID;
+
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +86,9 @@ public class KillmailPuller {
                              .mapToLong(SolarSystem::getSystemId)
                              .forEach(id -> systems.add(id));
 
-        userRepository.findAll().stream().filter(user -> user.getCharacterId() != null)
+        userRepository.findAll().stream()
+                      .filter(user -> user.getCharacterId() != null)
+                      .filter(user -> user.getAllianceId() == ALLIANCE_ID)
                       .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId(), duration)
                       .ifPresent(jsonBody -> {
                           final JSONArray array = jsonBody.getArray();

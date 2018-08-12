@@ -25,4 +25,6 @@ public interface UserRepository extends MongoRepository<User, String> {
     List<User> findAllByWalletReadRefreshTokensNotNull();
 
     List<User> findAllByCharacterIdNotNull();
+
+    List<User> findAllByCharacterIdNotNullAndAllianceId(int allianceId);
 }

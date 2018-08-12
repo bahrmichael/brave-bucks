@@ -28,6 +28,7 @@ import com.bravebucks.eve.repository.RattingEntryRepository;
 import com.bravebucks.eve.repository.TransactionRepository;
 import com.bravebucks.eve.repository.UserRepository;
 import com.codahale.metrics.annotation.Timed;
+import static com.bravebucks.eve.domain.Constants.ALLIANCE_ID;
 import static com.bravebucks.eve.domain.enumeration.TransactionType.KILL;
 import static com.bravebucks.eve.domain.enumeration.TransactionType.RATTING;
 
@@ -79,7 +80,7 @@ public class PayoutCalculator {
     @Timed
     @Scheduled(cron = "0 0 11 * * *")
     public void calculatePayouts() {
-        final List<User> users = userRepository.findAllByCharacterIdNotNull();
+        final List<User> users = userRepository.findAllByCharacterIdNotNullAndAllianceId(ALLIANCE_ID);
         final List<Long> userIds = new ArrayList<>();
         users.stream().mapToLong(User::getCharacterId).forEach(userIds::add);
 

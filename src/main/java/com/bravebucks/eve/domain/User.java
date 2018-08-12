@@ -27,6 +27,8 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Id
     private String id;
 
+    private Integer allianceId;
+
     @NotNull
     @Indexed
     private String login;
@@ -116,5 +118,13 @@ public class User extends AbstractAuditingEntity implements Serializable {
             "login='" + login + '\'' +
             ", activated='" + activated + '\'' +
             "}";
+    }
+
+    public Integer getAllianceId() {
+        return allianceId;
+    }
+
+    public void setAllianceId(final Integer allianceId) {
+        this.allianceId = allianceId;
     }
 }
