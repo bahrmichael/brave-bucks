@@ -13,6 +13,10 @@ export class PayoutService {
 
     constructor(private http: Http, private dateUtils: JhiDateUtils) { }
 
+    markPaid(id: string) {
+        return this.http.put(this.resourceUrl + '/' + id + '/paid', null);
+    }
+
     create(payout: Payout): Observable<Payout> {
         const copy = this.convert(payout);
         return this.http.post(this.resourceUrl, copy).map((res: Response) => {

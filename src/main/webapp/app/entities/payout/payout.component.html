@@ -1,3 +1,12 @@
+<style>
+    .show{
+        opacity: 1 !important;
+    }
+    .step{
+        opacity: 0;
+        transition: .5s ease-in-out all;
+    }
+</style>
 <div>
     <h2>
         <span>Payout Requests</span>
@@ -27,7 +36,12 @@
             <tbody>
             <tr *ngFor="let payout of payouts ;trackBy: trackId">
                 <td>{{payout.user}}</td>
-                <td>{{payout.amount | number:'1.0-0'}} ISK</td>
+                <td>{{payout.amount | number:'1.0-0'}} ISK
+                    <a (click)="copyPrice(payout.amount, payout.id)">
+                        <i style="color: grey" class="fa fa-clipboard"></i>
+                    </a>
+                    <span [class.show]="showCopiedPriceFor === payout.id" class="step" style="color: green; font-size: small;"><b>Copied!</b></span>
+                </td>
                 <td>{{payout.status}}</td>
                 <td>{{payout.details}}</td>
                 <td class="text-right">

@@ -15,6 +15,7 @@ import {
     payoutPopupRoute,
     PayoutResolvePagingParams,
 } from './';
+import {ClipboardService} from "./clipboard.service";
 
 const ENTITY_STATES = [
     ...payoutRoute,
@@ -45,6 +46,7 @@ const ENTITY_STATES = [
         PayoutService,
         PayoutPopupService,
         PayoutResolvePagingParams,
+        ClipboardService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

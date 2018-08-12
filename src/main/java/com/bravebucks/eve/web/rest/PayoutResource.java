@@ -88,6 +88,15 @@ public class PayoutResource {
             .body(result);
     }
 
+    @PutMapping("/payouts/{id}/paid")
+    @Secured(AuthoritiesConstants.MANAGER)
+    public void markPaid(@PathVariable("id") final String id) {
+        log.debug("REST request to mark Payout paid: {}", id);
+        final Payout payout = payoutRepository.findOne(id);
+        payout.setStatus(PayoutStatus.PAID);
+        payoutRepository.save(payout);
+    }
+
     @GetMapping("/payouts/pending")
     @Timed
     @Secured(AuthoritiesConstants.MANAGER)

@@ -1,12 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
-import { JhiEventManager, JhiParseLinks, JhiPaginationUtil, JhiAlertService } from 'ng-jhipster';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs/Rx';
+import {JhiAlertService, JhiEventManager, JhiPaginationUtil, JhiParseLinks} from 'ng-jhipster';
 
-import { Payout } from './payout.model';
-import { PayoutService } from './payout.service';
-import { ITEMS_PER_PAGE, Principal, ResponseWrapper } from '../../shared';
-import { PaginationConfig } from '../../blocks/config/uib-pagination.config';
+import {Payout} from './payout.model';
+import {PayoutService} from './payout.service';
+import {ITEMS_PER_PAGE, Principal, ResponseWrapper} from '../../shared';
+import {PaginationConfig} from '../../blocks/config/uib-pagination.config';
+import {ClipboardService} from "./clipboard.service";
 
 @Component({
     selector: 'jhi-payout',
@@ -29,6 +30,7 @@ currentAccount: any;
     previousPage: any;
     reverse: any;
     allAccounts: number;
+    public showCopiedPriceFor: string = null;
 
     constructor(
         private payoutService: PayoutService,
@@ -39,7 +41,8 @@ currentAccount: any;
         private router: Router,
         private eventManager: JhiEventManager,
         private paginationUtil: JhiPaginationUtil,
-        private paginationConfig: PaginationConfig
+        private paginationConfig: PaginationConfig,
+        private clipboard: ClipboardService
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe((data) => {
@@ -47,6 +50,23 @@ currentAccount: any;
             this.previousPage = data['pagingParams'].page;
             this.reverse = data['pagingParams'].ascending;
             this.predicate = data['pagingParams'].predicate;
+        });
+    }
+
+    copyPrice(price: number, id: string) {
+        this.clipboard.copy(price + '');
+
+        this.showCopiedPriceFor = id;
+        setTimeout(function() {
+            this.showCopiedPriceFor = null;
+        }.bind(this), 3000);
+
+        this.payoutService.markPaid(id).subscribe((data) => {
+            this.payouts.forEach((p) => {
+                if (p.id === id) {
+                    p.status = 1;
+                }
+            });
         });
     }
 
