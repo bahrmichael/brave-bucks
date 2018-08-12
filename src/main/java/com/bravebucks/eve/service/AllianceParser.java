@@ -3,6 +3,7 @@ package com.bravebucks.eve.service;
 import java.util.HashMap;
 import java.util.Objects;
 
+import com.bravebucks.eve.domain.User;
 import com.bravebucks.eve.domain.esi.CharacterInfoResponse;
 import com.bravebucks.eve.repository.UserRepository;
 import com.codahale.metrics.annotation.Timed;
@@ -31,21 +32,23 @@ public class AllianceParser {
     }
 
     @Async
-    @Scheduled(cron = "0 30 9 * * *")
+    @Scheduled(cron = "0 0 9 * * *")
     @Timed
     public void updateAlliances() {
-        userRepository.findAll().forEach(user -> {
-            final String uri = "https://esi.evetech.net/v4/characters/" + user.getCharacterId() + "/";
-            try {
-                final CharacterInfoResponse characterInfo = restTemplate.getForObject(uri, CharacterInfoResponse.class,
-                                                                                      new HashMap<>());
-                if (!Objects.equals(user.getAllianceId(), characterInfo.getAllianceId())) {
-                    user.setAllianceId(characterInfo.getAllianceId());
-                    userRepository.save(user);
-                }
-            } catch (HttpClientErrorException | HttpServerErrorException ex) {
-                log.error("Failed to retrieve character info for {}.", user.getCharacterId(), ex);
+        userRepository.findAll().forEach(this::updateAllianceForUser);
+    }
+
+    public void updateAllianceForUser(final User user) {
+        final String uri = "https://esi.evetech.net/v4/characters/" + user.getCharacterId() + "/";
+        try {
+            final CharacterInfoResponse characterInfo = restTemplate.getForObject(uri, CharacterInfoResponse.class,
+                                                                                  new HashMap<>());
+            if (!Objects.equals(user.getAllianceId(), characterInfo.getAllianceId())) {
+                user.setAllianceId(characterInfo.getAllianceId());
+                userRepository.save(user);
             }
-        });
+        } catch (HttpClientErrorException | HttpServerErrorException ex) {
+            log.error("Failed to retrieve character info for {}.", user.getCharacterId(), ex);
+        }
     }
 }

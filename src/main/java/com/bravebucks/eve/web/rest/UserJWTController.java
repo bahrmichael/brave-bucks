@@ -14,6 +14,7 @@ import com.bravebucks.eve.domain.esi.CharacterDetailsResponse;
 import com.bravebucks.eve.repository.CharacterRepository;
 import com.bravebucks.eve.repository.UserRepository;
 import com.bravebucks.eve.security.jwt.TokenProvider;
+import com.bravebucks.eve.service.AllianceParser;
 import com.bravebucks.eve.service.UserService;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -69,15 +70,18 @@ public class UserJWTController {
     private final UserService userService;
     private final RestTemplate restTemplate;
     private final CharacterRepository characterRepository;
+    private final AllianceParser allianceParser;
 
     public UserJWTController(TokenProvider tokenProvider, UserRepository userRepository, UserService userService,
                              final RestTemplate restTemplate,
-                             final CharacterRepository characterRepository) {
+                             final CharacterRepository characterRepository,
+                             final AllianceParser allianceParser) {
         this.tokenProvider = tokenProvider;
         this.userRepository = userRepository;
         this.userService = userService;
         this.restTemplate = restTemplate;
         this.characterRepository = characterRepository;
+        this.allianceParser = allianceParser;
     }
 
     @GetMapping("/authenticate/sso")
@@ -155,8 +159,11 @@ public class UserJWTController {
     }
 
     User createIfNotExists(final CharacterDetailsResponse characterDetails) {
-        return userRepository.findOneByLogin(characterDetails.getCharacterName())
-                             .orElseGet(() -> userService.createUser(characterDetails.getCharacterName(), characterDetails.getCharacterId()));
+        final User user = userRepository.findOneByLogin(characterDetails.getCharacterName())
+                                        .orElseGet(() -> userService.createUser(characterDetails.getCharacterName(),
+                                                                                characterDetails.getCharacterId()));
+        allianceParser.updateAllianceForUser(user);
+        return user;
     }
 
 
