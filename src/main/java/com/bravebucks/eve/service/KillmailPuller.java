@@ -88,7 +88,7 @@ public class KillmailPuller {
 
         userRepository.findAll().stream()
                       .filter(user -> user.getCharacterId() != null)
-                      .filter(user -> user.getAllianceId() == ALLIANCE_ID)
+                      .filter(user -> user.getAllianceId() != null && user.getAllianceId() == ALLIANCE_ID)
                       .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId(), duration)
                       .ifPresent(jsonBody -> {
                           final JSONArray array = jsonBody.getArray();
