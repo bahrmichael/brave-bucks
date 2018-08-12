@@ -93,7 +93,7 @@ public class WalletParser {
                 if (walletResponse.getStatusCode() != HttpStatus.OK || walletResponse.getBody() == null) {
                     log.info("No new transactions for {} (wallet response is {}).", characterId,
                              walletResponse.getStatusCode());
-                    return;
+                    continue;
                 }
 
                 updateEtag(character, eTag, walletResponse);
