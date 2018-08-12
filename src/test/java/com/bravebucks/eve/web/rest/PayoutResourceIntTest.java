@@ -2,6 +2,7 @@ package com.bravebucks.eve.web.rest;
 
 import com.bravebucks.eve.BraveBucksApp;
 import com.bravebucks.eve.domain.Payout;
+import com.bravebucks.eve.repository.UserRepository;
 import com.bravebucks.eve.web.rest.errors.ExceptionTranslator;
 
 import com.bravebucks.eve.repository.PayoutRepository;
@@ -78,6 +79,9 @@ public class PayoutResourceIntTest {
 
     @Autowired
     private TransactionRepository transactionRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Before
     public void setup() {
