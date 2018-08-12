@@ -5,6 +5,7 @@ public class EveCharacter {
     private String name;
     private String walletReadRefreshToken;
     private String owningUser;
+    private String walletJournalEtag;
 
     public EveCharacter() {
     }
@@ -46,5 +47,13 @@ public class EveCharacter {
 
     public void setOwningUser(final String owningUser) {
         this.owningUser = owningUser;
+    }
+
+    public String getWalletJournalEtag() {
+        return walletJournalEtag;
+    }
+
+    public void setWalletJournalEtag(final String walletJournalEtag) {
+        this.walletJournalEtag = walletJournalEtag;
     }
 }

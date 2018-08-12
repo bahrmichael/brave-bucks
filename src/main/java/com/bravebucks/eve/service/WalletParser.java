@@ -1,7 +1,9 @@
 package com.bravebucks.eve.service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -85,13 +87,8 @@ public class WalletParser {
 
             try {
 
-                final String accessToken = getAccessTokenWithRefreshToken(refreshToken, walletClientId, walletClientSecret);
-                final String walletUri = "https://esi.evetech.net/v4/characters/" + characterId + "/wallet/journal/";
-
-                final ResponseEntity<WalletResponse[]> walletResponse = restTemplate.exchange(walletUri, HttpMethod.GET,
-                                                                                              authorizedRequest(
-                                                                                                  accessToken),
-                                                                                              WalletResponse[].class);
+                final String eTag = character.getWalletJournalEtag();
+                final ResponseEntity<WalletResponse[]> walletResponse = getWalletResponse(refreshToken, characterId, eTag);
 
                 if (walletResponse.getStatusCode() != HttpStatus.OK || walletResponse.getBody() == null) {
                     log.info("No new transactions for {} (wallet response is {}).", characterId,
@@ -99,6 +96,9 @@ public class WalletParser {
                     return;
                 }
 
+                updateEtag(character, eTag, walletResponse);
+
+                final List<RattingEntry> characterRattingEntries = new ArrayList<>();
                 for (WalletResponse walletEntry : walletResponse.getBody()) {
                     if ("bounty_prizes".equals(walletEntry.getRefType())
                         && rattingEntryRepository.countByJournalId(walletEntry.getId()) == 0) {
@@ -125,9 +125,10 @@ public class WalletParser {
                                                                            characterId, killCount, systemId,
                                                                            instant, adm);
 
-                        rattingEntryRepository.save(rattingEntry);
+                        characterRattingEntries.add(rattingEntry);
                     }
                 }
+                rattingEntryRepository.save(characterRattingEntries);
             } catch (final HttpServerErrorException | HttpClientErrorException exception) {
                 log.info("No new transactions for {} (TQ status is {}): {}", characterId, exception.getStatusCode(),
                          exception.getMessage());
@@ -140,6 +141,24 @@ public class WalletParser {
         }
         final long end = System.currentTimeMillis();
         log.info("Collecting transactions took {} seconds.", (end - start) / 1000);
+    }
+
+    private ResponseEntity<WalletResponse[]> getWalletResponse(final String refreshToken, final int characterId,
+                                                               final String eTag) {
+        final String accessToken = getAccessTokenWithRefreshToken(refreshToken, walletClientId, walletClientSecret);
+        final String walletUri = "https://esi.evetech.net/v4/characters/" + characterId + "/wallet/journal/";
+
+        return restTemplate.exchange(walletUri, HttpMethod.GET, authorizedRequest(accessToken,
+                                                                                  eTag), WalletResponse[].class);
+    }
+
+    private void updateEtag(final EveCharacter character, final String eTag,
+                            final ResponseEntity<WalletResponse[]> walletResponse) {
+        final String responseETag = walletResponse.getHeaders().getFirst("ETag");
+        if (!Objects.equals(responseETag, eTag)) {
+            character.setWalletJournalEtag(responseETag);
+            characterRepository.save(character);
+        }
     }
 
     private String getAccessTokenWithRefreshToken(final String refreshToken, final String clientId,
@@ -159,8 +178,11 @@ public class WalletParser {
                                           AccessTokenResponse.class).getBody().getAccessToken();
     }
 
-    private static HttpEntity<Object> authorizedRequest(final String accessToken) {
+    private static HttpEntity<Object> authorizedRequest(final String accessToken, final String etag) {
         final HttpHeaders headers = buildAuthHeader(accessToken);
+        if (null != etag) {
+            headers.add("If-None-Match", etag);
+        }
         return new HttpEntity<>(null, headers);
     }
 
