@@ -31,6 +31,7 @@ currentAccount: any;
     reverse: any;
     allAccounts: number;
     public showCopiedPriceFor: string = null;
+    public showCopiedNameFor: string = null;
 
     constructor(
         private payoutService: PayoutService,
@@ -51,6 +52,15 @@ currentAccount: any;
             this.reverse = data['pagingParams'].ascending;
             this.predicate = data['pagingParams'].predicate;
         });
+    }
+
+    copyName(name: string, id: string) {
+        this.clipboard.copy(name + '');
+
+        this.showCopiedNameFor = id;
+        setTimeout(function() {
+            this.showCopiedNameFor = null;
+        }.bind(this), 3000);
     }
 
     copyPrice(price: number, id: string) {

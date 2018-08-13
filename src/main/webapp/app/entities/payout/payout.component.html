@@ -35,7 +35,12 @@
             </thead>
             <tbody>
             <tr *ngFor="let payout of payouts ;trackBy: trackId">
-                <td>{{payout.user}}</td>
+                <td>{{payout.user}}
+                    <a (click)="copyName(payout.user, payout.id)">
+                        <i style="color: grey" class="fa fa-clipboard"></i>
+                    </a>
+                    <span [class.show]="showCopiedNameFor === payout.id" class="step" style="color: green; font-size: small;"><b>Copied!</b></span>
+                </td>
                 <td>{{payout.amount | number:'1.0-0'}} ISK
                     <a (click)="copyPrice(payout.amount, payout.id)">
                         <i style="color: grey" class="fa fa-clipboard"></i>
