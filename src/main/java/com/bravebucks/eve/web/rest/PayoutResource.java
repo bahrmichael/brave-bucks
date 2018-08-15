@@ -94,6 +94,7 @@ public class PayoutResource {
         log.debug("REST request to mark Payout paid: {}", id);
         final Payout payout = payoutRepository.findOne(id);
         payout.setStatus(PayoutStatus.PAID);
+        addTransactionIfPaid(payout);
         payoutRepository.save(payout);
     }
 
