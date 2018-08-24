@@ -44,7 +44,7 @@ public class KillmailParser {
         JSONObject zkb = object.getJSONObject("zkb");
         result.setNpc(zkb.getBoolean("npc"));
         result.setTotalValue(zkb.getLong("totalValue"));
-        result.setPoints(getPoints(zkb.getLong("points"), object.getLong("solar_system_id")));
+        result.setPoints(getPoints(zkb.getLong("points"), object.getInt("solar_system_id")));
         result.setVictimId(victim.getLong("character_id"));
         result.setShipTypeId(victim.getLong("ship_type_id"));
 
@@ -53,14 +53,12 @@ public class KillmailParser {
         return result;
     }
 
-    private long getPoints(final long points, final long solarSystemId) {
+    private long getPoints(final long points, final int solarSystemId) {
         long preSquare = points;
-        final Integer adm = admService.getAdm(solarSystemId);
-        if (null != adm) {
-            final int factor = 6 - adm;
-            if (factor > 0) {
-                preSquare *= factor;
-            }
+        final Double adm = admService.getAdm(solarSystemId);
+        final double factor = 6 - adm;
+        if (factor > 0) {
+            preSquare *= factor;
         }
         return (long) Math.sqrt(preSquare);
     }

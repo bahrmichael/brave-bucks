@@ -155,7 +155,8 @@ public class PayoutCalculator {
         long sum = 0;
         for (RattingEntry pendingRattingEntry : pendingRattingEntries) {
             if (characterIds.contains(pendingRattingEntry.getCharacterId())) {
-                sum += pendingRattingEntry.getKillCount();
+                final double admWeight = 4 / (1 + pendingRattingEntry.getAdm());
+                sum += pendingRattingEntry.getKillCount() * admWeight;
             }
         }
         return sum;

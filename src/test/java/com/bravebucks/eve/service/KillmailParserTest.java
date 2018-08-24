@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,7 +29,7 @@ public class KillmailParserTest {
     public void setUp() throws Exception {
         when(requestService.getPlayerGroupNames(1)).thenReturn(Optional.of(new JsonNode("[{\"id\": 1, \"name\": \"Goons\"}]")));
         when(requestService.getPlayerGroupNames(2)).thenReturn(Optional.of(new JsonNode("[{\"id\": 2, \"name\": \"Red Alliance\"}]")));
-        when(admService.getAdm(anyLong())).thenReturn(6);
+        when(admService.getAdm(anyInt())).thenReturn(6.0);
     }
 
     @Test

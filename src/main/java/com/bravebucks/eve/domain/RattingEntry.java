@@ -11,7 +11,7 @@ public class RattingEntry {
     private Integer killCount;
     private Integer systemId;
     private Instant instant;
-    private Integer adm;
+    private Double adm;
     private boolean processed;
 
     public RattingEntry() {
@@ -19,7 +19,7 @@ public class RattingEntry {
 
     public RattingEntry(final Long journalId, final String userId, final Integer characterId, final Integer killCount,
                         final Integer systemId,
-                        final Instant instant, final Integer adm) {
+                        final Instant instant, final Double adm) {
         this.journalId = journalId;
         this.userId = userId;
         this.characterId = characterId;
@@ -93,11 +93,11 @@ public class RattingEntry {
         this.instant = instant;
     }
 
-    public Integer getAdm() {
+    public Double getAdm() {
         return adm;
     }
 
-    public void setAdm(final Integer adm) {
+    public void setAdm(final Double adm) {
         this.adm = adm;
     }
 }
