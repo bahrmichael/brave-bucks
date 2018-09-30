@@ -45,7 +45,7 @@ public class PayoutCalculator {
 
     private static final long FINAL_BLOW_BONUS = 2;
     private static final long KILL_BUDGET = 9_000_000_000L;
-    private static final long RATTING_BUDGET = 5_000_000_000L;
+    private static final long RATTING_BUDGET = 2_000_000_000L;
     private final KillmailRepository killmailRepository;
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
