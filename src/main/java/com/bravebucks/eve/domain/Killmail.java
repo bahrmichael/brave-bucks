@@ -10,19 +10,25 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Killmail {
     @Id
     private long killId;
-    private long solarSystemId;
+    private int solarSystemId;
     private String killTime;
     private long totalValue;
     private long points;
     private boolean npc;
     private long victimId;
+    private String victimName;
     private String victimGroupName;
-    private List<Long> attackerIds = new ArrayList<>();
-    private long finalBlowAttackerId;
+    private List<Integer> attackerIds = new ArrayList<>();
+    private Integer finalBlowAttackerId;
     private boolean payoutCalculated;
     private long shipTypeId;
 
-    public Killmail() {
+    public String getVictimName() {
+        return victimName;
+    }
+
+    public void setVictimName(final String victimName) {
+        this.victimName = victimName;
     }
 
     public void setPayoutCalculated(final boolean payoutCalculated) {
@@ -41,11 +47,11 @@ public class Killmail {
         this.killId = killId;
     }
 
-    public long getSolarSystemId() {
+    public int getSolarSystemId() {
         return solarSystemId;
     }
 
-    public void setSolarSystemId(final long solarSystemId) {
+    public void setSolarSystemId(final int solarSystemId) {
         this.solarSystemId = solarSystemId;
     }
 
@@ -57,16 +63,12 @@ public class Killmail {
         this.killTime = killTime;
     }
 
-    public List<Long> getAttackerIds() {
+    public List<Integer> getAttackerIds() {
         return attackerIds;
     }
 
-    public void setAttackerIds(final List<Long> attackerIds) {
+    public void setAttackerIds(final List<Integer> attackerIds) {
         this.attackerIds = attackerIds;
-    }
-
-    public void addAttackerId(long attackerId) {
-        this.attackerIds.add(attackerId);
     }
 
     public long getTotalValue() {
@@ -109,11 +111,11 @@ public class Killmail {
         return victimGroupName;
     }
 
-    public long getFinalBlowAttackerId() {
+    public Integer getFinalBlowAttackerId() {
         return finalBlowAttackerId;
     }
 
-    public void setFinalBlowAttackerId(final long finalBlowAttackerId) {
+    public void setFinalBlowAttackerId(final Integer finalBlowAttackerId) {
         this.finalBlowAttackerId = finalBlowAttackerId;
     }
 

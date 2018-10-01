@@ -81,11 +81,10 @@ public class PayoutCalculator {
     @Scheduled(cron = "0 0 11 * * *")
     public void calculatePayouts() {
         final List<User> users = userRepository.findAllByCharacterIdNotNullAndAllianceId(ALLIANCE_ID);
-        final List<Long> userIds = new ArrayList<>();
-        users.stream().mapToLong(User::getCharacterId).forEach(userIds::add);
+        final List<Integer> characterIds = users.stream().map(u -> u.getCharacterId().intValue()).collect(toList());
 
         final List<Killmail> pendingKillmails = killmailRepository.findPending();
-        final Collection<Transaction> transactions = getKillmailTransactions(users, userIds, pendingKillmails);
+        final Collection<Transaction> transactions = getKillmailTransactions(users, characterIds, pendingKillmails);
         pendingKillmails.forEach(km -> km.setPayoutCalculated(true));
 
         final Set<String> rattingUserIds = characterRepository.findByWalletReadRefreshTokenNotNull().stream().map(EveCharacter::getOwningUser).collect(Collectors.toSet());
@@ -113,28 +112,28 @@ public class PayoutCalculator {
 
             final double factor = (double) pointsForUser / totalPoints;
             final double userPayable = todayBudget * factor;
-            final String userName = getUserName(rattingUsers, user.getCharacterId());
+            final String userName = getUserName(rattingUsers, user.getCharacterId().intValue());
             transactions.add(new Transaction(userName, userPayable, RATTING));
         }
 
         return transactions;
     }
 
-    private Collection<Transaction> getKillmailTransactions(final List<User> users, final List<Long> userIds,
+    private Collection<Transaction> getKillmailTransactions(final List<User> users, final List<Integer> characterIds,
                                                             final List<Killmail> pendingKillmails) {
-        final long totalPoints = getTotalPoints(pendingKillmails, userIds);
+        final long totalPoints = getTotalPoints(pendingKillmails, characterIds);
         final long todayBudget = KILL_BUDGET / LocalDate.now().getMonth().maxLength();
 
         final Collection<Transaction> transactions = new ArrayList<>();
 
-        for (final Long userId : userIds) {
-            final long pointsForUser = getPointsForUser(pendingKillmails, userId);
+        for (final Integer characterId : characterIds) {
+            final long pointsForUser = getPointsForUser(pendingKillmails, characterId);
             if (pointsForUser == 0 || totalPoints == 0) {
                 continue;
             }
             final double factor = (double) pointsForUser / totalPoints;
             final double userPayable = todayBudget * factor;
-            final String user = getUserName(users, userId);
+            final String user = getUserName(users, characterId);
             transactions.add(new Transaction(user, userPayable, KILL));
         }
         return transactions;
@@ -144,8 +143,8 @@ public class PayoutCalculator {
         return rattingUsers.stream().mapToLong(user -> getRattingPointsForUser(pendingRattingEntries, user)).sum();
     }
 
-    private long getTotalPoints(final Iterable<Killmail> killmails, final Collection<Long> userIds) {
-        return userIds.stream().mapToLong(id -> getPointsForUser(killmails, id)).sum();
+    private long getTotalPoints(final Iterable<Killmail> killmails, final Collection<Integer> characterIds) {
+        return characterIds.stream().mapToLong(id -> getPointsForUser(killmails, id)).sum();
     }
 
     private long getRattingPointsForUser(final List<RattingEntry> pendingRattingEntries,
@@ -162,16 +161,16 @@ public class PayoutCalculator {
         return sum;
     }
 
-    private long getPointsForUser(final Iterable<Killmail> killmails, final Long userId) {
+    private long getPointsForUser(final Iterable<Killmail> killmails, final Integer characterId) {
         long sum = 0;
         for (final Killmail killmail : killmails) {
             final long points = killmail.getPoints();
-            for (final Long attackerId : killmail.getAttackerIds()) {
-                if (Objects.equals(userId, attackerId)) {
+            for (final Integer attackerId : killmail.getAttackerIds()) {
+                if (Objects.equals(characterId, attackerId)) {
                     sum += points;
                 }
 
-                if (userId == killmail.getFinalBlowAttackerId()) {
+                if (Objects.equals(characterId, killmail.getFinalBlowAttackerId())) {
                     sum += FINAL_BLOW_BONUS;
                 }
             }
@@ -181,11 +180,11 @@ public class PayoutCalculator {
         return sum;
     }
 
-    private String getUserName(final Iterable<User> users, final Long userId) {
+    private String getUserName(final Iterable<User> users, final Integer characterId) {
         // fallback with userId
-        String user = String.valueOf(userId);
+        String user = String.valueOf(characterId);
         for (final User u : users) {
-            if (Objects.equals(u.getCharacterId(), userId)) {
+            if (Objects.equals(u.getCharacterId().intValue(), characterId)) {
                 user = u.getLogin();
                 break;
             }

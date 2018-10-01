@@ -4,8 +4,8 @@
         <span *ngIf="monthAvailable">Available this month: {{monthAvailable | number:'1.0-0'}} ISK. Killmails are converted to ISK during downtime.</span>
         <div *ngIf="payoutRequested" class="alert alert-success">Payout requested!</div>
         <div class="input-group">
-            <div class="progress" style="width: 100%;">
-                <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="height: 40px" [style.width]="getBarWidth(potentialPayout)+'%'">
+            <div class="progress" style="width: 100%; height: 40px;">
+                <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="getBarWidth(potentialPayout)+'%'">
                     <div *ngIf="potentialPayout >= payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</div>
                 </div>
                 <span *ngIf="potentialPayout < payoutThreshold / 2" style="height: 40px; line-height: 2.5rem; font-size: 1.5rem; padding-left: 10px">Your payout: {{potentialPayout | number:'1.0-0'}} ISK</span>

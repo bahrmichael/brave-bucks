@@ -42,7 +42,7 @@ public class PayoutCalculatorTest {
         when(userRepo.findAll()).thenReturn(Collections.singletonList(user));
         final Killmail pendingKillmail = new Killmail();
         pendingKillmail.setPoints(1L);
-        pendingKillmail.setAttackerIds(Collections.singletonList(user.getCharacterId()));
+        pendingKillmail.setAttackerIds(Collections.singletonList(user.getCharacterId().intValue()));
         when(killmailRepo.findPending()).thenReturn(Collections.singletonList(pendingKillmail));
         when(transactionRepo.save(anyList())).thenReturn(null);
         when(killmailRepo.save(any(Killmail.class))).thenReturn(null);

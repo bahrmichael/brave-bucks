@@ -27,28 +27,6 @@ public class JsonRequestServiceTest {
     private JsonRequestService sut = spy(new JsonRequestService());
 
     @Test
-    public void getKillmails() throws Exception {
-        doReturn(null).when(sut).executeRequest(any(GetRequest.class));
-
-        Optional<JsonNode> killmails = sut.getKillmails(1L, 2L);
-        assertNull(killmails);
-
-        verify(sut).get("https://zkillboard.com/api/kills/characterID/1/pastSeconds/2/no-items/", null);
-        verify(sut).executeRequest(any(GetRequest.class));
-    }
-
-    @Test
-    public void getKillmail() throws Exception {
-        doReturn(null).when(sut).executeRequest(any(GetRequest.class));
-
-        Optional<JsonNode> killmail = sut.getKillmail(1L);
-        assertNull(killmail);
-
-        verify(sut).get("https://zkillboard.com/api/killID/1/no-items/", null);
-        verify(sut).executeRequest(any(GetRequest.class));
-    }
-
-    @Test
     public void getAccessToken() throws Exception {
         doReturn(null).when(sut).executeRequest(any(MultipartBody.class));
 

@@ -1,138 +1,149 @@
 package com.bravebucks.eve.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import static java.util.stream.Collectors.toList;
 
-import javax.annotation.PostConstruct;
-
 import com.bravebucks.eve.domain.Killmail;
+import com.bravebucks.eve.domain.zkb.KillmailPackage;
+import com.bravebucks.eve.domain.zkb.RedisQResponse;
+import com.bravebucks.eve.repository.KillmailRepository;
 import com.bravebucks.eve.repository.SolarSystemRepository;
 import com.bravebucks.eve.repository.UserRepository;
-import com.bravebucks.eve.domain.SolarSystem;
-import com.bravebucks.eve.repository.KillmailRepository;
 import com.codahale.metrics.annotation.Timed;
 
-import static com.bravebucks.eve.domain.Constants.ALLIANCE_ID;
-
-import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import io.github.jhipster.config.JHipsterConstants;
-
-@Component
+@Service
 public class KillmailPuller {
 
-    static final long HOUR = 3600L;
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private List<Long> systems;
+    private List<Integer> systems;
+    private List<Integer> playerIds;
 
     private final KillmailRepository killmailRepository;
     private final UserRepository userRepository;
-    private final JsonRequestService jsonRequestService;
     private final SolarSystemRepository solarSystemRepository;
     private final KillmailParser killmailParser;
-    private final Environment env;
+    private final RestTemplate restTemplate;
+    private final AdmService admService;
 
     public KillmailPuller(final KillmailRepository killmailRepository,
                           final UserRepository userRepository,
-                          final JsonRequestService jsonRequestService,
                           final SolarSystemRepository solarSystemRepository,
-                          final KillmailParser killmailParser, final Environment env) {
+                          final KillmailParser killmailParser,
+                          final RestTemplate restTemplate,
+                          final AdmService admService) {
         this.killmailRepository = killmailRepository;
         this.userRepository = userRepository;
-        this.jsonRequestService = jsonRequestService;
         this.solarSystemRepository = solarSystemRepository;
         this.killmailParser = killmailParser;
-        this.env = env;
+        this.restTemplate = restTemplate;
+        this.admService = admService;
     }
-
-    @PostConstruct
-    public void init() {
-        // dev only
-        if (Arrays.asList(env.getActiveProfiles()).contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)) {
-//            pullKillmails();
-        }
-    }
-
-    private boolean isFirstPull = true;
 
     @Async
-    @Scheduled(cron = "0 */30 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     @Timed
-    public void pullKillmails() {
-        if (isFirstPull) {
-            longPull();
-            isFirstPull = false;
-        } else {
-            pullKillmails(HOUR * 4);
+    public void cron() {
+        final List<KillmailPackage> packages = new ArrayList<>();
+        while (true) {
+            RedisQResponse response = restTemplate.getForObject("https://redisq.zkillboard.com/listen.php?ttw=1",
+                                                                RedisQResponse.class, new HashMap<>());
+
+            if (response.getKillmailPackage() == null || packages.size() >= 100) {
+                break;
+            } else {
+                log.info("Received a new killmail: {}", response.getKillmailPackage().getKillmail().getKillmailId());
+            }
+
+            packages.add(response.getKillmailPackage());
         }
+
+        log.info("Collected a total of {} killmail packages.", packages.size());
+
+        if (packages.isEmpty()) {
+            return;
+        }
+
+        // required for isInBraveSystem
+        systems = solarSystemRepository.findAllByTrackPvp(true).stream()
+                                       .map(s -> s.getSystemId().intValue())
+                                       .collect(toList());
+
+        playerIds = userRepository.findAll().stream()
+                                  .map(u -> u.getCharacterId().intValue())
+                                  .collect(toList());
+
+        final List<Killmail> killmails = packages.stream()
+                                                 .peek(p -> log.debug("Processing package: {}", p))
+                                                 .map(killmailParser::parseKillmail)
+                                                 .filter(Objects::nonNull)
+                                                 .filter(this::filterKillmail)
+                                                 .peek(kill -> kill.setPoints(getPoints(kill.getPoints(), kill.getSolarSystemId())))
+                                                 .collect(toList());
+
+        log.info("Saving {} new killmails.", killmails.size());
+        if (killmails.isEmpty()) {
+            return;
+        }
+
+        killmailRepository.save(killmails);
     }
 
-    public void longPull() {
-        final long maxDuration = HOUR * 24 * 7L;
-        pullKillmails(maxDuration);
+    private long getPoints(final long points, final int solarSystemId) {
+        long preSquare = points;
+        final Double adm = admService.getAdm(solarSystemId);
+        final double factor = 6 - adm;
+        if (factor > 0) {
+            preSquare *= factor;
+        }
+        return (long) Math.sqrt(preSquare);
     }
 
-    public void pullKillmails(final Long duration) {
-        systems = new ArrayList<>();
-        solarSystemRepository.findAllByTrackPvp(true).stream()
-                             .mapToLong(SolarSystem::getSystemId)
-                             .forEach(id -> systems.add(id));
-
-        userRepository.findAll().stream()
-                      .filter(user -> user.getCharacterId() != null)
-                      .filter(user -> user.getAllianceId() != null && user.getAllianceId() == ALLIANCE_ID)
-                      .forEach(user -> jsonRequestService.getKillmails(user.getCharacterId(), duration)
-                      .ifPresent(jsonBody -> {
-                          final JSONArray array = jsonBody.getArray();
-                          if (array.length() > 0) {
-                              final List<Killmail> killmails = killmailParser.parseKillmails(array);
-                              List<Killmail> filtered = filterKillmails(killmails);
-                              log.info("Processing {} killmails for characterId {}", filtered.size(), user.getCharacterId());
-                              killmailRepository.save(filtered);
-                          }
-        }));
+    private boolean filterKillmail(final Killmail killmail) {
+        return hasBraveAttacker(killmail)
+               && isVictimNotBrave(killmail)
+               && isInBraveSystem(killmail)
+               && isNotInFleet(killmail)
+               && isNotAnEmptyPod(killmail)
+               && hasNotBeenRetrievedYet(killmail);
     }
 
-    public List<Killmail> filterKillmails(final List<Killmail> killmails) {
-        return killmails.stream()
-                       .filter(this::isVictimNotBrave)
-                       .filter(this::isInBraveSystem)
-                       .filter(this::isNotInFleet)
-                       .filter(this::isNotAnEmptyPod)
-                       .filter(this::doesNotExist)
-                       .collect(toList());
+    private boolean hasBraveAttacker(final Killmail killmail) {
+        for (Integer attackerId : killmail.getAttackerIds()) {
+            if (playerIds.contains(attackerId.longValue())) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private boolean doesNotExist(final Killmail killmail) {
+    private boolean hasNotBeenRetrievedYet(final Killmail killmail) {
         return !killmailRepository.findByKillId(killmail.getKillId()).isPresent();
     }
 
-    public boolean isNotInFleet(final Killmail killmail) {
+    private boolean isNotInFleet(final Killmail killmail) {
         return killmail.getAttackerIds().size() <= 20;
     }
 
-    public boolean isNotAnEmptyPod(final Killmail killmail) {
+    private boolean isNotAnEmptyPod(final Killmail killmail) {
         // Capsules are valued 10k
         return killmail.getTotalValue() != 10_000L;
     }
 
-    public boolean isInBraveSystem(final Killmail killmail) {
+    private boolean isInBraveSystem(final Killmail killmail) {
         return systems.contains(killmail.getSolarSystemId());
     }
 
-    public void setSystems(final List<Long> systems) {
-        this.systems = systems;
-    }
-
-    public boolean isVictimNotBrave(final Killmail killmail) {
+    private boolean isVictimNotBrave(final Killmail killmail) {
         return !killmail.getVictimGroupName().equals("Brave Collective");
     }
 }

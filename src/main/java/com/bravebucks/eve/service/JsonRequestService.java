@@ -1,13 +1,9 @@
 package com.bravebucks.eve.service;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import static java.util.Collections.singletonList;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mashape.unirest.http.HttpResponse;
@@ -18,7 +14,6 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.BaseRequest;
 import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.body.MultipartBody;
-import com.mashape.unirest.request.body.RequestBodyEntity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +56,7 @@ public class JsonRequestService {
             }
         });
     }
+
     @Deprecated
     public Optional<JsonNode> searchSolarSystem(final String systemName) {
         String url = "https://esi.tech.ccp.is/v2/search/?categories=solar_system&datasource=tranquility"
@@ -69,24 +65,6 @@ public class JsonRequestService {
         return executeRequest(getRequest);
     }
 
-    Optional<JsonNode> getKillmails(final Long characterId, final long duration) {
-        String url = "https://zkillboard.com/api/kills/characterID/" + characterId + "/pastSeconds/" + duration
-                     + "/no-items/";
-        GetRequest getRequest = get(url, null);
-        return executeRequest(getRequest);
-    }
-    @Deprecated
-    public Optional<JsonNode> getKillmail(final Long killId) {
-        String url = "https://zkillboard.com/api/killID/" + killId + "/no-items/";
-        GetRequest getRequest = get(url, null);
-        return executeRequest(getRequest);
-    }
-    @Deprecated
-    public Optional<JsonNode> getPlayerGroupNames(final long allianceId) {
-        String url = "https://esi.tech.ccp.is/v2/universe/names/";
-        final RequestBodyEntity request = Unirest.post(url).headers(defaultHeaders).body(singletonList(allianceId));
-        return executeRequest(request);
-    }
     @Deprecated
     public Optional<JsonNode> getAccessToken(final String clientId, final String clientSecret, final String code) {
         String url = "https://login.eveonline.com/oauth/token";
@@ -100,6 +78,7 @@ public class JsonRequestService {
 
         return executeRequest(postRequest);
     }
+
     @Deprecated
     public Optional<JsonNode> getUserDetails(final String accessToken) {
         String url = "https://login.eveonline.com/oauth/verify";
@@ -109,14 +88,6 @@ public class JsonRequestService {
         GetRequest getRequest = get(url, headers);
 
         return executeRequest(getRequest);
-    }
-
-    Optional<JsonNode> getAdms() {
-        return justGet("https://esi.tech.ccp.is/v1/sovereignty/structures/?datasource=tranquility");
-    }
-
-    private Optional<JsonNode> justGet(final String url) {
-        return executeRequest(get(url, null));
     }
 
     Optional<JsonNode> executeRequest(final BaseRequest request) {
