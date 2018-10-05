@@ -51,7 +51,6 @@ public class KillmailPuller {
 
     @Async
     @Scheduled(cron = "0 */1 * * * *")
-    @Timed
     public void cron() {
         final List<KillmailPackage> packages = new ArrayList<>();
         while (true) {
@@ -119,7 +118,7 @@ public class KillmailPuller {
 
     private boolean hasBraveAttacker(final Killmail killmail) {
         for (Integer attackerId : killmail.getAttackerIds()) {
-            if (playerIds.contains(attackerId.longValue())) {
+            if (playerIds.contains(attackerId)) {
                 return true;
             }
         }
