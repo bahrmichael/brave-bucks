@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 public class AdmService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AdmService.class);
-    private static final String URL = "https://esi.tech.ccp.is/v1/sovereignty/structures/";
+    private static final String URL = "https://esi.evetech.net/v1/sovereignty/structures/";
 
     private final RestTemplate restTemplate;
     private final Map<Integer, Double> systemAdms = new HashMap<>();
