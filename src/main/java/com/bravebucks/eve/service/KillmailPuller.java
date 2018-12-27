@@ -12,7 +12,6 @@ import com.bravebucks.eve.domain.zkb.RedisQResponse;
 import com.bravebucks.eve.repository.KillmailRepository;
 import com.bravebucks.eve.repository.SolarSystemRepository;
 import com.bravebucks.eve.repository.UserRepository;
-import com.codahale.metrics.annotation.Timed;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +49,7 @@ public class KillmailPuller {
     }
 
     @Async
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void cron() {
         final List<KillmailPackage> packages = new ArrayList<>();
         while (true) {
@@ -122,27 +121,49 @@ public class KillmailPuller {
                 return true;
             }
         }
+        log.info("{} is discarded as it does not have a Brave attacker.", killmail.getKillId());
         return false;
     }
 
     private boolean hasNotBeenRetrievedYet(final Killmail killmail) {
-        return !killmailRepository.findByKillId(killmail.getKillId()).isPresent();
+        final boolean killmailExists = killmailRepository.findByKillId(killmail.getKillId()).isPresent();
+        if (killmailExists) {
+            log.info("{} is discarded as it was already retrieved.", killmail.getKillId());
+        }
+        return !killmailExists;
     }
 
     private boolean isNotInFleet(final Killmail killmail) {
-        return killmail.getAttackerIds().size() <= 20;
+        final int attackerCount = killmail.getAttackerIds().size();
+        final boolean le20 = attackerCount <= 20;
+        if (!le20) {
+            log.info("{} is discarded as it has {} attackers.", killmail.getKillId(), attackerCount);
+        }
+        return le20;
     }
 
     private boolean isNotAnEmptyPod(final Killmail killmail) {
         // Capsules are valued 10k
-        return killmail.getTotalValue() != 10_000L;
+        final boolean emptyPod = killmail.getTotalValue() == 10_000L;
+        if (emptyPod) {
+            log.info("{} is discarded as it is an empty pod.", killmail.getKillId());
+        }
+        return !emptyPod;
     }
 
     private boolean isInBraveSystem(final Killmail killmail) {
-        return systems.contains(killmail.getSolarSystemId());
+        final boolean isInBraveSystem = systems.contains(killmail.getSolarSystemId());
+        if (!isInBraveSystem) {
+            log.info("{} is discarded as {} is not an activated system.", killmail.getKillId(), killmail.getSolarSystemId());
+        }
+        return isInBraveSystem;
     }
 
     private boolean isVictimNotBrave(final Killmail killmail) {
-        return !killmail.getVictimGroupName().equals("Brave Collective");
+        final boolean isNotBrave = !killmail.getVictimGroupName().equals("Brave Collective");
+        if (!isNotBrave) {
+            log.info("{} is discarded as it has a Brave victim.", killmail.getKillId());
+        }
+        return isNotBrave;
     }
 }
