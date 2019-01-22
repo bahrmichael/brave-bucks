@@ -71,13 +71,17 @@ currentAccount: any;
             this.showCopiedPriceFor = null;
         }.bind(this), 3000);
 
-        this.payoutService.markPaid(id).subscribe((data) => {
-            this.payouts.forEach((p) => {
-                if (p.id === id) {
-                    p.status = 1;
-                }
+        const payout = this.payouts.find(p => p.id === id);
+
+        if (payout.status.toString() === 'REQUESTED') {
+            this.payoutService.markPaid(id).subscribe((data) => {
+                this.payouts.forEach((p) => {
+                    if (p.id === id) {
+                        p.status = 1;
+                    }
+                });
             });
-        });
+        }
     }
 
     loadAll() {
