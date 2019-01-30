@@ -29,6 +29,9 @@
                             <li>
                                 <a *ngIf="systemsImpass" target="_blank" href="{{getDotlanLink('Impass', true, false)}}">Impass</a>
                             </li>
+                            <li>
+                                <a *ngIf="systemsFeythabolis" target="_blank" href="{{getDotlanLink('Feythabolis', true, false)}}">Impass</a>
+                            </li>
                         </ul>
                         <p>To get Brave Bucks, your killmail must not be from a fleet fight (max. 20 attackers), not an awox and in one of the circled systems on the right. Empty pods are not counted.</p>
                     </div>
@@ -50,6 +53,9 @@
                             </li>
                             <li>
                                 <a *ngIf="systemsImpass" target="_blank" href="{{getDotlanLink('Impass', false, true)}}">Impass</a>
+                            </li>
+                            <li>
+                                <a *ngIf="systemsFeythabolis" target="_blank" href="{{getDotlanLink('Feythabolis', false, true)}}">Impass</a>
                             </li>
                         </ul>
                         <p>Add your character(s): <a *ngIf="walletUrl" class="btn btn-primary" href="{{walletUrl}}">Grant wallet read access</a></P>

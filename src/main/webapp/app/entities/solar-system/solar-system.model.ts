@@ -2,7 +2,8 @@ import { BaseEntity } from './../../shared';
 
 const enum Region {
     'CATCH',
-    'IMPASS'
+    'IMPASS',
+    'FEYTHABOLIS'
 }
 
 export class SolarSystem implements BaseEntity {

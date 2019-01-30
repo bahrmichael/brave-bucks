@@ -12,6 +12,7 @@ export class InfoBlockComponent implements OnInit {
 
     systemsCatch: SolarSystem[];
     systemsImpass: SolarSystem[];
+    systemsFeythabolis: SolarSystem[];
     walletUrl: string;
     characterNames: string[];
 
@@ -28,6 +29,9 @@ export class InfoBlockComponent implements OnInit {
         });
         this.http.get('/api/solar-systems/region/IMPASS').subscribe((data) => {
             this.systemsImpass = data.json();
+        });
+        this.http.get('/api/solar-systems/region/FEYTHABOLIS').subscribe((data) => {
+            this.systemsFeythabolis = data.json();
         });
         this.http.get('/api/characters').subscribe((data) => {
             this.characterNames = data.json();
@@ -50,6 +54,12 @@ export class InfoBlockComponent implements OnInit {
                     systemNames.push(s.systemName);
                 }
             });
+        } else if (region === 'Feythabolis') {
+                this.systemsFeythabolis.forEach((s) => {
+                    if (isPvp && s.trackPvp || isRatting && s.trackRatting) {
+                        systemNames.push(s.systemName);
+                    }
+                });
         } else {
             this.systemsImpass.forEach((s) => {
                 if (isPvp && s.trackPvp || isRatting && s.trackRatting) {
