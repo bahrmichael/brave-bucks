@@ -146,7 +146,7 @@ public class WalletParser {
     private ResponseEntity<WalletResponse[]> getWalletResponse(final String refreshToken, final int characterId,
                                                                final String eTag) {
         final String accessToken = getAccessTokenWithRefreshToken(refreshToken, walletClientId, walletClientSecret);
-        final String walletUri = "https://esi.evetech.net/v4/characters/" + characterId + "/wallet/journal/";
+        final String walletUri = "https://esi.evetech.net/v6/characters/" + characterId + "/wallet/journal/";
 
         return restTemplate.exchange(walletUri, HttpMethod.GET, authorizedRequest(accessToken,
                                                                                   eTag), WalletResponse[].class);

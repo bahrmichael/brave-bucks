@@ -67,7 +67,7 @@ public class UniverseNamesClient {
     }
 
     ResponseEntity<UniverseName[]> doCall(List<Integer> ids) {
-        final String url = "https://esi.evetech.net/v2/universe/names/";
+        final String url = "https://esi.evetech.net/v3/universe/names/";
         final HttpEntity<Integer[]> request = new HttpEntity(ids, null);
         return restTemplate.exchange(url, HttpMethod.POST, request, UniverseName[].class);
     }
