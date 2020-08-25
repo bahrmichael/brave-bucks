@@ -16,7 +16,7 @@
                 <th>Victim Alliance</th>
             </tr>
             <tr *ngFor="let killmail of killmails">
-                <td><a target="_blank" href="https://zkillboard.com/kill/{{killmail.killmailId}}"><img src="https://image.eveonline.com/Type/{{killmail.shipTypeId}}_32.png" />
+                <td><a target="_blank" href="https://zkillboard.com/kill/{{killmail.killmailId}}/"><img src="https://image.eveonline.com/Type/{{killmail.shipTypeId}}_32.png" />
                     <span *ngIf="killmail.victimName" class="d-none d-sm-inline-block"> {{killmail.victimName}}</span>
                     <span *ngIf="!killmail.victimName" class="d-none d-sm-inline-block"> {{killmail.killmailId}}</span>
                 </a></td>
